@@ -1,55 +1,35 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "willow",
+  "name": "Azure GenAI Framework",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#006ad4",
+    "light": "#006ad4",
+    "dark": "#006ad4"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Modules",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Modules",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Essentials",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              {
+                "group": "Log Analytics Workspace",
+                "icon": "folder",
+                "pages": [
+                  "modules/log-analytics-workspace/resource",
+                  {
+                    "group": "Alerts",
+                    "icon": "bells",
+                    "pages": [
+                      "modules/log-analytics-workspace/alerts/availability"
+                    ]
+                  }
+                ]
+              }
             ]
           }
         ]
