@@ -16,7 +16,7 @@ resource "azurerm_resource_group" "test" {
 
 # Call your module from the parent directory
 module "log_analytics_workspace" {
-  source = "../../../modules/log_analytics_workspace/resource"
+  source = "../../../modules/log-analytics-workspace/resource"
 
   name                = "${var.name_prefix}-law-${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.test.name
@@ -43,7 +43,7 @@ resource "azurerm_monitor_action_group" "test" {
 
 # Deploy the availability alert module
 module "availability_alert" {
-  source = "../../../modules/log_analytics_workspace/alerts/AvailabilityRate_Query"
+  source = "../../../modules/log-analytics-workspace/alerts/AvailabilityRate_Query"
 
   name                = "${var.name_prefix}-alert-availability-${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.test.name

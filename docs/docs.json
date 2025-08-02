@@ -29,6 +29,18 @@
                     ]
                   }
                 ]
+              },
+              {
+                "group": "Application Insights",
+                "icon": "folder",
+                "pages": [
+                  "modules/application-insights/resource",
+                  {
+                    "group": "Alerts",
+                    "icon": "bells",
+                    "pages": []
+                  }
+                ]
               }
             ]
           }
