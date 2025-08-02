@@ -13,11 +13,6 @@ output "workspace_id" {
   value       = azurerm_log_analytics_workspace.this.workspace_id
 }
 
-output "portal_url" {
-  description = "The Azure Portal URL for the workspace."
-  value       = azurerm_log_analytics_workspace.this.portal_url
-}
-
 output "primary_shared_key" {
   description = "The primary shared key for the workspace (sensitive)."
   value       = azurerm_log_analytics_workspace.this.primary_shared_key

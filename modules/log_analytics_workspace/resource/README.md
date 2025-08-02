@@ -47,14 +47,13 @@ Outputs
 | `id`                   | Resource ID of the workspace.       |
 | `name`                 | Workspace name.                     |
 | `workspace_id`         | Workspace/Customer GUID.            |
-| `portal_url`           | Azure Portal URL for the workspace. |
 | `primary_shared_key`   | Primary shared key (sensitive).     |
 | `secondary_shared_key` | Secondary shared key (sensitive).   |
 
 
 ## Requirements
-- Terraform `>= 1.5`
-- AzureRM provider `>= 3.70`
+- Terraform `>= 1.12.1`
+- AzureRM provider `>= 4.38.1`
 - An existing Azure Resource Group
 
 
