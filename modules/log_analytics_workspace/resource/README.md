@@ -1,25 +1,20 @@
-# Azure Log Analytics Workspace (Terraform Module)
+---
+title: 'Resource'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'server'
+---
 
-Enterprise-ready Terraform module to create an Azure Log Analytics Workspace with the **PerGB2018** SKU.  
-This module lets you choose the **location** and **retention_in_days**, and exposes common outputs (IDs, Portal URL, and shared keys).
+## 1. Module
+Terraform module to create an Azure Log Analytics Workspace with fixed SKU and configurable retention days.
 
-## Features
-- Opinionated default SKU: `PerGB2018`
-- Configurable data retention (`retention_in_days`)
-- Pass-through of tags
-- Sensitive outputs for shared keys
-
-## Usage
-
-```hcl
+## 2. Usage
+```hcl main.tf
 module "log_analytics_workspace" {
   source = "./modules/log-analytics-workspace" # update to your source
 
   name                = "law-prod-weu"
   resource_group_name = "rg-observability-prod"
   location            = "westeurope"
-
-  # 30..730 days for PerGB2018
   retention_in_days   = 90
 
   tags = {
@@ -30,18 +25,16 @@ module "log_analytics_workspace" {
 }
 ```
 
-
+## 3. Inputs
 | Name                  | Type          | Default | Required | Description                                                     |
 | --------------------- | ------------- | ------- | :------: | --------------------------------------------------------------- |
 | `name`                | `string`      | n/a     |    yes   | Name of the Log Analytics workspace.                            |
 | `resource_group_name` | `string`      | n/a     |    yes   | Resource group in which to create the workspace.                |
 | `location`            | `string`      | n/a     |    yes   | Azure region, e.g. `westeurope`.                                |
-| `retention_in_days`   | `number`      | `30`    |    no    | Data retention in days (valid range **30..730** for PerGB2018). |
+| `retention_in_days`   | `number`      | `30`    |    no    | Valid range **30..730** for PerGB2018. |
 | `tags`                | `map(string)` | `{}`    |    no    | Tags to apply to the workspace.                                 |
 
-**Note:** If you later reduce retention, data older than the new retention period may be purged by the platform.
-
-Outputs
+## 4. Outputs
 | Name                   | Description                         |
 | ---------------------- | ----------------------------------- |
 | `id`                   | Resource ID of the workspace.       |
@@ -51,9 +44,7 @@ Outputs
 | `secondary_shared_key` | Secondary shared key (sensitive).   |
 
 
-## Requirements
+## 5. Requirements
 - Terraform `>= 1.12.1`
 - AzureRM provider `>= 4.38.1`
 - An existing Azure Resource Group
-
-

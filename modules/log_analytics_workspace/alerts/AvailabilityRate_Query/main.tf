@@ -15,8 +15,8 @@ resource "azurerm_monitor_metric_alert" "this" {
   enabled  = var.enabled
 
   # ISO8601 durations
-  frequency   = "PT5M"
-  window_size = "PT1H"
+  frequency   = "PT1M"
+  window_size = "PT5M"
 
   # Condition: Average availability rate is less than threshold
   criteria {

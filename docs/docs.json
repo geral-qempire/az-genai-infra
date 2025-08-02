@@ -21,7 +21,13 @@
                 "icon": "folder",
                 "pages": [
                   "modules/log-analytics-workspace/resource",
-                  "modules/log-analytics-workspace/alerts"
+                  {
+                    "group": "Alerts",
+                    "icon": "bells",
+                    "pages": [
+                      "modules/log-analytics-workspace/alerts/availability"
+                    ]
+                  }
                 ]
               }
             ]
