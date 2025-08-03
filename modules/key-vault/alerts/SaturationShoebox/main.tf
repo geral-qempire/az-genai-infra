@@ -5,22 +5,21 @@ resource "azurerm_monitor_metric_alert" "this" {
 
   description = coalesce(
     var.description,
-    "Alert when AvailabilityRate_Query (Average) over PT1H is below ${var.threshold}%."
+    "Alert when Key Vault SaturationShoebox (Average) over PT5M is above ${var.threshold}%."
   )
 
-  severity = 0
+  severity = 2
   enabled  = var.enabled
 
   frequency   = "PT1M"
   window_size = "PT5M"
 
   criteria {
-    metric_namespace = "Microsoft.OperationalInsights/workspaces"
-    metric_name      = "AvailabilityRate_Query"
+    metric_namespace = "Microsoft.KeyVault/vaults"
+    metric_name      = "SaturationShoebox"
     aggregation      = "Average"
-    operator         = "LessThan"
+    operator         = "GreaterThan"
     threshold        = var.threshold
-
   }
 
   dynamic "action" {
@@ -29,4 +28,4 @@ resource "azurerm_monitor_metric_alert" "this" {
       action_group_id = action.value
     }
   }
-}
+} 

@@ -5,29 +5,29 @@ icon: 'bell'
 ---
 
 ## 1. Alert
-Percentage of successful user queries in the Log Analytics workspace within the selected time range.
+Percentage of successful requests to the Key Vault within the selected time range.
 
-- **Metric**: `AvailabilityRate_Query` 
+- **Metric**: `Availability` 
 - **Aggregation**: Average
 - **Operator**: LessThan (fires when availability drops below threshold)
-- **Evaluation Frequency**: 1 minutes (PT5M)
+- **Evaluation Frequency**: 1 minute (PT1M)
 - **Time Window**: 5 minutes (PT5M)
 - **Severity**: 0 (Critical)
 
 ## 2. Usage
 ```hcl main.tf
-module "availability_alert" {
-  source = "./modules/log-analytics-workspace/alerts/AvailabilityRate_Query" # update to your source
+module "keyvault_availability_alert" {
+  source = "./modules/key-vault/alerts/Availability" # update to your source
 
-  name                = "alert-law-availability-prod"
-  resource_group_name = "rg-observability-prod"
-  scopes              = [module.log_analytics_workspace.id]
+  name                = "alert-kv-availability-prod"
+  resource_group_name = "rg-security-prod"
+  scopes              = [module.key_vault.id]
   
   # Alert when availability drops below 95%
   threshold = 95
   
   # Optional: custom description
-  description = "Critical alert for Log Analytics workspace availability"
+  description = "Critical alert for Key Vault availability"
   
   # Optional: enable/disable the alert
   enabled = true
@@ -44,7 +44,7 @@ module "availability_alert" {
 | --------------------- | ------------- | ------- | :------: | --------------------------------------------------------------- |
 | `name`                | `string`      | n/a     |    yes   | Name of the metric alert.                                       |
 | `resource_group_name` | `string`      | n/a     |    yes   | Resource group in which to create the alert.                   |
-| `scopes`              | `list(string)`| n/a     |    yes   | List of Log Analytics workspace resource IDs to monitor.       |
+| `scopes`              | `list(string)`| n/a     |    yes   | List of Key Vault resource IDs to monitor.                     |
 | `threshold`           | `number`      | n/a     |    yes   | Percentage threshold (0-100). Alert fires when availability is below this value. |
 | `description`         | `string`      | `null`  |    no    | Custom description for the alert. Auto-generated if not provided. |
 | `enabled`             | `bool`        | `true`  |    no    | Whether the alert is enabled.                                  |
@@ -56,8 +56,8 @@ module "availability_alert" {
 | `id`   | Resource ID of the metric alert. |
 | `name` | Name of the metric alert.    |
 
-
 ## 5. Requirements
 - Terraform `>= 1.12.1`
 - AzureRM provider `>= 4.38.1`
 - An existing Azure Resource Group
+- An existing Azure Key Vault 
