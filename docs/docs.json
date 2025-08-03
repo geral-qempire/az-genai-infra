@@ -41,6 +41,13 @@
                     "pages": []
                   }
                 ]
+              },
+              {
+                "group": "Private Endpoint",
+                "icon": "folder",
+                "pages": [
+                  "modules/private-endpoint/resource"
+                ]
               }
             ]
           }
