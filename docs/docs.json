@@ -3,9 +3,9 @@
   "theme": "willow",
   "name": "Azure GenAI Framework",
   "colors": {
-    "primary": "#006ad4",
-    "light": "#006ad4",
-    "dark": "#006ad4"
+    "primary": "#076cd5",
+    "light": "#076cd5",
+    "dark": "#017efc"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -73,19 +73,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Github",
+          "href": "https://github.com/geral-qempire/az-genai-infra?tab=readme-ov-file",
+          "icon": "github"
         }
       ]
     }
@@ -109,9 +99,8 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/geral-qempire/az-genai-infra?tab=readme-ov-file",
+      "linkedin": "https://www.linkedin.com/in/datascienceda/"
     }
   }
 }
