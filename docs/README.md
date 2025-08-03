@@ -1,32 +1,23 @@
-# Mintlify Starter Kit
+# Azure GenAI Infrastructure
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+Terraform modules for Azure GenAI infrastructure components with monitoring and alerting.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## Current Status
 
-### Development
+**Available**: 
+– Log Analytics Workspace
+– Key Vault
+– Application Insights
+– Private Endpoint
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview the documentation changes locally. To install, use the following command
+**In Progress**:
+– Storage Account
+– AI Services
+– AI Hub
+– AI Search
+– Azure SQL
+– AI Project
+– Common Resources
 
-```
-npm i -g mint
-```
+**Planned**: Templates for complete infrastructure stacks (public and private network configurations) - still defining requirements before implementation.
 
-Run the following command at the root of your documentation (where docs.json is)
-
-```
-mint dev
-```
-
-### Publishing Changes
-
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
-
-#### Troubleshooting
-
-- If the dev environment isn't running - Run `mint update` to ensure you have the most recent version of the CLI.
-- Page loads as a 404 - Make sure you are running in a folder with `docs.json`
