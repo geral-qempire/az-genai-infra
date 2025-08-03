@@ -48,6 +48,22 @@
                 "pages": [
                   "modules/private-endpoint/resource"
                 ]
+              },
+              {
+                "group": "Key Vault",
+                "icon": "folder",
+                "pages": [
+                  "modules/key-vault/resource",
+                  {
+                    "group": "Alerts",
+                    "icon": "bells",
+                    "pages": [
+                      "modules/key-vault/alerts/availability",
+                      "modules/key-vault/alerts/saturation",
+                      "modules/key-vault/alerts/latency"
+                    ]
+                  }
+                ]
               }
             ]
           }

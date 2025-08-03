@@ -1,40 +1,40 @@
 ---
-title: 'Availability'
+title: 'SaturationShoebox'
 description: 'An overview of metric, severity, inputs, outputs and usage.'
 icon: 'bell'
 ---
 
 ## 1. Alert
-Percentage of successful user queries in the Log Analytics workspace within the selected time range.
+Percentage of Key Vault capacity utilization within the selected time range. This metric indicates how close the Key Vault is to its troughput capacity limits.
 
-- **Metric**: `AvailabilityRate_Query` 
+- **Metric**: `SaturationShoebox` 
 - **Aggregation**: Average
-- **Operator**: LessThan (fires when availability drops below threshold)
-- **Evaluation Frequency**: 1 minutes (PT5M)
+- **Operator**: GreaterThan (fires when saturation exceeds threshold)
+- **Evaluation Frequency**: 1 minute (PT1M)
 - **Time Window**: 5 minutes (PT5M)
-- **Severity**: 0 (Critical)
+- **Severity**: 2 (Warning)
 
 ## 2. Usage
 ```hcl main.tf
-module "availability_alert" {
-  source = "./modules/log-analytics-workspace/alerts/AvailabilityRate_Query" # update to your source
+module "keyvault_saturation_alert" {
+  source = "./modules/key-vault/alerts/SaturationShoebox" # update to your source
 
-  name                = "alert-law-availability-prod"
-  resource_group_name = "rg-observability-prod"
-  scopes              = [module.log_analytics_workspace.id]
+  name                = "alert-kv-saturation-prod"
+  resource_group_name = "rg-security-prod"
+  scopes              = [module.key_vault.id]
   
-  # Alert when availability drops below 95%
-  threshold = 95
+  # Alert when saturation exceeds 80%
+  threshold = 80
   
   # Optional: custom description
-  description = "Critical alert for Log Analytics workspace availability"
+  description = "Warning alert for Key Vault capacity saturation"
   
   # Optional: enable/disable the alert
   enabled = true
   
   # Optional: notify action groups when alert fires
   action_group_ids = [
-    "/subscriptions/xxx/resourceGroups/rg-alerts/providers/Microsoft.Insights/actionGroups/ag-critical"
+    "/subscriptions/xxx/resourceGroups/rg-alerts/providers/Microsoft.Insights/actionGroups/ag-warning"
   ]
 }
 ```
@@ -44,8 +44,8 @@ module "availability_alert" {
 | --------------------- | ------------- | ------- | :------: | --------------------------------------------------------------- |
 | `name`                | `string`      | n/a     |    yes   | Name of the metric alert.                                       |
 | `resource_group_name` | `string`      | n/a     |    yes   | Resource group in which to create the alert.                   |
-| `scopes`              | `list(string)`| n/a     |    yes   | List of Log Analytics workspace resource IDs to monitor.       |
-| `threshold`           | `number`      | n/a     |    yes   | Percentage threshold (0-100). Alert fires when availability is below this value. |
+| `scopes`              | `list(string)`| n/a     |    yes   | List of Key Vault resource IDs to monitor.                     |
+| `threshold`           | `number`      | n/a     |    yes   | Percentage threshold (0-100). Alert fires when saturation is above this value. |
 | `description`         | `string`      | `null`  |    no    | Custom description for the alert. Auto-generated if not provided. |
 | `enabled`             | `bool`        | `true`  |    no    | Whether the alert is enabled.                                  |
 | `action_group_ids`    | `list(string)`| `[]`    |    no    | Action Group IDs to notify when the alert fires.              |
@@ -56,8 +56,8 @@ module "availability_alert" {
 | `id`   | Resource ID of the metric alert. |
 | `name` | Name of the metric alert.    |
 
-
 ## 5. Requirements
 - Terraform `>= 1.12.1`
 - AzureRM provider `>= 4.38.1`
 - An existing Azure Resource Group
+- An existing Azure Key Vault 

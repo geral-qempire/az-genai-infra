@@ -1,40 +1,40 @@
 ---
-title: 'Availability'
+title: 'ServiceApiLatency'
 description: 'An overview of metric, severity, inputs, outputs and usage.'
 icon: 'bell'
 ---
 
 ## 1. Alert
-Percentage of successful user queries in the Log Analytics workspace within the selected time range.
+Average latency of Key Vault service API requests within the selected time range. This metric measures the response time performance of Key Vault operations.
 
-- **Metric**: `AvailabilityRate_Query` 
+- **Metric**: `ServiceApiLatency` 
 - **Aggregation**: Average
-- **Operator**: LessThan (fires when availability drops below threshold)
-- **Evaluation Frequency**: 1 minutes (PT5M)
+- **Operator**: GreaterThan (fires when latency exceeds threshold)
+- **Evaluation Frequency**: 1 minute (PT1M)
 - **Time Window**: 5 minutes (PT5M)
-- **Severity**: 0 (Critical)
+- **Severity**: 1 (Error)
 
 ## 2. Usage
 ```hcl main.tf
-module "availability_alert" {
-  source = "./modules/log-analytics-workspace/alerts/AvailabilityRate_Query" # update to your source
+module "keyvault_latency_alert" {
+  source = "./modules/key-vault/alerts/ServiceApiLatency" # update to your source
 
-  name                = "alert-law-availability-prod"
-  resource_group_name = "rg-observability-prod"
-  scopes              = [module.log_analytics_workspace.id]
+  name                = "alert-kv-latency-prod"
+  resource_group_name = "rg-security-prod"
+  scopes              = [module.key_vault.id]
   
-  # Alert when availability drops below 95%
-  threshold = 95
+  # Alert when latency exceeds 1000ms (1 second)
+  threshold = 1000
   
   # Optional: custom description
-  description = "Critical alert for Log Analytics workspace availability"
+  description = "Error alert for Key Vault API latency performance"
   
   # Optional: enable/disable the alert
   enabled = true
   
   # Optional: notify action groups when alert fires
   action_group_ids = [
-    "/subscriptions/xxx/resourceGroups/rg-alerts/providers/Microsoft.Insights/actionGroups/ag-critical"
+    "/subscriptions/xxx/resourceGroups/rg-alerts/providers/Microsoft.Insights/actionGroups/ag-error"
   ]
 }
 ```
@@ -44,8 +44,8 @@ module "availability_alert" {
 | --------------------- | ------------- | ------- | :------: | --------------------------------------------------------------- |
 | `name`                | `string`      | n/a     |    yes   | Name of the metric alert.                                       |
 | `resource_group_name` | `string`      | n/a     |    yes   | Resource group in which to create the alert.                   |
-| `scopes`              | `list(string)`| n/a     |    yes   | List of Log Analytics workspace resource IDs to monitor.       |
-| `threshold`           | `number`      | n/a     |    yes   | Percentage threshold (0-100). Alert fires when availability is below this value. |
+| `scopes`              | `list(string)`| n/a     |    yes   | List of Key Vault resource IDs to monitor.                     |
+| `threshold`           | `number`      | n/a     |    yes   | Latency threshold in milliseconds. Alert fires when latency is above this value. |
 | `description`         | `string`      | `null`  |    no    | Custom description for the alert. Auto-generated if not provided. |
 | `enabled`             | `bool`        | `true`  |    no    | Whether the alert is enabled.                                  |
 | `action_group_ids`    | `list(string)`| `[]`    |    no    | Action Group IDs to notify when the alert fires.              |
@@ -56,8 +56,8 @@ module "availability_alert" {
 | `id`   | Resource ID of the metric alert. |
 | `name` | Name of the metric alert.    |
 
-
 ## 5. Requirements
 - Terraform `>= 1.12.1`
 - AzureRM provider `>= 4.38.1`
 - An existing Azure Resource Group
+- An existing Azure Key Vault 
