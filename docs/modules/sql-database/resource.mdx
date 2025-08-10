@@ -1,0 +1,62 @@
+---
+title: 'Resource'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'server'
+---
+
+## 1. Module
+Terraform module to create an Azure SQL Database on an existing SQL Server, with optional serverless settings and LTR/PITR retention policies.
+
+## 2. Usage
+```hcl main.tf
+module "sql_database" {
+  source = "./modules/sql-database/resource"
+
+  server_id      = module.sql_server.id
+  name           = "appdb"
+  sku_name       = "GP_S_Gen5_2"
+  min_capacity   = 0.5
+  collation      = "SQL_Latin1_General_CP1_CI_AS"
+  zone_redundant = false
+
+  # Backups
+  pitr_days                  = 7
+  backup_interval_in_hours   = 12
+  weekly_ltr_weeks           = 16
+  monthly_ltr_months         = 16
+  yearly_ltr_years           = 0
+
+  tags = {
+    environment = "dev"
+    project     = "acme"
+  }
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `server_id` | `string` | n/a | yes | Parent SQL Server ID. |
+| `name` | `string` | n/a | yes | Database name. |
+| `sku_name` | `string` | `"S0"` | no | SKU name (e.g., `GP_S_Gen5_2`, `S0`, `P1`). |
+| `min_capacity` | `number` | `null` | no | Minimum capacity (serverless SKUs). |
+| `collation` | `string` | `"SQL_Latin1_General_CP1_CI_AS"` | no | Database collation. |
+| `zone_redundant` | `bool` | `false` | no | Zone redundancy. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to resources. |
+| `pitr_days` | `number` | `7` | no | PITR retention days. |
+| `backup_interval_in_hours` | `number` | `0` | no | Differential backup interval (0 to omit). |
+| `weekly_ltr_weeks` | `number` | `0` | no | Weekly LTR retention in weeks. |
+| `monthly_ltr_months` | `number` | `0` | no | Monthly LTR retention in months. |
+| `yearly_ltr_years` | `number` | `0` | no | Yearly LTR retention in years. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `id` | Resource ID of the SQL database. |
+| `name` | Name of the SQL database. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1`
+- AzureRM provider `>= 4.38.1`
+
+

@@ -1,0 +1,49 @@
+---
+title: 'Success Server Latency'
+description: 'An overview of metric, severity, inputs, outputs and usage.'
+icon: 'bell'
+---
+
+## 1. Alert
+Average server-side latency for successful requests.
+
+- **Metric**: `SuccessServerLatency`
+- **Namespace**: `Microsoft.Storage/storageAccounts`
+- **Aggregation**: Average
+- **Operator**: GreaterThan
+- **Evaluation Frequency**: 1 minute (PT1M)
+- **Time Window**: 5 minutes (PT5M)
+- **Severity**: 2
+
+## 2. Usage
+```hcl main.tf
+module "storage_success_server_latency_alert" {
+  source = "./modules/storage-account/alerts/SuccessServerLatency"
+
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [module.storage_account.storage_account_id]
+  # threshold = 1000
+  description      = "Storage server latency above 1000ms over 5 minutes"
+  enabled          = true
+  action_group_ids = []
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `name` | `string` | `null` | no | Name of the metric alert (defaults to `alrt-sslat-<resource-name>`). |
+| `resource_group_name` | `string` | n/a | yes | Resource group in which to create the alert. |
+| `scopes` | `list(string)` | n/a | yes | List of Storage Account resource IDs to monitor. |
+| `threshold` | `number` | `1000` | no | Latency threshold in milliseconds. Fires when above this value. |
+| `description` | `string` | `null` | no | Custom description for the alert. Auto-generated if not provided. |
+| `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
+| `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `id` | Resource ID of the metric alert. |
+| `name` | Name of the metric alert. |
+
+

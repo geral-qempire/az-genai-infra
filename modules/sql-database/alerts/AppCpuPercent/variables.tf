@@ -1,0 +1,57 @@
+variable "name" {
+  description = "(Optional) Name of the metric alert. If not provided, defaults to alrt-cpu-<resource-name>."
+  type        = string
+  default     = null
+}
+
+variable "resource_group_name" {
+  description = "(Required) Resource group in which to create the alert."
+  type        = string
+}
+
+variable "scopes" {
+  description = <<DESC
+(Required) List of resource IDs that the alert monitors.
+For SQL Database App CPU Percent, pass one or more SQL Database resource IDs (Microsoft.Sql/servers/databases).
+DESC
+  type = list(string)
+
+  validation {
+    condition     = length(var.scopes) >= 1
+    error_message = "Provide at least one scope (SQL Database resource ID)."
+  }
+}
+
+variable "threshold" {
+  description = <<DESC
+(Optional) CPU percent threshold.
+Alert fires when the metric average over the window is greater than this value.
+DESC
+  type    = number
+  default = 80
+
+  validation {
+    condition     = var.threshold >= 0 && var.threshold <= 100
+    error_message = "threshold must be between 0 and 100 percent."
+  }
+}
+
+variable "description" {
+  description = "(Optional) Description for the alert."
+  type        = string
+  default     = null
+}
+
+variable "enabled" {
+  description = "(Optional) Whether the alert is enabled."
+  type        = bool
+  default     = true
+}
+
+variable "action_group_ids" {
+  description = "(Optional) Action Group IDs to notify when the alert fires."
+  type        = list(string)
+  default     = []
+}
+
+

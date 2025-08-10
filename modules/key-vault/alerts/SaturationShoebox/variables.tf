@@ -1,6 +1,7 @@
 variable "name" {
-  description = "(Required) Name of the metric alert."
+  description = "(Optional) Name of the metric alert. If not provided, defaults to alrt-sat-<resource-name>."
   type        = string
+  default     = null
 }
 
 variable "resource_group_name" {
@@ -23,14 +24,15 @@ DESC
 
 variable "threshold" {
   description = <<DESC
-(Required) Percentage threshold for Key Vault SaturationShoebox.
-Alert fires when the metric average over the window is greater than this value. Valid range 0..100.
+(Optional) Vault capacity used threshold percentage.
+Alert fires when the metric average over the window is greater than this value.
 DESC
-  type = number
+  type    = number
+  default = 75
 
   validation {
     condition     = var.threshold >= 0 && var.threshold <= 100
-    error_message = "threshold must be between 0 and 100 (inclusive)."
+    error_message = "threshold must be between 0 and 100."
   }
 }
 
@@ -50,4 +52,6 @@ variable "action_group_ids" {
   description = "(Optional) Action Group IDs to notify when the alert fires."
   type        = list(string)
   default     = []
-} 
+}
+
+

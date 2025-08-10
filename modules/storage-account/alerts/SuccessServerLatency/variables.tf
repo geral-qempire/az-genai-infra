@@ -1,0 +1,57 @@
+variable "name" {
+  description = "(Optional) Name of the metric alert. If not provided, defaults to alrt-sslat-<resource-name>."
+  type        = string
+  default     = null
+}
+
+variable "resource_group_name" {
+  description = "(Required) Resource group in which to create the alert."
+  type        = string
+}
+
+variable "scopes" {
+  description = <<DESC
+(Required) List of resource IDs that the alert monitors.
+For Success Server Latency, pass one or more Storage Account resource IDs (Microsoft.Storage/storageAccounts).
+DESC
+  type = list(string)
+
+  validation {
+    condition     = length(var.scopes) >= 1
+    error_message = "Provide at least one scope (Storage Account resource ID)."
+  }
+}
+
+variable "threshold" {
+  description = <<DESC
+(Optional) Latency threshold in milliseconds.
+Alert fires when the metric average over the window is greater than this value.
+DESC
+  type    = number
+  default = 1000
+
+  validation {
+    condition     = var.threshold >= 0
+    error_message = "threshold must be greater than or equal to 0 milliseconds."
+  }
+}
+
+variable "description" {
+  description = "(Optional) Description for the alert."
+  type        = string
+  default     = null
+}
+
+variable "enabled" {
+  description = "(Optional) Whether the alert is enabled."
+  type        = bool
+  default     = true
+}
+
+variable "action_group_ids" {
+  description = "(Optional) Action Group IDs to notify when the alert fires."
+  type        = list(string)
+  default     = []
+}
+
+
