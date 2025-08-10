@@ -1,27 +1,21 @@
 # Azure GenAI Infrastructure
 
-Terraform modules for Azure GenAI infrastructure components with monitoring and alerting.
+Terraform modules for Azure GenAI infrastructure with monitoring and alerting.
 
-## Documentation [WIP]
-The documentation for this repository is available [here](https://qempire.mintlify.app/modules/log-analytics-workspace/resource).
+## Documentation
+- Browse the docs site: https://qempire.mintlify.app
+- Module pages live under Modules → choose the desired resource (e.g., Log Analytics Workspace → Resource).
 
-
-## Current Status
-
-**Available**: 
+## Modules
 - Log Analytics Workspace
-- Key Vault
 - Application Insights
-- Private Endpoint
-
-**In Progress**:
-- Storage Account
-- AI Services
+- Key Vault (resource + alerts)
+- Storage Account (resource + alerts)
+- AI Services (resource + alerts)
 - AI Hub
-- AI Search
-- Azure SQL
 - AI Project
-- Common Resources
-
-**Planned**: Templates for complete infrastructure stacks (public and private network configurations) - still defining requirements before implementation.
+- AI Search Service (resource + alerts)
+- SQL Server
+- SQL Database (resource + alerts)
+- Region Abbreviations (shared)
 
