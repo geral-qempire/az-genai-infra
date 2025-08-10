@@ -1,61 +1,60 @@
----
-title: 'Resource'
-description: 'An overview of requirements, inputs, outputs, and usage.'
-icon: 'server'
----
-
 ## 1. Module
-Terraform module to create an Azure Application Insights resource with configurable application type, data retention, and sampling settings.
+Terraform module to create Azure Application Insights (workspace-based optional) without Private Endpoint.
 
 ## 2. Usage
-```hcl main.tf
-module "application_insights" {
-  source = "./modules/application-insights/resource" # update to your source
+```hcl
+module "region_abbreviations" {
+  source = "../region-abbreviations"
+}
 
-  name                  = "ai-prod-weu"
-  resource_group_name   = "rg-observability-prod"
-  location              = "westeurope"
-  application_type      = "web"
-  retention_days        = 90
-  sampling_percentage   = 100
-  daily_data_cap_in_gb  = 10
+module "application_insights" {
+  source = "../application-insights/resource"
+
+  environment          = "dev"
+  service_prefix       = "acme"
+  resource_group_name  = "rg-observability-dev"
+  location             = "westeurope"
+  region_abbreviations = module.region_abbreviations.regions
+
+  # Optionally link to a Log Analytics workspace
+  # workspace_id = module.log_analytics.log_analytics_workspace_id
+
+  application_type            = "web"
+  internet_ingestion_enabled  = true
+  internet_query_enabled      = true
 
   tags = {
-    environment = "prod"
-    cost-center = "obs"
-    owner       = "platform-team"
+    environment = "dev"
+    project     = "acme"
   }
 }
 ```
 
 ## 3. Inputs
-| Name                    | Type          | Default | Required | Description                                                     |
-| ----------------------- | ------------- | ------- | :------: | --------------------------------------------------------------- |
-| `name`                  | `string`      | n/a     |    yes   | Name of the Application Insights resource.                      |
-| `resource_group_name`   | `string`      | n/a     |    yes   | Resource group in which to create the resource.                |
-| `location`              | `string`      | n/a     |    yes   | Azure region, e.g. `westeurope`.                               |
-| `application_type`      | `string`      | n/a     |    yes   | Type of application. Valid values: **web**, **other**.         |
-| `retention_days`        | `number`      | `90`    |    no    | Data retention in days. Valid range **30..730**.               |
-| `sampling_percentage`   | `number`      | `100`   |    no    | Percentage of telemetry sampled. Valid range **0..100**.       |
-| `daily_data_cap_in_gb`  | `number`      | `null`  |    no    | Daily data volume cap in GB. Valid range **0..1000** or null.  |
-| `tags`                  | `map(string)` | `{}`    |    no    | Tags to apply to the resource.                                  |
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `environment` | `string` | n/a | yes | Environment project (dev, qua or prd). |
+| `service_prefix` | `string` | n/a | yes | Prefix or name of the project. |
+| `location` | `string` | n/a | yes | Azure region. |
+| `resource_group_name` | `string` | n/a | yes | Resource group in which to create the resource. |
+| `region_abbreviations` | `map(string)` | n/a | yes | Map of Azure locations to abbreviations. |
+| `workspace_id` | `string` | `""` | no | Optional Log Analytics Workspace ID to link. |
+| `application_type` | `string` | `"web"` | no | Application Insights type. |
+| `internet_ingestion_enabled` | `bool` | `true` | no | Enable ingestion over Internet. |
+| `internet_query_enabled` | `bool` | `true` | no | Enable queries over Internet. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to the resource. |
 
 ## 4. Outputs
-| Name                   | Description                                    |
-| ---------------------- | ---------------------------------------------- |
-| `id`                   | Resource ID of the Application Insights.      |
-| `name`                 | Name of the Application Insights.             |
-| `location`             | Location of the Application Insights.         |
-| `application_type`     | The application type.                          |
-| `app_id`               | App ID associated with this component.        |
-| `instrumentation_key`  | Instrumentation Key for this component.       |
-| `connection_string`    | Connection string for SDKs.                   |
-| `daily_data_cap_in_gb` | The daily data cap (GB) applied.              |
-| `retention_in_days`    | The retention (days) configured.              |
-| `sampling_percentage`  | The sampling percentage configured.            |
-
+| Name | Description |
+|------|-------------|
+| `application_insights_id` | Resource ID of the Application Insights resource. |
+| `application_insights_name` | Name of the Application Insights resource. |
+| `instrumentation_key` | Instrumentation key for classic ingestion. |
+| `connection_string` | Connection string for Application Insights. |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1`
 - AzureRM provider `>= 4.38.1`
-- An existing Azure Resource Group 
+- Existing Resource Group
+
+

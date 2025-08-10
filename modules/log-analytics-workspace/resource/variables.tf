@@ -1,36 +1,50 @@
-variable "name" {
-  description = "(Required) Name of the Log Analytics workspace."
+variable "environment" {
   type        = string
-
-  validation {
-    condition     = length(var.name) > 0
-    error_message = "The 'name' must be a non-empty string."
-  }
+  description = "Environment project (dev, qua or prd)"
 }
 
-variable "resource_group_name" {
-  description = "(Required) Resource group in which to create the workspace."
+variable "service_prefix" {
   type        = string
+  description = "Prefix or name of the project"
 }
 
 variable "location" {
-  description = "(Required) Azure location where the workspace will be created, e.g. 'westeurope'."
   type        = string
+  description = "Specifies the supported Azure location where the resource exists."
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "The name of the Resource Group where the Log Analytics Workspace should exist."
+}
+
+variable "region_abbreviations" {
+  type        = map(string)
+  description = "Map of Azure locations to abbreviations. Recommended to pass from the shared modules/region-abbreviations module."
+}
+
+variable "sku" {
+  type        = string
+  default     = "PerGB2018"
+  description = "The SKU of the Log Analytics Workspace. Common values: PerGB2018, Free, Standalone, CapacityReservation."
 }
 
 variable "retention_in_days" {
-  description = "(Optional) Workspace data retention in days. Valid values are 30 to 730 for PerGB2018."
   type        = number
   default     = 30
+  description = "The workspace data retention in days. Valid values: 7 to 730."
+}
 
-  validation {
-    condition     = var.retention_in_days >= 30 && var.retention_in_days <= 730
-    error_message = "retention_in_days must be between 30 and 730 days (inclusive) for the PerGB2018 SKU."
-  }
+variable "daily_quota_gb" {
+  type        = number
+  default     = 0
+  description = "The daily cap on data ingestion in GB. 0 means unlimited."
 }
 
 variable "tags" {
-  description = "(Optional) Tags to apply to the workspace."
   type        = map(string)
   default     = {}
+  description = "Optional tags to add to resources."
 }
+
+

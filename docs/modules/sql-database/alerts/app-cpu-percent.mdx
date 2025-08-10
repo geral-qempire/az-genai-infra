@@ -1,0 +1,47 @@
+---
+title: 'App CPU %'
+description: 'An overview of metric, severity, inputs, outputs and usage.'
+icon: 'bell'
+---
+
+## 1. Alert
+CPU percent usage for app workload on a serverless SQL Database.
+
+- **Metric**: `app_cpu_percent`
+- **Namespace**: `Microsoft.Sql/servers/databases`
+- **Aggregation**: Average
+- **Operator**: GreaterThan
+- **Evaluation Frequency**: 1 minute (PT1M)
+- **Time Window**: 5 minutes (PT5M)
+- **Severity**: 2
+
+## 2. Usage
+```hcl main.tf
+module "sql_db_app_cpu_alert" {
+  source = "./modules/sql-database/alerts/AppCpuPercent"
+
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [module.sql_database.id]
+  # threshold = 80
+  description      = "SQL DB app CPU percent above 80% over 5 minutes"
+  enabled          = true
+  action_group_ids = []
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `name` | `string` | `null` | no | Name of the metric alert (defaults to `alrt-cpu-<resource-name>`). |
+| `resource_group_name` | `string` | n/a | yes | Resource group in which to create the alert. |
+| `scopes` | `list(string)` | n/a | yes | List of SQL Database resource IDs to monitor. |
+| `threshold` | `number` | `80` | no | CPU percent threshold. Fires when above this value. |
+| `description` | `string` | `null` | no | Custom description for the alert. Auto-generated if not provided. |
+| `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
+| `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `id` | Resource ID of the metric alert. |
+| `name` | Name of the metric alert. |

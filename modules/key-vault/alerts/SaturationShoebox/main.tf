@@ -1,5 +1,10 @@
+locals {
+  kv_resource_name = try(element(split("/", var.scopes[0]), length(split("/", var.scopes[0])) - 1), "resource")
+  default_name      = "alrt-sat-${local.kv_resource_name}"
+}
+
 resource "azurerm_monitor_metric_alert" "this" {
-  name                = var.name
+  name                = coalesce(var.name, local.default_name)
   resource_group_name = var.resource_group_name
   scopes              = var.scopes
 
@@ -8,8 +13,10 @@ resource "azurerm_monitor_metric_alert" "this" {
     "Alert when Key Vault SaturationShoebox (Average) over PT5M is above ${var.threshold}%."
   )
 
-  severity = 2
+  severity = 1
   enabled  = var.enabled
+
+  auto_mitigate = false
 
   frequency   = "PT1M"
   window_size = "PT5M"
@@ -28,4 +35,6 @@ resource "azurerm_monitor_metric_alert" "this" {
       action_group_id = action.value
     }
   }
-} 
+}
+
+
