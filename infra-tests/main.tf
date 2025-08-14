@@ -513,6 +513,8 @@ module "ai_hub" {
     type = "SystemAssigned"
   }
 
+  public_network_access = var.ai_hub_public_network_access
+
   enable_private_endpoint   = true
   dns_resource_group_name   = var.dns_resource_group_name
   subnet_id                 = data.azurerm_subnet.privates.id
@@ -538,4 +540,62 @@ module "ai_project" {
   tags = local.common_tags
 }
 
+
+
+# AI Foundry connection to AI Search - ensure this runs after all above resources
+resource "azapi_resource" "conn_aisearch" {
+  type                      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01"
+  name                      = module.ai_search.search_service_name
+  parent_id                 = module.ai_project.ai_project_id
+  schema_validation_enabled = false
+
+  depends_on = [
+    module.storage_account,
+    module.key_vault,
+    module.sql_server,
+    module.sql_database,
+    module.ai_search,
+    module.ai_services,
+    module.ai_hub,
+    module.ai_project,
+    module.log_analytics_workspace,
+    module.application_insights,
+    module.storage_availability_alert,
+    module.storage_success_server_latency_alert,
+    module.storage_used_capacity_alert,
+    module.kv_availability_alert,
+    module.kv_saturation_alert,
+    module.sql_db_availability_alert,
+    module.sql_db_storage_pct_alert,
+    module.sql_db_app_cpu_alert,
+    module.sql_db_app_memory_alert,
+    module.sql_db_sql_instance_cpu_alert,
+    module.sql_db_sql_instance_memory_alert,
+    module.search_latency_alert,
+    module.throttled_search_pct_alert,
+    module.ai_services_availability_alert,
+    module.ai_services_ttft_alert,
+    module.ai_services_ttlt_alert,
+    module.ai_services_tokens_alert,
+  ]
+
+  body = {
+    name = module.ai_search.search_service_name
+    properties = {
+      category = "CognitiveSearch"
+      target   = "https://${module.ai_search.search_service_name}.search.windows.net"
+      authType = "AAD"
+      metadata = {
+        ApiType    = "Azure"
+        ApiVersion = "2025-05-01-preview"
+        ResourceId = module.ai_search.search_service_id
+        location   = var.location
+      }
+    }
+  }
+
+  response_export_values = [
+    "identity.principalId"
+  ]
+}
 

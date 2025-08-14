@@ -17,7 +17,7 @@
             "group": "Modules",
             "pages": [
               {
-                "group": "Log Analytics Workspace",
+                "group": "Log Analytics",
                 "icon": "folder",
                 "pages": [
                   "modules/log-analytics-workspace/resource"
@@ -133,6 +133,25 @@
                 "icon": "folder",
                 "pages": [
                   "modules/ai-project/resource"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Utils",
+            "pages": [
+              {
+                "group": "Region Abbreviations",
+                "icon": "folder",
+                "pages": [
+                  "modules/region-abbreviations/resource"
+                ]
+              },
+              {
+                "group": "RBAC Map",
+                "icon": "folder",
+                "pages": [
+                  "modules/rbac-map/resource"
                 ]
               }
             ]

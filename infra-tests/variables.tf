@@ -325,4 +325,16 @@ variable "ai_model_deployment_names" {
 }
 
 
+# AI Hub settings
+variable "ai_hub_public_network_access" {
+  description = "Specifies whether Public Network Access is allowed for AI Hub (Enabled or Disabled)."
+  type        = string
+  default     = "Disabled"
+  validation {
+    condition     = contains(["Enabled", "Disabled"], var.ai_hub_public_network_access)
+    error_message = "Possible values are Enabled or Disabled."
+  }
+}
+
+
 

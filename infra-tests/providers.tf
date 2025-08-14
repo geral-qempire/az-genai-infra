@@ -9,6 +9,10 @@ provider "azurerm" {
   subscription_id = var.dns_subscription_id
 }
 
+provider "azapi" {
+  use_oidc = true
+}
+
 
 
 

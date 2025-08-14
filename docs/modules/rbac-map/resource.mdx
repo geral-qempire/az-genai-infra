@@ -1,0 +1,57 @@
+---
+title: 'Util'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'wrench'
+---
+
+## 1. Module
+Manage multiple Azure role assignments from a single `rbac` map input. Each entry creates an `azurerm_role_assignment` using the provided `principal_id`, `scope_id`, and either `role_definition_id` or `role_definition_name`.
+
+## 2. Usage
+```hcl
+module "rbac_map" {
+  source = "./modules/rbac-map/resource"
+
+  rbac = {
+    # Example using role_definition_id
+    engineer_reader = {
+      principal_id       = azuread_service_principal.engineer.object_id
+      scope_id           = azurerm_resource_group.rg.id
+      role_definition_id = "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" # Reader
+      # principal_type   = "ServicePrincipal"
+    }
+
+    # Example using role_definition_name
+    techlead_reader = {
+      principal_id         = azuread_service_principal.techlead.object_id
+      scope_id             = azurerm_resource_group.rg.id
+      role_definition_name = "Reader"
+    }
+  }
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `rbac` | `map` | n/a | yes | Map keyed by an id. Each object specifies the principal to assign, the scope, and the role by id or name. |
+
+### RBAC Map Object Properties
+| Property | Type | Default | Required | Description |
+|----------|------|---------|:--------:|-------------|
+| `principal_id` | `string` | n/a | yes | The ID of the principal (user, group, or service principal) to assign the role to. |
+| `scope_id` | `string` | n/a | yes | The scope at which the role assignment applies (e.g., subscription, resource group, or resource ID). |
+| `role_definition_id` | `string` | `null` | no | The ID of the role definition to assign. Use either this or `role_definition_name`. |
+| `role_definition_name` | `string` | `null` | no | The name of the role definition to assign. Use either this or `role_definition_id`. |
+| `principal_type` | `string` | `null` | no | The type of the principal (User, Group, or ServicePrincipal). |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `role_assignment_ids` | Map of role assignment resource IDs keyed by the RBAC map key. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1`
+- AzureRM provider `>= 4.38.1`
+
+

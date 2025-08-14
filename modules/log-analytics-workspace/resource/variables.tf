@@ -37,8 +37,8 @@ variable "retention_in_days" {
 
 variable "daily_quota_gb" {
   type        = number
-  default     = 0
-  description = "The daily cap on data ingestion in GB. 0 means unlimited."
+  default     = -1
+  description = "The daily cap on data ingestion in GB. -1 means unlimited."
 }
 
 variable "tags" {

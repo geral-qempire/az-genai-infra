@@ -1,5 +1,6 @@
 data "azurerm_private_dns_zone" "dns_zone" {
   provider            = azurerm.dns
+  count               = var.enable_private_endpoint ? 1 : 0
   name                = "privatelink.api.azureml.ms"
   resource_group_name = var.dns_resource_group_name
 }
@@ -22,6 +23,6 @@ resource "azurerm_private_endpoint" "this" {
 
   private_dns_zone_group {
     name                 = "default"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.dns_zone.id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.dns_zone[0].id]
   }
 }
