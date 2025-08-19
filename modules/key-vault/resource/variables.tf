@@ -23,6 +23,11 @@ variable "region_abbreviations" {
   description = "Map of Azure locations to abbreviations. Recommended to pass from the shared modules/region-abbreviations module."
 }
 
+variable "tenant_id" {
+  type        = string
+  description = "Azure Entra tenant ID to associate with the Key Vault."
+}
+
 ### Key Vault Settings
 
 variable "sku_name" {

@@ -46,11 +46,13 @@ variable "tags" {
 variable "aad_group_genai_engineer_object_id" {
   description = "Object ID of the AAD group for GenAI Engineers"
   type        = string
+  default     = null
 }
 
 variable "aad_group_genai_techlead_object_id" {
   description = "Object ID of the AAD group for GenAI Tech Leads"
   type        = string
+  default     = null
 }
 
  

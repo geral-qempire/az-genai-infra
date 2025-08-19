@@ -15,6 +15,7 @@ module "key_vault" {
   resource_group_name  = "rg-security-dev"
   location             = "westeurope"
   region_abbreviations = module.region_abbreviations.regions
+  tenant_id            = "00000000-0000-0000-0000-000000000000"
 
   sku_name                      = "standard"
   soft_delete_retention_days    = 90
@@ -43,6 +44,7 @@ module "key_vault" {
 | `location` | `string` | n/a | yes | Azure region. |
 | `resource_group_name` | `string` | n/a | yes | Resource group in which to create the Key Vault. |
 | `region_abbreviations` | `map(string)` | n/a | yes | Map of Azure locations to abbreviations. |
+| `tenant_id` | `string` | n/a | yes | Azure Tenant ID. |
 | `sku_name` | `string` | `"standard"` | no | Key Vault SKU (`standard` or `premium`). |
 | `soft_delete_retention_days` | `number` | `90` | no | Soft delete retention in days. |
 | `purge_protection_enabled` | `bool` | `true` | no | Enable purge protection. |

@@ -7,16 +7,10 @@ terraform {
       version = ">= 4.38.1"
     }
     azapi = {
-      source  = "azure/azapi"
-      version = ">= 2.1.0"
-    }
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = ">= 2.52.0"
+      source  = "Azure/azapi"
+      version = ">= 2.2.0"
     }
   }
 }
-
-
 
 

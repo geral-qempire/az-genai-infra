@@ -141,3 +141,16 @@ variable "identity" {
 }
 
 
+variable "network_rules_bypass" {
+  type        = list(string)
+  default     = ["AzureServices"]
+  description = "List of services which bypass the network rules. Common values include AzureServices, Logging, Metrics, None."
+}
+
+variable "network_rules_default_action" {
+  type        = string
+  default     = "Deny"
+  description = "The default action for network rules. Possible values are Allow or Deny."
+}
+
+

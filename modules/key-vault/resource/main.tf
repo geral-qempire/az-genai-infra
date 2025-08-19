@@ -4,13 +4,11 @@
  * Azure Key Vault safeguards cryptographic keys and secrets used by cloud applications and services.
  */
 
-data "azurerm_client_config" "current" {}
-
 resource "azurerm_key_vault" "this" {
   name                        = lower("kv-${lookup(var.region_abbreviations, var.location, false)}-${var.service_prefix}-${var.environment}")
   resource_group_name         = var.resource_group_name
   location                    = var.location
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  tenant_id                   = var.tenant_id
   sku_name                    = var.sku_name
   soft_delete_retention_days  = var.soft_delete_retention_days
   purge_protection_enabled    = var.purge_protection_enabled

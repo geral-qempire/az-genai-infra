@@ -7,3 +7,9 @@ output "search_service_name" {
   value       = azurerm_search_service.this.name
   description = "The Name of the Search Service."
 }
+
+output "search_service_primary_key" {
+  value       = azurerm_search_service.this.primary_key
+  description = "Primary admin key for the Search Service."
+  sensitive   = true
+}

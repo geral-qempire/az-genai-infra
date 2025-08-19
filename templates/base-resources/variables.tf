@@ -49,8 +49,9 @@ variable "tags" {
   default     = {}
 }
 
+
 variable "log_analytics_workspace_name" {
-  description = "Name of an existing Log Analytics Workspace."
+  description = "Name of an existing Log Analytics Workspace to link to Application Insights."
   type        = string
 }
 
@@ -58,4 +59,5 @@ variable "log_analytics_workspace_resource_group_name" {
   description = "Resource Group name where the existing Log Analytics Workspace resides."
   type        = string
 }
+
 

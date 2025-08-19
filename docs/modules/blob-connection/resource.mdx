@@ -1,0 +1,49 @@
+---
+title: 'Storage Account - Blob'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'link'
+---
+
+## 1. Module
+Terraform module to create an Azure Blob connection under an Azure AI Project (workspace).
+
+## 2. Usage
+```hcl main.tf
+module "storage" {
+  source = "./modules/storage-account/resource"
+  # ...
+}
+
+module "ai_project" {
+  source = "./modules/ai-project/resource"
+  # ...
+}
+
+module "blob_connection" {
+  source = "./modules/blob-connection/resource"
+
+  ai_project_id          = module.ai_project.ai_project_id
+  storage_account_module = module.storage
+  container_name         = "data"
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `ai_project_id` | `string` | n/a | yes | Resource ID of the target AI Project (workspace). |
+| `storage_account_module` | `object` | n/a | yes | Pass `module.storage` directly (from `modules/storage-account/resource`). |
+| `container_name` | `string` | n/a | yes | Blob container name to connect. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `connection_id` | Resource ID of the created connection. |
+| `connection_name` | Name of the created connection. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1`
+- AzureRM provider `>= 4.38.1`
+- AzAPI provider `>= 2.2.0`
+
+

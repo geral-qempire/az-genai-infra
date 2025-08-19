@@ -10,7 +10,12 @@ resource "azurerm_search_service" "this" {
   location                      = var.location
   sku                           = var.sku
   hosting_mode                  = var.hosting_mode
-  local_authentication_enabled  = var.local_authentication_enabled
+  local_authentication_enabled  = (
+    var.api_access == "API" || var.api_access == "Both"
+  )
+  authentication_failure_mode   = (
+    var.api_access == "Both" ? "http403" : null
+  )
   public_network_access_enabled = var.public_network_access_enabled
   partition_count               = var.sku != "free" ? var.partition_count : null
   replica_count                 = var.sku != "free" ? var.replica_count : null

@@ -18,6 +18,11 @@ resource "azurerm_storage_account" "this" {
   infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
   tags                              = var.tags
 
+  network_rules {
+    default_action = var.network_rules_default_action
+    bypass         = var.network_rules_bypass
+  }
+
   identity {
     type         = var.identity.type
     identity_ids = var.identity.identity_ids

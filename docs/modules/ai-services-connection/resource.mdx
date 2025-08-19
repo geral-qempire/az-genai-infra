@@ -1,0 +1,47 @@
+---
+title: 'AI Services'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'link'
+---
+
+## 1. Module
+Terraform module to create an Azure AI Services connection under an Azure AI Project (workspace).
+
+## 2. Usage
+```hcl main.tf
+module "ai_services" {
+  source = "./modules/ai-services/resource"
+  # ...
+}
+
+module "ai_project" {
+  source = "./modules/ai-project/resource"
+  # ...
+}
+
+module "ai_services_connection" {
+  source = "./modules/ai-services-connection/resource"
+
+  ai_project_id      = module.ai_project.ai_project_id
+  ai_services_module = module.ai_services
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `ai_project_id` | `string` | n/a | yes | Resource ID of the target AI Project (workspace). |
+| `ai_services_module` | `object` | `null` | yes | Pass `module.ai_services` directly (from `modules/ai-services/resource`). |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `connection_id` | Resource ID of the created connection. |
+| `connection_name` | Name of the created connection. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1`
+- AzureRM provider `>= 4.38.1`
+- AzAPI provider `>= 2.2.0`
+
+

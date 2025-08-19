@@ -1,5 +1,4 @@
 provider "azurerm" {
-  subscription_id = var.infra_subscription_id
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
@@ -8,14 +7,17 @@ provider "azurerm" {
       disable_generated_rule = true
     }
   }
+  subscription_id = var.infra_subscription_id
 }
-
 
 provider "azurerm" {
   alias           = "dns"
-  features        {}
   subscription_id = var.dns_subscription_id
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
-## azapi uses the default configuration; no explicit provider block needed
 

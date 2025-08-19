@@ -92,6 +92,16 @@ variable "local_authentication_enabled" {
   description = "Specifies whether the Search Service allows authenticating using API Keys?"
 }
 
+variable "api_access" {
+  type        = string
+  default     = "RBAC"
+  description = "Controls how the Search service is accessed: RBAC (Azure AD only), API (API keys), or Both (Azure AD + API keys). Possible values: RBAC, API, Both."
+  validation {
+    condition     = contains(["RBAC", "API", "Both"], var.api_access)
+    error_message = "api_access must be one of: RBAC, API, Both."
+  }
+}
+
 variable "public_network_access_enabled" {
   type        = bool
   default     = false

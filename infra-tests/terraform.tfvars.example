@@ -1,0 +1,22 @@
+infra_subscription_id = "00000000-0000-0000-0000-000000000000"
+dns_subscription_id   = "00000000-0000-0000-0000-000000000000"
+
+environment    = "dev"
+service_prefix = "demo"
+location       = "westeurope"
+
+# Private DNS zones resource group (existing)
+dns_resource_group_name = "rg-networking-dns"
+
+# Subnet ID for Private Endpoints (existing)
+privates_subnet_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-networking/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/snet-privates"
+
+# Existing Log Analytics Workspace to attach to App Insights
+log_analytics_workspace_name = "law-shared"
+log_analytics_workspace_resource_group_name = "rg-platform-ops"
+
+tags = {
+  owner = "you@example.com"
+}
+
+
