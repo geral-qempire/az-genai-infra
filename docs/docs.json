@@ -39,6 +39,14 @@
                   "modules/ai-project/README",
                   "modules/ai-project/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Search Hub Connection",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-search-hub-connection/README",
+                  "modules/ai-search-hub-connection/CHANGELOG"
+                ]
               }
             ]
           },

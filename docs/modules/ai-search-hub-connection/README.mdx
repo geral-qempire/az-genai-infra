@@ -1,0 +1,48 @@
+---
+title: 'Readme'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
+## 1. Module
+Create an Azure Machine Learning workspace connection to Azure AI Search (Cognitive Search) under an existing AI Project (workspace).
+
+## 2. Usage
+```hcl main.tf
+module "ai_search_service" {
+  source = "../ai-search-service"
+  # ...
+}
+
+module "ai_project" {
+  source = "../ai-project"
+  # ...
+}
+
+module "ai_search_connection" {
+  source = "../ai-search-hub-connection"
+
+  parent_id                = module.ai_project.ai_project_id
+  ai_search_service_module = module.ai_search_service
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Project workspace). |
+| `ai_search_service_module` | `object({ search_service_id = string, search_service_name = string, search_service_primary_key = string })` | n/a | yes | Pass `module.ai_search_service` directly. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `connection_id` | The resource ID of the created connection. |
+| `connection_name` | The name of the created connection. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- AzAPI provider `~> 2.2.0`
+- Random provider `~> 3.6`
+
+
