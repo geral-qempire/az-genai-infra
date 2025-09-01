@@ -1,5 +1,11 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'server'
+---
+
 ## 1. Module
-Terraform module to create an Azure AI Hub Project under an existing AI Hub.
+Create an Azure AI Hub Project (Azure AI Foundry Project) under an existing AI Hub.
 
 ## 2. Usage
 ```hcl
@@ -12,17 +18,18 @@ module "ai_project" {
 
   environment          = "dev"
   service_prefix       = "acme"
-  resource_group_name  = "rg-ignored-for-project" # Project derives RG from Hub; keep for consistency
+  resource_group_name  = "rg-ignored-for-project" # Project derives RG from Hub; kept for consistency
   location             = "westeurope"
   region_abbreviations = module.region_abbreviations.regions
 
-  hub_id = module.ai_hub.id
+  hub_id = module.ai_hub.ai_hub_id
 
   # Optional friendly name
   # friendly_name = "Acme GenAI Project"
 
   identity = {
     type = "SystemAssigned"
+    # identity_ids = [azurerm_user_assigned_identity.uai.id] # when using UserAssigned
   }
 
   tags = {
@@ -49,10 +56,10 @@ module "ai_project" {
 |------|-------------|
 | `ai_project_id` | Resource ID of the AI Project. |
 | `ai_project_name` | Name of the AI Project. |
+| `managed_identity_principal_id` | Principal ID of the system-assigned managed identity. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
-- Existing AI Hub
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 
 
