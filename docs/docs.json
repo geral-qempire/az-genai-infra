@@ -71,6 +71,14 @@
                   "modules/ai-search-thrpct/README",
                   "modules/ai-search-thrpct/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Services",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services/README",
+                  "modules/ai-services/CHANGELOG"
+                ]
               }
             ]
           },
