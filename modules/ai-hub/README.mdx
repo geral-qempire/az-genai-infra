@@ -1,5 +1,11 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'server'
+---
+
 ## 1. Module
-Terraform module to create an Azure AI Hub (Azure AI Foundry Hub) with optional managed network and identity.
+Create an Azure AI Hub (Azure AI Foundry Hub) with optional managed network, identity, and Private Endpoint.
 
 ## 2. Usage
 ```hcl
@@ -20,11 +26,12 @@ module "ai_hub" {
   key_vault_id            = azurerm_key_vault.kv.id
   application_insights_id = "" # or azurerm_application_insights.appi.id
 
-  public_network_access = "Disabled"
-  managed_network       = "" # Disabled | AllowInternetOutbound | AllowOnlyApprovedOutbound
+  public_network_access = "Disabled" # Enabled | Disabled
+  managed_network       = ""          # Disabled | AllowInternetOutbound | AllowOnlyApprovedOutbound
 
   identity = {
     type = "SystemAssigned"
+    # identity_ids = [azurerm_user_assigned_identity.uai.id] # when using UserAssigned
   }
 
   # Private Endpoint (optional)
@@ -56,10 +63,10 @@ module "ai_hub" {
 | `managed_network` | `string` | `""` | no | Managed network isolation mode (Disabled, AllowInternetOutbound, AllowOnlyApprovedOutbound). |
 | `identity` | `object` | `{ type = "SystemAssigned" }` | no | Managed identity configuration. |
 | `tags` | `map(string)` | `{}` | no | Optional tags. |
-| `enable_private_endpoint` | `bool` | `true` | no | Create a private endpoint to resource |
-| `dns_resource_group_name` | `string` | `""` | no | DNS zone for the private endpoint. |
+| `enable_private_endpoint` | `bool` | `true` | no | Create a private endpoint to resource. |
+| `dns_resource_group_name` | `string` | `""` | no | DNS zone resource group for the private endpoint. |
 | `subnet_id` | `string` | `""` | no | Subnet ID for the private endpoint. |
-| `private_endpoint_location` | `string` | `""` | no | Location to deploy the Private Endpoint. If empty, falls back to module location. |
+| `private_endpoint_location` | `string` | `""` | no | Location to deploy the Private Endpoint; falls back to module location when empty. |
 
 ## 4. Outputs
 | Name | Description |
@@ -67,7 +74,10 @@ module "ai_hub" {
 | `ai_hub_id` | The ID of the AI Hub resource. |
 | `ai_hub_name` | The Name of the AI Hub resource. |
 | `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
+| `managed_identity_principal_id` | Principal ID of the system-assigned managed identity. |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
+
+
