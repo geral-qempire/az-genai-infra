@@ -103,6 +103,14 @@
                   "modules/ai-services-tok/README",
                   "modules/ai-services-tok/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Services TTFT",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services-ttft/README",
+                  "modules/ai-services-ttft/CHANGELOG"
+                ]
               }
             ]
           },
