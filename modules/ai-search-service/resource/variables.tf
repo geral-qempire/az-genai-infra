@@ -108,6 +108,17 @@ variable "public_network_access_enabled" {
   description = "pecifies whether Public Network Access is allowed for this resource."
 }
 
+variable "network_rule_bypass_option" {
+  type        = string
+  default     = "None"
+  description = "Specifies which traffic can bypass network rules for AI Search. Allowed values: None, AzureServices."
+
+  validation {
+    condition     = contains(["None", "AzureServices"], var.network_rule_bypass_option)
+    error_message = "Allowed values for network_rule_bypass_option are None or AzureServices."
+  }
+}
+
 variable "enable_private_endpoint" {
   type        = bool
   default     = true

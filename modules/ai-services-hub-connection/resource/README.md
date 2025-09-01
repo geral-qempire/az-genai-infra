@@ -18,7 +18,7 @@ module "ai_project" {
 module "ai_services_connection" {
   source = "../ai-services-hub-connection/resource"
 
-  ai_project_id      = module.ai_project.ai_project_id
+  parent_id          = module.ai_project.ai_project_id
   ai_services_module = module.ai_services
 }
 ```
@@ -26,7 +26,7 @@ module "ai_services_connection" {
 ## 3. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
-| `ai_project_id` | `string` | n/a | yes | Resource ID of the target AI Project. |
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Project workspace). |
 | `ai_services_module` | `object` | `null` | no | Pass `module.ai_services` directly. |
 |  |  |  |  |  |
 

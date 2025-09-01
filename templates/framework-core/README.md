@@ -1,0 +1,345 @@
+---
+title: 'Template'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'puzzle'
+---
+
+## 1. Template
+
+Provision a secure core framework for GenAI workloads with private networking, alarmistic and RBAC for User groups, Managed identities and Service Principals.
+
+## 2. Usage
+```hcl
+module "framework-core" {
+  source = "../../../templates/framework-core"
+
+  providers = {
+    azurerm     = azurerm
+    azurerm.dns = azurerm.dns
+  }
+
+  # Context
+  service_prefix = var.service_prefix
+  location       = var.location
+  tenant_id      = var.tenant_id
+  environment    = var.environment
+  tags           = var.tags
+
+  # Networking for Private Endpoints
+  subnet_name              = var.subnet_name
+  vnet_name                = var.vnet_name
+  vnet_resource_group_name = var.vnet_resource_group_name
+  dns_resource_group_name  = var.dns_resource_group_name
+
+  # Observability
+  log_analytics_workspace_name                = var.log_analytics_workspace_name
+  log_analytics_workspace_resource_group_name = var.log_analytics_workspace_resource_group_name
+
+  # SQL Server (required)
+  serial_number                = var.serial_number
+  administrator_login          = var.administrator_login
+  administrator_login_password = var.administrator_login_password
+  entra_admin_login_name       = var.entra_admin_login_name
+  entra_admin_object_id        = var.entra_admin_object_id
+
+  # SQL Database
+  sql_database_name                        = var.sql_database_name
+  sql_database_sku_name                    = var.sql_database_sku_name
+  sql_database_min_capacity                = var.sql_database_min_capacity
+  sql_database_auto_pause_delay_in_minutes = var.sql_database_auto_pause_delay_in_minutes
+  sql_database_zone_redundant              = var.sql_database_zone_redundant
+  sql_database_backup_interval_in_hours    = var.sql_database_backup_interval_in_hours
+  sql_database_pitr_days                   = var.sql_database_pitr_days
+  sql_database_weekly_ltr_weeks            = var.sql_database_weekly_ltr_weeks
+  sql_database_monthly_ltr_months          = var.sql_database_monthly_ltr_months
+  sql_database_yearly_ltr_years            = var.sql_database_yearly_ltr_years
+
+  # Storage Account
+  storage_account_account_tier             = var.storage_account_account_tier
+  storage_account_account_replication_type = var.storage_account_account_replication_type
+  storage_account_account_kind             = var.storage_account_account_kind
+  storage_account_access_tier              = var.storage_account_access_tier
+
+  # Key Vault
+  key_vault_sku_name                   = var.key_vault_sku_name
+  key_vault_soft_delete_retention_days = var.key_vault_soft_delete_retention_days
+  key_vault_purge_protection_enabled   = var.key_vault_purge_protection_enabled
+
+  # AI Search
+  ai_search_sku                 = var.ai_search_sku
+  ai_search_semantic_search_sku = var.ai_search_semantic_search_sku
+  ai_search_replica_count       = var.ai_search_replica_count
+  ai_search_partition_count     = var.ai_search_partition_count
+
+  # AI Services
+  ai_services_sku_name                   = var.ai_services_sku_name
+  ai_services_soft_delete_retention_days = var.ai_services_soft_delete_retention_days
+  ai_services_purge_protection_enabled   = var.ai_services_purge_protection_enabled
+  ai_services_model_deployment_names     = var.ai_services_model_deployment_names
+
+  # Alerts toggles - SQL Database
+  sql_db_alert_availability_enabled            = var.sql_db_alert_availability_enabled
+  sql_db_alert_app_cpu_percent_enabled         = var.sql_db_alert_app_cpu_percent_enabled
+  sql_db_alert_app_memory_percent_enabled      = var.sql_db_alert_app_memory_percent_enabled
+  sql_db_alert_instance_cpu_percent_enabled    = var.sql_db_alert_instance_cpu_percent_enabled
+  sql_db_alert_instance_memory_percent_enabled = var.sql_db_alert_instance_memory_percent_enabled
+  sql_db_alert_storage_percent_enabled         = var.sql_db_alert_storage_percent_enabled
+
+  # Alerts toggles - Storage Account
+  storage_alert_availability_enabled           = var.storage_alert_availability_enabled
+  storage_alert_success_server_latency_enabled = var.storage_alert_success_server_latency_enabled
+  storage_alert_used_capacity_enabled          = var.storage_alert_used_capacity_enabled
+
+  # Alerts toggles - Key Vault
+  key_vault_alert_availability_enabled       = var.key_vault_alert_availability_enabled
+  key_vault_alert_saturation_shoebox_enabled = var.key_vault_alert_saturation_shoebox_enabled
+
+  # Alerts toggles - AI Search
+  ai_search_alert_search_latency_enabled = var.ai_search_alert_search_latency_enabled
+  ai_search_alert_throttled_pct_enabled  = var.ai_search_alert_throttled_pct_enabled
+
+  # Alerts toggles - AI Services
+  ai_services_alert_availability_rate_enabled = var.ai_services_alert_availability_rate_enabled
+  ai_services_alert_normalized_ttft_enabled   = var.ai_services_alert_normalized_ttft_enabled
+  ai_services_alert_ttlt_enabled              = var.ai_services_alert_ttlt_enabled
+  ai_services_alert_processed_tokens_enabled  = var.ai_services_alert_processed_tokens_enabled
+
+  # RBAC - AD Groups (optional)
+  ad_read_group_id = var.ad_read_group_id
+  ad_full_group_id = var.ad_full_group_id
+
+  # RBAC - Service Principals (optional)
+  sp_cicd_id = var.sp_cicd_id
+  sp_app_id  = var.sp_app_id
+
+  # Alerts - Action Group
+  action_group_emails = var.action_group_emails
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `service_prefix` | `string` | n/a | yes | Prefix or name of the project. |
+| `location` | `string` | n/a | yes | Azure region for the deployment. |
+| `tenant_id` | `string` | n/a | yes | Azure tenant ID. |
+| `subnet_name` | `string` | n/a | yes | Subnet name for private endpoints. |
+| `vnet_name` | `string` | n/a | yes | Virtual network name containing the subnet. |
+| `vnet_resource_group_name` | `string` | n/a | yes | Resource group name that contains the VNet. |
+| `dns_resource_group_name` | `string` | n/a | yes | Resource group with Private DNS zones and VNet/subnet. |
+| `log_analytics_workspace_name` | `string` | n/a | yes | Existing Log Analytics Workspace name. |
+| `log_analytics_workspace_resource_group_name` | `string` | n/a | yes | Resource group of the existing Log Analytics Workspace. |
+| `environment` | `string` | `"dev"` | no | Environment label used by modules and naming. |
+| `serial_number` | `string` | n/a | yes | Serial suffix for the SQL Server name. |
+| `administrator_login` | `string` | n/a | yes | SQL administrator login for the server. |
+| `administrator_login_password` | `string` | n/a | yes | SQL administrator password for the server. |
+| `entra_admin_object_id` | `string` | n/a | yes | Object ID (User/Group/SP) for Microsoft Entra administrator. |
+| `entra_admin_login_name` | `string` | n/a | yes | Display name (or UPN) of the Entra admin group/user. |
+| `sql_database_name` | `string` | n/a | yes | SQL Database name. |
+| `sql_database_sku_name` | `string` | `"S0"` | no | SQL Database SKU (e.g., GP_S_Gen5_2, S0, P1). |
+| `sql_database_min_capacity` | `number` | `null` | no | Minimum capacity for serverless SKUs. Null to omit. |
+| `sql_database_auto_pause_delay_in_minutes` | `number` | `null` | no | Auto-pause delay (minutes) for Serverless SQL Database SKUs. Null to omit. |
+| `sql_database_zone_redundant` | `bool` | `false` | no | Enable zone redundancy for SQL Database. |
+| `sql_database_backup_interval_in_hours` | `number` | `0` | no | Differential backup interval (0 to omit). |
+| `sql_database_pitr_days` | `number` | `7` | no | Point-in-time restore retention days (PITR). |
+| `sql_database_weekly_ltr_weeks` | `number` | `0` | no | Weekly LTR retention (weeks). 0 to disable. |
+| `sql_database_monthly_ltr_months` | `number` | `0` | no | Monthly LTR retention (months). 0 to disable. |
+| `sql_database_yearly_ltr_years` | `number` | `0` | no | Yearly LTR retention (years). 0 to disable. |
+| `sql_db_alert_availability_enabled` | `bool` | `false` | no | Enable SQL Database Availability alert. |
+| `sql_db_alert_app_cpu_percent_enabled` | `bool` | `false` | no | Enable SQL Database App CPU Percent alert. |
+| `sql_db_alert_app_memory_percent_enabled` | `bool` | `false` | no | Enable SQL Database App Memory Percent alert. |
+| `sql_db_alert_instance_cpu_percent_enabled` | `bool` | `false` | no | Enable SQL Database Instance CPU Percent alert. |
+| `sql_db_alert_instance_memory_percent_enabled` | `bool` | `false` | no | Enable SQL Database Instance Memory Percent alert. |
+| `sql_db_alert_storage_percent_enabled` | `bool` | `false` | no | Enable SQL Database Storage Percent alert. |
+| `tags` | `map(string)` | `{}` | no | Tags applied to resources created by this template. |
+| `storage_account_account_tier` | `string` | `"Standard"` | no | Storage Account tier (Standard or Premium). |
+| `storage_account_account_replication_type` | `string` | `"LRS"` | no | Replication type (LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS). |
+| `storage_account_account_kind` | `string` | `"StorageV2"` | no | Account kind (Storage, StorageV2, BlobStorage). |
+| `storage_account_access_tier` | `string` | `"Hot"` | no | Blob access tier (Hot or Cool). |
+| `key_vault_sku_name` | `string` | `"standard"` | no | Key Vault SKU (standard or premium). |
+| `key_vault_soft_delete_retention_days` | `number` | `90` | no | Soft delete retention in days. |
+| `key_vault_purge_protection_enabled` | `bool` | `true` | no | Enable purge protection on the Key Vault. |
+| `ai_search_sku` | `string` | `"basic"` | no | Search Service SKU (basic, standard, standard2, standard3, storage_optimized_l1/l2). |
+| `ai_search_semantic_search_sku` | `string` | `"free"` | no | Semantic search SKU (free or standard). |
+| `ai_search_replica_count` | `number` | `0` | no | Number of replicas (ignored for free SKU). |
+| `ai_search_partition_count` | `number` | `1` | no | Number of partitions (not allowed for free SKU). |
+| `ai_search_alert_search_latency_enabled` | `bool` | `false` | no | Enable AI Search SearchLatency alert. |
+| `ai_search_alert_throttled_pct_enabled` | `bool` | `false` | no | Enable AI Search ThrottledSearchQueriesPercentage alert. |
+| `ai_services_sku_name` | `string` | `"S0"` | no | AI Services SKU name. |
+| `ai_services_soft_delete_retention_days` | `number` | `0` | no | Not applicable to AI Services (reserved for Key Vault parity). |
+| `ai_services_purge_protection_enabled` | `bool` | `false` | no | Not applicable to AI Services (reserved for Key Vault parity). |
+| `ai_services_model_deployment_names` | `list(string)` | n/a | yes | Azure OpenAI model deployment names used by AI Services alerts. |
+| `ai_services_alert_availability_rate_enabled` | `bool` | `false` | no | Enable AzureOpenAIAvailabilityRate alert. |
+| `key_vault_alert_availability_enabled` | `bool` | `false` | no | Enable Key Vault Availability alert. |
+| `key_vault_alert_saturation_shoebox_enabled` | `bool` | `false` | no | Enable Key Vault SaturationShoebox alert. |
+| `storage_alert_availability_enabled` | `bool` | `false` | no | Enable Storage Account Availability alert. |
+| `storage_alert_success_server_latency_enabled` | `bool` | `false` | no | Enable Storage Account SuccessServerLatency alert. |
+| `storage_alert_used_capacity_enabled` | `bool` | `false` | no | Enable Storage Account UsedCapacity alert. |
+| `ai_services_alert_normalized_ttft_enabled` | `bool` | `false` | no | Enable AzureOpenAINormalizedTTFTInMS alert. |
+| `ai_services_alert_ttlt_enabled` | `bool` | `false` | no | Enable AzureOpenAITTLTInMS alert. |
+| `ai_services_alert_processed_tokens_enabled` | `bool` | `false` | no | Enable ProcessedInferenceTokens alert. |
+| `ad_read_group_id` | `string` | `null` | no | Object ID of the Entra ID group to grant read-level roles. |
+| `ad_full_group_id` | `string` | `null` | no | Object ID of the Entra ID group to grant full-level roles. |
+| `sp_cicd_id` | `string` | `null` | no | Object ID of the CI/CD service principal. |
+| `sp_app_id` | `string` | `null` | no | Object ID of the application service principal. |
+| `action_group_emails` | `list(string)` | `[]` | no | List of email addresses for the action group. If empty, no action group is created. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `location` | Azure region where resources are deployed. |
+| `tags` | Tags applied to all resources created by this template. |
+| `resource_group_id` | Resource Group ID. |
+| `resource_group_name` | Resource Group name. |
+| `private_endpoints_subnet_id` | Subnet ID used for Private Endpoints. |
+| `log_analytics_workspace_id` | Log Analytics Workspace ID linked to Application Insights. |
+| `log_analytics_workspace_name` | Log Analytics Workspace name. |
+| `application_insights_id` | Application Insights ID. |
+| `application_insights_name` | Application Insights name. |
+| `application_insights_connection_string` | Application Insights connection string. |
+| `application_insights_instrumentation_key` | Application Insights instrumentation key (classic ingestion). |
+| `application_insights_app_id` | Application Insights App ID. |
+| `sql_server_id` | SQL Server (logical server) ID. |
+| `sql_server_name` | SQL Server name. |
+| `sql_server_fqdn` | SQL Server fully qualified domain name. |
+| `sql_server_principal_id` | SQL Server managed identity principal ID (if enabled). |
+| `sql_server_private_endpoint_id` | SQL Server Private Endpoint ID (if created). |
+| `sql_database_id` | SQL Database ID. |
+| `sql_database_name` | SQL Database name. |
+| `sql_database_identity_ids` | User Assigned Identity IDs attached to the SQL Database (if any). |
+| `sql_database_auto_pause_delay_in_minutes` | SQL Database auto-pause delay in minutes (null if not set). |
+| `key_vault_id` | Key Vault ID. |
+| `key_vault_name` | Key Vault name. |
+| `key_vault_uri` | Key Vault URI. |
+| `key_vault_private_endpoint_id` | Key Vault Private Endpoint ID (if created). |
+| `storage_account_id` | Storage Account ID. |
+| `storage_account_name` | Storage Account name. |
+| `storage_account_primary_blob_endpoint` | Storage Account primary Blob endpoint. |
+| `ai_search_service_id` | AI Search Service ID. |
+| `ai_search_service_name` | AI Search Service name. |
+| `ai_search_service_managed_identity_principal_id` | AI Search Service managed identity principal ID (if enabled). |
+| `ai_search_service_private_endpoint_id` | AI Search Service Private Endpoint ID (if created). |
+| `ai_services_id` | AI Services ID. |
+| `ai_services_name` | AI Services name. |
+| `ai_services_managed_identity_principal_id` | AI Services managed identity principal ID (if enabled). |
+| `ai_services_private_endpoint_id` | AI Services Private Endpoint ID (if created). |
+| `ai_hub_id` | AI Hub ID. |
+| `ai_hub_name` | AI Hub name. |
+| `ai_hub_managed_identity_principal_id` | AI Hub managed identity principal ID (if enabled). |
+| `ai_hub_private_endpoint_id` | AI Hub Private Endpoint ID (if created). |
+| `ai_services_hub_connection_id` | AI Hub connection ID for AI Services (if created). |
+| `ai_services_hub_connection_name` | AI Hub connection name for AI Services (if created). |
+| `ai_search_hub_connection_id` | AI Hub connection ID for AI Search (if created). |
+| `ai_search_hub_connection_name` | AI Hub connection name for AI Search (if created). |
+| `api_key_hub_connection_id` | AI Hub API key connection ID (if created). |
+| `api_key_hub_connection_name` | AI Hub API key connection name (if created). |
+| `role_assignments_groups` | Map of role assignment IDs created for AD Groups, keyed by assignment alias. |
+| `role_assignments_managed_identities` | Map of role assignment IDs created for Managed Identities, keyed by assignment alias. |
+| `role_assignments_service_principals` | Map of role assignment IDs created for Service Principals, keyed by assignment alias. |
+| `action_group_id` | Resource ID of the action group created by this template (if any). |
+| `action_group_name` | Name of the action group created by this template (if any). |
+
+## 5. Group Roles
+
+### Read Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | Application Insights |
+| Reader | SQL Server |
+| Reader | SQL Database |
+| Reader | Key Vault |
+| Reader | Storage Account |
+| Storage Blob Data Reader | Storage Account |
+| Reader | AI Search Service |
+| Search Index Data Reader | AI Search Service |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI User | AI Services |
+| Reader | AI Hub |
+| Reader | AI Project |
+
+### Full Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | Application Insights |
+| Reader | SQL Server |
+| Reader | SQL Database |
+| Reader | Key Vault |
+| Reader | Storage Account |
+| Storage Blob Data Contributor | Storage Account |
+| Reader | AI Search Service |
+| Search Service Contributor | AI Search Service |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI Contributor | AI Services |
+| Reader | AI Hub |
+| Reader | AI Project |
+| BDSO Azure AI Developer | AI Project |
+
+## 6. Managed Identity roles
+The following roles are given to the resources Managed Identities.
+
+| Managed Identity | Role | Resource |
+| --- | --- | --- |
+| AI Services MI | Search Index Data Contributor | AI Search Service |
+| AI Services MI | Search Index Data Reader | AI Search Service |
+| AI Services MI | Search Service Contributor | AI Search Service |
+| AI Search MI | Cognitive Services Contributor | AI Services |
+| AI Search MI | Cognitive Services OpenAI Contributor | AI Services |
+| AI Search MI | Storage Blob Data Contributor | Storage Account |
+| AI Project MI | Reader | Storage Account (Blob Private Endpoint) |
+| AI Project MI | Reader | Storage Account (File Private Endpoint) |
+| AI Hub MI | Contributor | Resource Group |
+
+## 7. Service principal roles
+The service principal roles are divided into two: CI/CD Sercice principals and App Service Principals.
+
+### CI/CD Service Principal
+
+| Role | Scope |
+| --- | --- |
+| Search Service Contributor | AI Search Service |
+| Reader | AI Search Service |
+| Storage Blob Data Contributor | Storage Account |
+| Reader | Storage Account |
+
+### App Service Principal
+
+| Role | Scope |
+| --- | --- |
+| Search Index Data Contributor | AI Search Service |
+| Reader | AI Search Service |
+| Storage Blob Data Reader | Storage Account |
+| Reader | Storage Account |
+| Cognitive Services OpenAI User | AI Services |
+
+## 8. Requirements
+
+- Terraform: >= 1.12.1, < 2.0.0
+- Provider azurerm: ~> 4.38 (with alias `azurerm.dns` configured)
+
+### Used Modules
+
+| Module | Description | Version |
+| --- | --- | --- |
+| `modules/region-abbreviations` | Region codes used for naming. | vX.Y.Z |
+| `modules/application-insights/resource` | Application Insights linked to LAW. | vX.Y.Z |
+| `modules/sql-server/resource` | Azure SQL logical server with PE. | vX.Y.Z |
+| `modules/sql-database/resource` | Azure SQL Database with backup config. | vX.Y.Z |
+| `modules/key-vault/resource` | Azure Key Vault with RBAC + PE. | vX.Y.Z |
+| `modules/storage-account/resource` | Storage Account with Blob/File PEs. | vX.Y.Z |
+| `modules/ai-search-service/resource` | Azure AI Search with MI + PE. | vX.Y.Z |
+| `modules/ai-services/resource` | Azure AI Services with MI + PE. | vX.Y.Z |
+| `modules/ai-hub/resource` | Azure AI Hub (system-assigned identity). | vX.Y.Z |
+| `modules/ai-project/resource` | Azure AI Project (system-assigned identity). | vX.Y.Z |
+| `modules/ai-services-hub-connection/resource` | AI Hub connection to AI Services. | vX.Y.Z |
+| `modules/ai-search-hub-connection/resource` | AI Hub connection to AI Search. | vX.Y.Z |
+| `modules/api-key-hub-connection/resource` | AI Hub API key connection. | vX.Y.Z |
+| `modules/action-group-map/resource` | Azure Monitor Action Group via map input. | vX.Y.Z |
+| `modules/rbac-map/resource` | Azure RBAC role assignments via map input. | vX.Y.Z |
+
+

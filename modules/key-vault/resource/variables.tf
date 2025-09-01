@@ -59,6 +59,19 @@ variable "public_network_access_enabled" {
   description = "Specifies whether Public Network Access is allowed for this resource."
 }
 
+### Network
+
+variable "network_acls_bypass" {
+  type        = string
+  default     = "None"
+  description = "Specifies which traffic can bypass the network rules for Key Vault. Possible values are None or AzureServices."
+
+  validation {
+    condition     = contains(["None", "AzureServices"], var.network_acls_bypass)
+    error_message = "Possible values for network_acls_bypass are None or AzureServices."
+  }
+}
+
 variable "enable_rbac_authorization" {
   type        = bool
   default     = true

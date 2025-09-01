@@ -60,5 +60,7 @@ module "storage_success_server_latency_alert" {
 - AzureRM provider `>= 4.38.1`
 - An existing Azure Resource Group
 - An existing Storage Account
+  
+Note: This module does not require the `azurerm.dns` provider alias.
 
 

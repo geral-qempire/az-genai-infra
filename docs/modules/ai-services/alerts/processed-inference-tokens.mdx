@@ -17,24 +17,30 @@ Azure OpenAI processed inference tokens by model deployment.
 - **Auto Mitigate**: false
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "ai_processed_inference_tokens_alert" {
-  source = "./modules/ai-services/alerts/ProcessedInferenceTokens"
+  source = "../ai-services/alerts/ProcessedInferenceTokens" # update to your source
 
   name                = "alrt-tok-openai-prod"
   resource_group_name = "rg-observability-prod"
-  scopes              = [module.ai_services.id]
+  scopes              = [module.ai_services.id] # Microsoft.CognitiveServices/accounts
 
   # Default threshold is 10,000,000 tokens
   # threshold = 10000000
 
+  # Split by model deployment name(s)
   model_deployment_names = [
     "gpt-4o-mini",
     "text-embedding-3-large"
   ]
 
-  description      = "Azure OpenAI processed tokens exceeded threshold over the last 24 hours"
-  enabled          = true
+  # Optional: custom description
+  description = "Azure OpenAI processed tokens exceeded threshold over the last 24 hours"
+
+  # Optional: enable/disable the alert
+  enabled = true
+
+  # Optional: notify action groups when alert fires
   action_group_ids = []
 }
 ```
@@ -59,8 +65,8 @@ module "ai_processed_inference_tokens_alert" {
 | `name` | Name of the metric alert.        |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Azure AI Services (Cognitive Services) account with Azure OpenAI enabled
 

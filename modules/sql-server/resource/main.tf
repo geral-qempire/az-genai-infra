@@ -5,6 +5,7 @@
 data "azurerm_client_config" "current" {}
 
 locals {
+  region_abbreviation = lookup(var.region_abbreviations, var.location, false)
   environment_initial = lower(substr(var.environment, 0, 1))
   server_name         = lower("azpds${local.environment_initial}${var.serial_number}")
  }
@@ -26,12 +27,10 @@ resource "azurerm_mssql_server" "this" {
     identity_ids = var.identity.identity_ids
   }
 
-  dynamic "azuread_administrator" {
-    for_each = var.entra_admin_login_name != "" && var.entra_admin_object_id != "" ? [1] : []
-    content {
-      login_username = var.entra_admin_login_name
-      object_id      = var.entra_admin_object_id
-    }
+  azuread_administrator {
+    login_username = var.entra_admin_login_name
+    object_id      = var.entra_admin_object_id
+    tenant_id      = var.entra_admin_tenant_id != "" ? var.entra_admin_tenant_id : data.azurerm_client_config.current.tenant_id
   }
 }
 

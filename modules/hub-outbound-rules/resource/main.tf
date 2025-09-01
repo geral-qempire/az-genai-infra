@@ -19,7 +19,7 @@ resource "azurerm_machine_learning_workspace_network_outbound_rule_fqdn" "this" 
 
 resource "azapi_resource" "ml_outbound_rule_private_endpoint" {
   for_each                   = local.private_endpoint_rules
-  type                       = "Microsoft.MachineLearningServices/workspaces/outboundRules@2025-01-01-preview"
+  type                       = "Microsoft.MachineLearningServices/workspaces/outboundRules@2025-06-01"
   name                       = each.key
   parent_id                  = var.workspace_id
   schema_validation_enabled  = false
@@ -27,7 +27,7 @@ resource "azapi_resource" "ml_outbound_rule_private_endpoint" {
   body = {
     properties = {
       category = "UserDefined"
-      status   = "Active"
+      status   = "Inactive"
       type     = "PrivateEndpoint"
       destination = {
         serviceResourceId = each.value.service_resource_id

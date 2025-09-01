@@ -11,7 +11,7 @@ module "ai_project" {
 module "custom_api_key_connection" {
   source = "../api-key-hub-connection/resource"
 
-  ai_project_id   = module.ai_project.ai_project_id
+  parent_id       = module.ai_project.ai_project_id
   connection_name = "con_custom_api"
   target_url      = "https://api.example.com"
   api_key         = "replace-with-your-api-key"
@@ -24,7 +24,7 @@ module "custom_api_key_connection" {
 ## 3. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
-| `ai_project_id` | `string` | n/a | yes | Resource ID of the target AI Project. |
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Project workspace). |
 | `connection_name` | `string` | n/a | yes | Name of the connection to create under the AI Project. |
 | `target_url` | `string` | n/a | yes | Target endpoint URL. |
 | `api_key` | `string` | n/a | yes | API key to store in the connection. |

@@ -45,6 +45,17 @@ variable "public_network_access" {
   }
 }
 
+variable "network_acls_bypass" {
+  type        = string
+  default     = "None"
+  description = "Specifies which traffic can bypass the network rules for AI Services. Possible values are None or AzureServices."
+
+  validation {
+    condition     = contains(["None", "AzureServices"], var.network_acls_bypass)
+    error_message = "Possible values for network_acls_bypass are None or AzureServices."
+  }
+}
+
 variable "custom_subdomain_name" {
   type        = string
   default     = ""

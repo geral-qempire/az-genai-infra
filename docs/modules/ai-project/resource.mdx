@@ -8,13 +8,13 @@ icon: 'server'
 Terraform module to create an Azure AI Hub Project under an existing AI Hub.
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "region_abbreviations" {
-  source = "./modules/region-abbreviations"
+  source = "../region-abbreviations"
 }
 
 module "ai_project" {
-  source = "./modules/ai-project/resource"
+  source = "../ai-project/resource"
 
   environment          = "dev"
   service_prefix       = "acme"
@@ -53,8 +53,8 @@ module "ai_project" {
 | `ai_project_name` | Name of the AI Project. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing AI Hub
 
 

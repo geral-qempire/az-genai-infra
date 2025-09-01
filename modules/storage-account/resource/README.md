@@ -25,6 +25,10 @@ module "storage_account" {
   shared_access_key_enabled         = true
   infrastructure_encryption_enabled = false
 
+  # Network Rules
+  network_rules_default_action = "Deny"
+  network_rules_bypass         = ["AzureServices"] # allowed: AzureServices, Logging, Metrics; empty list for none
+
   # Private Endpoints (optional)
   enable_private_endpoint_blob  = true
   enable_private_endpoint_file  = false
@@ -59,6 +63,8 @@ module "storage_account" {
 | `public_network_access_enabled` | `bool` | `false` | no | Allow public network access. |
 | `shared_access_key_enabled` | `bool` | `true` | no | Enable shared access keys. |
 | `infrastructure_encryption_enabled` | `bool` | `false` | no | Enable infrastructure encryption. |
+| `network_rules_default_action` | `string` | `"Deny"` | no | Default network action (`Allow`, `Deny`). |
+| `network_rules_bypass` | `list(string)` | `["AzureServices"]` | no | Services that can bypass storage network rules (`AzureServices`, `Logging`, `Metrics`). |
 | `enable_private_endpoint_*` | `bool` | varies | no | Enable per-service Private Endpoints. |
 | `dns_resource_group_name` | `string` | `""` | no | RG with Private DNS Zones for storage. |
 | `subnet_id` | `string` | `""` | no | Subnet ID for the Private Endpoints. |

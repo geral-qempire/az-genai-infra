@@ -49,8 +49,8 @@ Constraints:
 | `outbound_rule_ids` | Map of outbound rule resource IDs keyed by rule name. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
-- AzAPI provider `>= 2.2.0` (used for `private-endpoint` outbound rules to support additional subresource targets like `searchService`)
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- AzAPI provider `~> 2.2.0` (used for `private-endpoint` outbound rules to support additional subresource targets like `searchService`)
 
 

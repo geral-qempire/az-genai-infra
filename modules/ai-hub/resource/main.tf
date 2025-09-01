@@ -30,6 +30,12 @@ resource "azurerm_ai_foundry" "this" {
     type         = var.identity.type
     identity_ids = var.identity.identity_ids
   }
+
+  lifecycle {
+    ignore_changes = [
+      tags,
+    ]
+  }
 }
 
 

@@ -11,10 +11,10 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Modules",
+        "tab": "Terraform",
         "groups": [
           {
-            "group": "Modules",
+            "group": "Modules", 
             "pages": [
               {
                 "group": "Log Analytics",
@@ -126,10 +126,17 @@
                 "pages": [
                   "modules/ai-hub/resource"
                 ]
-              }
-            ,
+              },
               {
-                "group": "AI Project",
+                "group": "AI Hub Connections",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services-connection/resource",
+                  "modules/api-key-hub-connection/resource"
+                ]
+              },
+              {
+                "group": "AI Project (Hub)",
                 "icon": "folder",
                 "pages": [
                   "modules/ai-project/resource"
@@ -138,18 +145,9 @@
             ]
           },
           {
-            "group": "Utils",
+            "group": "Templates",
             "pages": [
-              "modules/region-abbreviations/resource",
-              "modules/rbac-map/resource"
-            ]
-          }
-        ,
-          {
-            "group": "Hub based connections",
-            "pages": [
-              "modules/ai-services-connection/resource",
-              "modules/blob-connection/resource"
+              "templates/framework-core/template"
             ]
           }
         ]

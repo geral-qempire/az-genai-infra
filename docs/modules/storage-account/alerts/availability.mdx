@@ -10,22 +10,31 @@ Storage Account requests availability.
 - **Metric**: `Availability`
 - **Namespace**: `Microsoft.Storage/storageAccounts`
 - **Aggregation**: Average
-- **Operator**: LessThan
+- **Operator**: LessThan (fires when availability drops below threshold)
 - **Evaluation Frequency**: 1 minute (PT1M)
 - **Time Window**: 1 minute (PT1M)
 - **Severity**: 1
 - **Auto Mitigate**: false
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "storage_availability_alert" {
-  source = "./modules/storage-account/alerts/Availability"
+  source = "../modules/storage-account/alerts/Availability" # update to your source
 
-  resource_group_name = azurerm_resource_group.rg.name
+  # name defaults to alrt-avail-<storage-account-name>
+  resource_group_name = "rg-observability"
   scopes              = [module.storage_account.storage_account_id]
+
+  # Default threshold is 100%
   # threshold = 100
-  description      = "Storage Account availability below 100% over 1 minute"
-  enabled          = true
+
+  # Optional: custom description
+  description = "Storage Account availability below 100% over 1 minute"
+
+  # Optional: enable/disable the alert
+  enabled = true
+
+  # Optional: notify action groups when alert fires
   action_group_ids = []
 }
 ```
@@ -48,7 +57,7 @@ module "storage_availability_alert" {
 | `name` | Name of the metric alert. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Storage Account

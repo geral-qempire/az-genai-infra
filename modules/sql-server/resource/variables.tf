@@ -47,7 +47,6 @@ variable "administrator_login_password" {
 
 variable "entra_admin_login_name" {
   type        = string
-  default     = ""
   description = "The login name (UPN or display name) of the Microsoft Entra administrator."
 }
 
@@ -55,7 +54,6 @@ variable "entra_admin_login_name" {
 
 variable "entra_admin_object_id" {
   type        = string
-  default     = ""
   description = "The Object ID of the Microsoft Entra administrator (User, Group, or Service Principal)."
 }
 

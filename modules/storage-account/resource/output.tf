@@ -19,4 +19,15 @@ output "storage_account_primary_blob_endpoint" {
   description = "Primary Blob service endpoint for the Storage Account."
 }
 
+# Private Endpoint IDs (if created)
+output "private_endpoint_blob_id" {
+  value       = try(azurerm_private_endpoint.blob[0].id, null)
+  description = "The ID of the Blob private endpoint if created, otherwise null."
+}
+
+output "private_endpoint_file_id" {
+  value       = try(azurerm_private_endpoint.file[0].id, null)
+  description = "The ID of the File private endpoint if created, otherwise null."
+}
+
 

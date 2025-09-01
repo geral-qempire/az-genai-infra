@@ -1,5 +1,5 @@
 ## 1. Module
-Terraform module to create Azure Application Insights (workspace-based optional) without Private Endpoint.
+Terraform module to create Azure Application Insights (optionally linked to a Log Analytics Workspace).
 
 ## 2. Usage
 ```hcl
@@ -19,9 +19,9 @@ module "application_insights" {
   # Optionally link to a Log Analytics workspace
   # workspace_id = module.log_analytics.log_analytics_workspace_id
 
-  application_type            = "web"
-  internet_ingestion_enabled  = true
-  internet_query_enabled      = true
+  application_type           = "web"
+  internet_ingestion_enabled = true
+  internet_query_enabled     = true
 
   tags = {
     environment = "dev"
@@ -51,10 +51,12 @@ module "application_insights" {
 | `application_insights_name` | Name of the Application Insights resource. |
 | `instrumentation_key` | Instrumentation key for classic ingestion. |
 | `connection_string` | Connection string for Application Insights. |
+| `application_insights_app_id` | The App ID of the Application Insights component. |
+| `application_insights_workspace_id` | Linked Log Analytics Workspace ID if provided, otherwise null. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing Resource Group
 
 

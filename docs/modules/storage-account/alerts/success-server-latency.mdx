@@ -16,15 +16,24 @@ Average server-side latency for successful requests.
 - **Severity**: 2
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "storage_success_server_latency_alert" {
-  source = "./modules/storage-account/alerts/SuccessServerLatency"
+  source = "../storage-account/alerts/SuccessServerLatency" # update to your source
 
-  resource_group_name = azurerm_resource_group.rg.name
+  # name defaults to alrt-sslat-<storage-account-name>
+  resource_group_name = "rg-observability"
   scopes              = [module.storage_account.storage_account_id]
+
+  # Default threshold is 1000 ms
   # threshold = 1000
-  description      = "Storage server latency above 1000ms over 5 minutes"
-  enabled          = true
+
+  # Optional: custom description
+  description = "Storage Account success server latency above 1000ms over 5 minutes"
+
+  # Optional: enable/disable the alert
+  enabled = true
+
+  # Optional: notify action groups when alert fires
   action_group_ids = []
 }
 ```
@@ -47,7 +56,7 @@ module "storage_success_server_latency_alert" {
 | `name` | Name of the metric alert. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Storage Account

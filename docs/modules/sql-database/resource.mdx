@@ -8,9 +8,9 @@ icon: 'server'
 Terraform module to create an Azure SQL Database on an existing SQL Server, with optional serverless settings and LTR/PITR retention policies.
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "sql_database" {
-  source = "./modules/sql-database/resource"
+  source = "../sql-database/resource"
 
   server_id      = module.sql_server.id
   name           = "appdb"
@@ -54,9 +54,10 @@ module "sql_database" {
 |------|-------------|
 | `id` | Resource ID of the SQL database. |
 | `name` | Name of the SQL database. |
+| `principal_id` | MSI Principal ID (if identity is enabled). |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 
 

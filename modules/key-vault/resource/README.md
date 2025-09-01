@@ -23,6 +23,9 @@ module "key_vault" {
   public_network_access_enabled = false
   enable_rbac_authorization     = true
 
+  # Network ACLs
+  network_acls_bypass = "None" # or "AzureServices"
+
   # Private Endpoint (optional)
   enable_private_endpoint   = true
   dns_resource_group_name   = "rg-network-dev"
@@ -49,6 +52,7 @@ module "key_vault" {
 | `soft_delete_retention_days` | `number` | `90` | no | Soft delete retention in days. |
 | `purge_protection_enabled` | `bool` | `true` | no | Enable purge protection. |
 | `public_network_access_enabled` | `bool` | `false` | no | Allow public network access. |
+| `network_acls_bypass` | `string` | `"None"` | no | Traffic that can bypass Key Vault network rules (`None`, `AzureServices`). |
 | `enable_rbac_authorization` | `bool` | `true` | no | Enable Azure RBAC authorization. |
 | `enabled_for_deployment` | `bool` | `false` | no | Allow VM to retrieve certificates. |
 | `enabled_for_disk_encryption` | `bool` | `false` | no | Allow Disk Encryption to retrieve secrets. |
@@ -65,10 +69,12 @@ module "key_vault" {
 |------|-------------|
 | `id` | Resource ID of the Key Vault. |
 | `name` | Name of the Key Vault. |
+| `vault_uri` | The URI of the Key Vault (e.g., `https://<name>.vault.azure.net/`). |
+| `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing Resource Group
 
 

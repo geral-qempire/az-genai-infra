@@ -1,12 +1,16 @@
+locals {
+  database_name = var.name
+}
+
 resource "azurerm_mssql_database" "this" {
-  name           = var.name
-  server_id      = var.server_id
-  sku_name       = var.sku_name
-  min_capacity   = var.min_capacity
-  auto_pause_delay_in_minutes = var.auto_pause_delay_in_minutes
-  collation      = var.collation
-  zone_redundant = var.zone_redundant
-  tags           = var.tags
+  name                            = local.database_name
+  server_id                       = var.server_id
+  sku_name                        = var.sku_name
+  min_capacity                    = var.min_capacity
+  auto_pause_delay_in_minutes     = var.auto_pause_delay_in_minutes
+  collation                       = var.collation
+  zone_redundant                  = var.zone_redundant
+  tags                            = var.tags
 
   short_term_retention_policy {
     retention_days = var.pitr_days

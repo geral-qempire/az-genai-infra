@@ -56,9 +56,11 @@ module "sql_db_app_memory_alert" {
 | `name` | Name of the metric alert. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing SQL Database
+  
+Note: This module does not require the `azurerm.dns` provider alias.
 
 

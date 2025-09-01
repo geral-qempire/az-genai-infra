@@ -1,6 +1,6 @@
-variable "ai_project_id" {
+variable "parent_id" {
   type        = string
-  description = "The ID of the target Azure AI Project (workspace) under which to create the connection."
+  description = "The parent resource ID (Azure AI Project/workspace) under which to create the connection."
 }
 
 variable "connection_name" {

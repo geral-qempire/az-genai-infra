@@ -21,6 +21,9 @@ module "ai_services" {
   public_network_access        = "Disabled"
   custom_subdomain_name        = ""
 
+  # Network ACLs
+  network_acls_bypass = "None" # or "AzureServices"
+
   identity = {
     type = "SystemAssigned"
   }
@@ -49,6 +52,7 @@ module "ai_services" {
 | `sku_name` | `string` | `"S0"` | no | AI Services SKU. |
 | `local_authentication_enabled` | `bool` | `false` | no | Allow API key authentication. |
 | `public_network_access` | `string` | `"Disabled"` | no | Public network access (`Enabled`, `Disabled`). |
+| `network_acls_bypass` | `string` | `"None"` | no | Traffic that can bypass AI Services network rules (`None`, `AzureServices`). |
 | `custom_subdomain_name` | `string` | `""` | no | Optional custom subdomain name. |
 | `identity` | `object` | `{ type = "SystemAssigned" }` | no | Managed identity configuration. |
 | `enable_private_endpoint` | `bool` | `true` | no | Create a Private Endpoint. |
@@ -62,9 +66,12 @@ module "ai_services" {
 |------|-------------|
 | `ai_services_id` | Resource ID of the AI Services. |
 | `ai_services_name` | Name of the AI Services. |
+| `ai_services_primary_key` | Primary access key for the AI Services account. |
+| `ai_services_secondary_key` | Secondary access key for the AI Services account. |
+| `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 
 

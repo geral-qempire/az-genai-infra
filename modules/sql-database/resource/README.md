@@ -48,9 +48,10 @@ module "sql_database" {
 |------|-------------|
 | `id` | Resource ID of the SQL database. |
 | `name` | Name of the SQL database. |
+| `principal_id` | MSI Principal ID (if identity is enabled). |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 
 

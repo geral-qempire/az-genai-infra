@@ -59,8 +59,8 @@ module "kv_saturation_alert" {
 | `name` | Name of the metric alert.        |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Azure Key Vault
 

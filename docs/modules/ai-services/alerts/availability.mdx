@@ -17,13 +17,13 @@ Azure OpenAI availability rate by model deployment.
 - **Auto Mitigate**: false
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "ai_azureopenai_availabilityrate_alert" {
-  source = "./modules/ai-services/alerts/AzureOpenAIAvailabilityRate"
+  source = "../ai-services/alerts/AzureOpenAIAvailabilityRate" # update to your source
 
   name                = "alrt-avail-openai-prod"
   resource_group_name = "rg-observability-prod"
-  scopes              = [module.ai_services.id]
+  scopes              = [module.ai_services.id] # Microsoft.CognitiveServices/accounts
 
   # Default threshold is 90%
   # threshold = 90
@@ -34,9 +34,16 @@ module "ai_azureopenai_availabilityrate_alert" {
     "text-embedding-3-large"
   ]
 
-  description      = "Azure OpenAI availability rate below 90% over 5 minutes"
-  enabled          = true
-  action_group_ids = []
+  # Optional: custom description
+  description = "Azure OpenAI availability rate below 90% over 5 minutes"
+
+  # Optional: enable/disable the alert
+  enabled = true
+
+  # Optional: notify action groups when alert fires
+  action_group_ids = [
+    "/subscriptions/xxx/resourceGroups/rg-alerts/providers/Microsoft.Insights/actionGroups/ag-critical"
+  ]
 }
 ```
 
@@ -59,8 +66,8 @@ module "ai_azureopenai_availabilityrate_alert" {
 | `name` | Name of the metric alert.        |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Azure AI Services (Cognitive Services) account with Azure OpenAI enabled
 

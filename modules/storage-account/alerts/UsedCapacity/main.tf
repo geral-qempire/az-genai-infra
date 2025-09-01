@@ -13,8 +13,10 @@ resource "azurerm_monitor_metric_alert" "this" {
     "Alert when Storage Account UsedCapacity (Average) over PT1H is above ${var.threshold} bytes."
   )
 
-  severity = 3
-  enabled  = var.enabled
+  severity      = 3
+  enabled       = var.enabled
+  auto_mitigate = var.auto_mitigate
+  tags          = var.tags
 
   frequency   = "PT1H"
   window_size = "PT1H"

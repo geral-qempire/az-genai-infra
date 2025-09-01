@@ -1,4 +1,14 @@
 # Changelog
+
+All notable changes to this module will be documented in this file.
+
+## [1.0.0] - 2025-08-19
+### Added
+- Initial release of Azure AI Search Service module.
+- Naming: `srch-<region-abbrev>-<service_prefix>-<environment>`.
+- Optional Private Endpoint support for `privatelink.api.azureml.ms`.
+- Outputs include `search_service_id`, `search_service_name`, `search_service_primary_key`, and `private_endpoint_id`.
+# Changelog
 All notable changes to this module are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)

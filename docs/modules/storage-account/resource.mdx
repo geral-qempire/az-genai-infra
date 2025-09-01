@@ -77,10 +77,12 @@ module "storage_account" {
 |------|-------------|
 | `storage_account_id` | Resource ID of the Storage Account. |
 | `storage_account_name` | Name of the Storage Account. |
+| `storage_account_primary_access_key` | Primary access key for the Storage Account. |
+| `storage_account_primary_blob_endpoint` | Primary Blob service endpoint for the Storage Account. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing Resource Group
 
 

@@ -4,8 +4,12 @@
  * O Azure AI Search é uma infraestrutura de pesquisa escalonável que indexa conteúdo heterogêneo e permite a recuperação por meio de APIs, aplicativos e agentes de IA.
  */
 
+locals {
+  region_abbreviation = lookup(var.region_abbreviations, var.location, false)
+}
+
 resource "azurerm_search_service" "this" {
-  name                          = lower("srch-${lookup(var.region_abbreviations, var.location, false)}-${var.service_prefix}-${var.environment}")
+  name                          = lower("srch-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
   resource_group_name           = var.resource_group_name
   location                      = var.location
   sku                           = var.sku
@@ -20,6 +24,7 @@ resource "azurerm_search_service" "this" {
   partition_count               = var.sku != "free" ? var.partition_count : null
   replica_count                 = var.sku != "free" ? var.replica_count : null
   semantic_search_sku           = var.semantic_search_sku != "" ? var.semantic_search_sku : null
+  network_rule_bypass_option    = var.network_rule_bypass_option
   tags                          = var.tags
 
   identity {

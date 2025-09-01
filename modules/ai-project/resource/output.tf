@@ -8,4 +8,9 @@ output "ai_project_name" {
   description = "The name of the AI Project."
 }
 
+output "managed_identity_principal_id" {
+  value       = try(azurerm_ai_foundry_project.this.identity[0].principal_id, null)
+  description = "Principal ID of the system-assigned managed identity."
+}
+
 

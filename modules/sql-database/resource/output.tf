@@ -8,4 +8,9 @@ output "name" {
   description = "The name of the SQL database."
 }
 
+output "identity_ids" {
+  value       = try(azurerm_mssql_database.this.identity[0].identity_ids, null)
+  description = "The list of User Assigned Identity IDs attached to the database, or null if none."
+}
+
 

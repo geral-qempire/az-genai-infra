@@ -58,9 +58,11 @@ module "search_latency_alert" {
 | `name` | Name of the metric alert.        |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Azure AI Search Service
+  
+Note: This module does not require the `azurerm.dns` provider alias.
 
 

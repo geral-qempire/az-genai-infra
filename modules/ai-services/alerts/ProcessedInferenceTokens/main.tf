@@ -18,9 +18,10 @@ resource "azurerm_monitor_metric_alert" "this" {
 
   severity      = 3
   enabled       = var.enabled
-  auto_mitigate = false
+  auto_mitigate = var.auto_mitigate
+  tags          = var.tags
 
-  frequency   = "PT1H"
+  frequency   = "PT5M"
   window_size = "PT1H"
 
   criteria {
@@ -31,11 +32,11 @@ resource "azurerm_monitor_metric_alert" "this" {
     threshold        = var.threshold
 
     dynamic "dimension" {
-      for_each = length(var.model_deployment_names) > 0 ? [1] : []
+      for_each = [1]
       content {
         name     = "ModelDeploymentName"
         operator = "Include"
-        values   = var.model_deployment_names
+        values   = length(var.model_deployment_names) > 0 ? var.model_deployment_names : ["*"]
       }
     }
   }

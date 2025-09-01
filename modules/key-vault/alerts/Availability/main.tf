@@ -13,10 +13,10 @@ resource "azurerm_monitor_metric_alert" "this" {
     "Alert when Key Vault Availability (Average) over PT5M is below ${var.threshold}%."
   )
 
-  severity = 1
-  enabled  = var.enabled
-
-  auto_mitigate = false
+  severity      = 1
+  enabled       = var.enabled
+  auto_mitigate = var.auto_mitigate
+  tags          = var.tags
 
   frequency   = "PT1M"
   window_size = "PT5M"

@@ -18,4 +18,9 @@ output "principal_id" {
   description = "The Principal ID associated with the Managed Service Identity of this SQL Server, if any."
 }
 
+output "private_endpoint_id" {
+  value       = try(azurerm_private_endpoint.this[0].id, null)
+  description = "The ID of the Private Endpoint if created, otherwise null."
+}
+
 

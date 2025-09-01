@@ -54,4 +54,16 @@ variable "action_group_ids" {
   default     = []
 }
 
+variable "auto_mitigate" {
+  description = "(Optional) Whether the alert should auto mitigate when conditions clear."
+  type        = bool
+  default     = true
+}
+
+variable "tags" {
+  description = "(Optional) Tags to apply to the metric alert resource."
+  type        = map(string)
+  default     = {}
+}
+
 

@@ -1,7 +1,12 @@
+locals {
+  region_abbreviation = lookup(var.region_abbreviations, var.location, "")
+  workspace_name      = lower("log-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
+}
+
 resource "azurerm_log_analytics_workspace" "this" {
-  name                = lower("log-${lookup(var.region_abbreviations, var.location, "")}-${var.service_prefix}-${var.environment}")
-  location            = var.location
+  name                = local.workspace_name
   resource_group_name = var.resource_group_name
+  location            = var.location
 
   sku               = var.sku
   retention_in_days = var.retention_in_days

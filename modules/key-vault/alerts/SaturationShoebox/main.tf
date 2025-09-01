@@ -13,10 +13,10 @@ resource "azurerm_monitor_metric_alert" "this" {
     "Alert when Key Vault SaturationShoebox (Average) over PT5M is above ${var.threshold}%."
   )
 
-  severity = 1
-  enabled  = var.enabled
-
-  auto_mitigate = false
+  severity      = 1
+  enabled       = var.enabled
+  auto_mitigate = var.auto_mitigate
+  tags          = var.tags
 
   frequency   = "PT1M"
   window_size = "PT5M"

@@ -38,10 +38,11 @@ DESC
 
 variable "model_deployment_names" {
   description = <<DESC
-(Required) List of model deployment names to split the alert on using the ModelDeploymentName dimension.
-Pass one or more deployment names that exist under the Azure OpenAI resource.
+(Optional) List of model deployment names to split the alert on using the ModelDeploymentName dimension.
+Defaults to ["*"] to include all current and future deployments.
 DESC
-  type = list(string)
+  type    = list(string)
+  default = ["*"]
 }
 
 variable "description" {
@@ -56,10 +57,22 @@ variable "enabled" {
   default     = true
 }
 
+variable "auto_mitigate" {
+  description = "(Optional) Whether the alert should auto mitigate when conditions clear."
+  type        = bool
+  default     = true
+}
+
 variable "action_group_ids" {
   description = "(Optional) Action Group IDs to notify when the alert fires."
   type        = list(string)
   default     = []
+}
+
+variable "tags" {
+  description = "(Optional) Tags to apply to the metric alert resource."
+  type        = map(string)
+  default     = {}
 }
 
 

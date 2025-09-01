@@ -145,6 +145,12 @@ variable "network_rules_bypass" {
   type        = list(string)
   default     = ["AzureServices"]
   description = "List of services which bypass the network rules. Common values include AzureServices, Logging, Metrics, None."
+  validation {
+    condition = length([
+      for v in var.network_rules_bypass : v if contains(["AzureServices", "Logging", "Metrics"], v)
+    ]) == length(var.network_rules_bypass)
+    error_message = "Allowed values for network_rules_bypass are AzureServices, Logging, Metrics. Use an empty list for no bypass."
+  }
 }
 
 variable "network_rules_default_action" {

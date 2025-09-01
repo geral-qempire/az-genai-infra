@@ -19,6 +19,11 @@ resource "azurerm_ai_services" "this" {
 
   tags = var.tags
 
+  network_acls {
+    default_action = "Deny"
+    bypass         = var.network_acls_bypass
+  }
+
   identity {
     type         = var.identity.type
     identity_ids = var.identity.identity_ids

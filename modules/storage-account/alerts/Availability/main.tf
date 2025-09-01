@@ -15,7 +15,8 @@ resource "azurerm_monitor_metric_alert" "this" {
 
   severity      = 1
   enabled       = var.enabled
-  auto_mitigate = false
+  auto_mitigate = var.auto_mitigate
+  tags          = var.tags
 
   frequency   = "PT1M"
   window_size = "PT1M"

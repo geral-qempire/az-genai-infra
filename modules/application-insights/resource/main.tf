@@ -1,5 +1,10 @@
+locals {
+  region_abbreviation = lookup(var.region_abbreviations, var.location, "")
+  application_name    = lower("appi-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
+}
+
 resource "azurerm_application_insights" "this" {
-  name                = lower("appi-${lookup(var.region_abbreviations, var.location, "")}-${var.service_prefix}-${var.environment}")
+  name                = local.application_name
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -11,6 +16,12 @@ resource "azurerm_application_insights" "this" {
   internet_query_enabled     = var.internet_query_enabled
 
   tags = var.tags
+  lifecycle {
+    ignore_changes = [
+      internet_ingestion_enabled,
+      internet_query_enabled,
+    ]
+  }
 }
 
 

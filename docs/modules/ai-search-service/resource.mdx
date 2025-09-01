@@ -8,13 +8,13 @@ icon: 'server'
 Terraform module to create an Azure AI Search service with optional Private Endpoint and identity.
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "region_abbreviations" {
-  source = "./modules/region-abbreviations"
+  source = "../region-abbreviations"
 }
 
 module "ai_search" {
-  source = "./modules/ai-search-service/resource"
+  source = "../ai-search-service/resource"
 
   environment          = "dev"
   service_prefix       = "acme"
@@ -70,10 +70,12 @@ module "ai_search" {
 |------|-------------|
 | `search_service_id` | Resource ID of the Search Service. |
 | `search_service_name` | Name of the Search Service. |
+| `search_service_primary_key` | Primary admin key for the Search Service. |
+| `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing Resource Group
 
 

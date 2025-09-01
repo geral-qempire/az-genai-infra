@@ -71,10 +71,11 @@ module "sql_server" {
 | `name` | Name of the SQL Server. |
 | `fully_qualified_domain_name` | FQDN of the SQL Server. |
 | `principal_id` | MSI Principal ID (if identity is enabled). |
+| `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing Resource Group
 
 

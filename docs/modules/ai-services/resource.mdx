@@ -8,13 +8,13 @@ icon: 'server'
 Terraform module to create an Azure AI Services account with optional Private Endpoint and identity.
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "region_abbreviations" {
-  source = "./modules/region-abbreviations"
+  source = "../region-abbreviations"
 }
 
 module "ai_services" {
-  source = "./modules/ai-services/resource"
+  source = "../ai-services/resource"
 
   environment          = "dev"
   service_prefix       = "acme"
@@ -69,10 +69,13 @@ module "ai_services" {
 |------|-------------|
 | `ai_services_id` | Resource ID of the AI Services. |
 | `ai_services_name` | Name of the AI Services. |
+| `ai_services_primary_key` | Primary access key for the AI Services account. |
+| `ai_services_secondary_key` | Secondary access key for the AI Services account. |
+| `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - Existing Resource Group
 
 

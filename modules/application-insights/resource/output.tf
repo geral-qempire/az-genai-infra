@@ -18,4 +18,14 @@ output "connection_string" {
   description = "Connection string for Application Insights."
 }
 
+output "application_insights_app_id" {
+  value       = azurerm_application_insights.this.app_id
+  description = "The App ID of the Application Insights component (used by some APIs)."
+}
+
+output "application_insights_workspace_id" {
+  value       = azurerm_application_insights.this.workspace_id
+  description = "Linked Log Analytics Workspace ID if provided, otherwise null."
+}
+
 
