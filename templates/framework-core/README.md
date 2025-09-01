@@ -327,19 +327,19 @@ The service principal roles are divided into two: CI/CD Sercice principals and A
 | Module | Description | Version |
 | --- | --- | --- |
 | `modules/region-abbreviations` | Region codes used for naming. | vX.Y.Z |
-| `modules/application-insights/resource` | Application Insights linked to LAW. | vX.Y.Z |
-| `modules/sql-server/resource` | Azure SQL logical server with PE. | vX.Y.Z |
-| `modules/sql-database/resource` | Azure SQL Database with backup config. | vX.Y.Z |
-| `modules/key-vault/resource` | Azure Key Vault with RBAC + PE. | vX.Y.Z |
-| `modules/storage-account/resource` | Storage Account with Blob/File PEs. | vX.Y.Z |
-| `modules/ai-search-service/resource` | Azure AI Search with MI + PE. | vX.Y.Z |
-| `modules/ai-services/resource` | Azure AI Services with MI + PE. | vX.Y.Z |
-| `modules/ai-hub/resource` | Azure AI Hub (system-assigned identity). | vX.Y.Z |
-| `modules/ai-project/resource` | Azure AI Project (system-assigned identity). | vX.Y.Z |
-| `modules/ai-services-hub-connection/resource` | AI Hub connection to AI Services. | vX.Y.Z |
-| `modules/ai-search-hub-connection/resource` | AI Hub connection to AI Search. | vX.Y.Z |
-| `modules/api-key-hub-connection/resource` | AI Hub API key connection. | vX.Y.Z |
-| `modules/action-group-map/resource` | Azure Monitor Action Group via map input. | vX.Y.Z |
-| `modules/rbac-map/resource` | Azure RBAC role assignments via map input. | vX.Y.Z |
+| `modules/application-insights` | Application Insights linked to LAW. | vX.Y.Z |
+| `modules/sql-server` | Azure SQL logical server with PE. | vX.Y.Z |
+| `modules/sql-database` | Azure SQL Database with backup config. | vX.Y.Z |
+| `modules/key-vault` | Azure Key Vault with RBAC + PE. | vX.Y.Z |
+| `modules/storage-account` | Storage Account with Blob/File PEs. | vX.Y.Z |
+| `modules/ai-search-service` | Azure AI Search with MI + PE. | vX.Y.Z |
+| `modules/ai-services` | Azure AI Services with MI + PE. | vX.Y.Z |
+| `modules/ai-hub` | Azure AI Hub (system-assigned identity). | vX.Y.Z |
+| `modules/ai-project` | Azure AI Project (system-assigned identity). | vX.Y.Z |
+| `modules/ai-services-hub-connection` | AI Hub connection to AI Services. | vX.Y.Z |
+| `modules/ai-search-hub-connection` | AI Hub connection to AI Search. | vX.Y.Z |
+| `modules/api-key-hub-connection` | AI Hub API key connection. | vX.Y.Z |
+| `modules/action-group-map` | Azure Monitor Action Group via map input. | vX.Y.Z |
+| `modules/rbac-map` | Azure RBAC role assignments via map input. | vX.Y.Z |
 
 

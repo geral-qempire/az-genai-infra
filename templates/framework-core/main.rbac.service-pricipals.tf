@@ -76,7 +76,7 @@ locals {
 }
 
 module "rbac_service_principals" {
-  source = "../../modules/rbac-map/resource"
+  source = "../../modules/rbac-map"
 
   rbac = local.service_principal_rbac
 }

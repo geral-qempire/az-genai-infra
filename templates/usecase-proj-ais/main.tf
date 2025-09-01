@@ -49,7 +49,7 @@ locals {
 
 module "action_group" {
   count = length(local.action_group_receivers) > 0 ? 1 : 0
-  source = "../../modules/action-group-map/resource"
+  source = "../../modules/action-group-map"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
@@ -69,7 +69,7 @@ module "action_group" {
 # AI Services (PE + Identity)
 ########################################
 module "ai_services" {
-  source = "../../modules/ai-services/resource"
+  source = "../../modules/ai-services"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -105,7 +105,7 @@ locals {
 }
 
 module "ai_services_alert_availability_rate" {
-  source = "../../modules/ai-services/alerts/AzureOpenAIAvailabilityRate"
+  source = "../../modules/ai-services-avail"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -116,7 +116,7 @@ module "ai_services_alert_availability_rate" {
 }
 
 module "ai_services_alert_normalized_ttft" {
-  source = "../../modules/ai-services/alerts/AzureOpenAINormalizedTTFTInMS"
+  source = "../../modules/ai-services-ttft"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -127,7 +127,7 @@ module "ai_services_alert_normalized_ttft" {
 }
 
 module "ai_services_alert_ttlt" {
-  source = "../../modules/ai-services/alerts/AzureOpenAITTLTInMS"
+  source = "../../modules/ai-services-ttlt"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -138,7 +138,7 @@ module "ai_services_alert_ttlt" {
 }
 
 module "ai_services_alert_processed_tokens" {
-  source = "../../modules/ai-services/alerts/ProcessedInferenceTokens"
+  source = "../../modules/ai-services-tok"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -153,7 +153,7 @@ module "ai_services_alert_processed_tokens" {
 # AI Project (Identity)
 ########################################
 module "ai_project" {
-  source = "../../modules/ai-project/resource"
+  source = "../../modules/ai-project"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
@@ -173,7 +173,7 @@ module "ai_project" {
 # Connections (AI Services -> Project)
 ########################################
 module "ai_services_connection" {
-  source = "../../modules/ai-services-hub-connection/resource"
+  source = "../../modules/ai-services-hub-connection"
 
   parent_id          = module.ai_project.ai_project_id
   ai_services_module = module.ai_services

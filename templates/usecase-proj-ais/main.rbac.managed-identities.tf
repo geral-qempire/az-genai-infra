@@ -65,7 +65,7 @@ locals {
 }
 
 module "rbac_managed_identities" {
-  source = "../../modules/rbac-map/resource"
+  source = "../../modules/rbac-map"
 
   rbac = local.managed_identity_rbac
 }

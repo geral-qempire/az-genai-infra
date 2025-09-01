@@ -25,7 +25,7 @@ resource "azurerm_resource_group" "this" {
 # Log Analytics Workspace
 ########################################
 module "log_analytics_workspace" {
-  source = "../../modules/log-analytics-workspace/resource"
+  source = "../../modules/log-analytics-workspace"
 
   environment          = var.environment
   service_prefix       = var.service_prefix

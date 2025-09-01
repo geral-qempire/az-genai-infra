@@ -45,7 +45,7 @@ locals {
 }
 
 module "rbac_ad_groups" {
-  source = "../../modules/rbac-map/resource"
+  source = "../../modules/rbac-map"
 
   rbac = local.ad_group_rbac
 }

@@ -42,7 +42,7 @@ data "azurerm_subnet" "private_endpoints" {
 # Application Insights (linked to LAW)
 ########################################
 module "application_insights" {
-  source = "../../modules/application-insights/resource"
+  source = "../../modules/application-insights"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
@@ -63,7 +63,7 @@ module "application_insights" {
 # SQL Server (PNA disabled, Private Endpoint)
 ########################################
 module "sql_server" {
-  source = "../../modules/sql-server/resource"
+  source = "../../modules/sql-server"
 
   providers = {
     # Forward DNS alias to ensure Private DNS ops use the DNS subscription
@@ -101,7 +101,7 @@ module "sql_server" {
 # SQL Database
 ########################################
 module "sql_database" {
-  source = "../../modules/sql-database/resource"
+  source = "../../modules/sql-database"
 
   server_id    = module.sql_server.id
   name         = var.sql_database_name
@@ -127,7 +127,7 @@ locals {
 }
 
 module "sql_db_alert_availability" {
-  source = "../../modules/sql-database/alerts/Availability"
+  source = "../../modules/sql-database-avail"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -137,7 +137,7 @@ module "sql_db_alert_availability" {
 }
 
 module "sql_db_alert_app_cpu" {
-  source = "../../modules/sql-database/alerts/AppCpuPercent"
+  source = "../../modules/sql-database-cpu"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -147,7 +147,7 @@ module "sql_db_alert_app_cpu" {
 }
 
 module "sql_db_alert_app_memory" {
-  source = "../../modules/sql-database/alerts/AppMemoryPercent"
+  source = "../../modules/sql-database-mem"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -157,7 +157,7 @@ module "sql_db_alert_app_memory" {
 }
 
 module "sql_db_alert_instance_cpu" {
-  source = "../../modules/sql-database/alerts/SqlInstanceCpuPercent"
+  source = "../../modules/sql-database-sqlcpu"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -167,7 +167,7 @@ module "sql_db_alert_instance_cpu" {
 }
 
 module "sql_db_alert_instance_memory" {
-  source = "../../modules/sql-database/alerts/SqlInstanceMemoryPercent"
+  source = "../../modules/sql-database-sqlmem"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -177,7 +177,7 @@ module "sql_db_alert_instance_memory" {
 }
 
 module "sql_db_alert_storage_percent" {
-  source = "../../modules/sql-database/alerts/StoragePercent"
+  source = "../../modules/sql-database-stor"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -191,7 +191,7 @@ module "sql_db_alert_storage_percent" {
 # Key Vault
 ########################################
 module "key_vault" {
-  source = "../../modules/key-vault/resource"
+  source = "../../modules/key-vault"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -226,7 +226,7 @@ locals {
 }
 
 module "key_vault_alert_availability" {
-  source = "../../modules/key-vault/alerts/Availability"
+  source = "../../modules/key-vault-avail"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.kv_scopes
@@ -236,7 +236,7 @@ module "key_vault_alert_availability" {
 }
 
 module "key_vault_alert_saturation_shoebox" {
-  source = "../../modules/key-vault/alerts/SaturationShoebox"
+  source = "../../modules/key-vault-sat"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.kv_scopes
@@ -249,7 +249,7 @@ module "key_vault_alert_saturation_shoebox" {
 # Storage Account
 ########################################
 module "storage_account" {
-  source = "../../modules/storage-account/resource"
+  source = "../../modules/storage-account"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -291,7 +291,7 @@ locals {
 }
 
 module "storage_alert_availability" {
-  source = "../../modules/storage-account/alerts/Availability"
+  source = "../../modules/storage-account-avail"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.storage_scopes
@@ -301,7 +301,7 @@ module "storage_alert_availability" {
 }
 
 module "storage_alert_success_server_latency" {
-  source = "../../modules/storage-account/alerts/SuccessServerLatency"
+  source = "../../modules/storage-account-sslat"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.storage_scopes
@@ -311,7 +311,7 @@ module "storage_alert_success_server_latency" {
 }
 
 module "storage_alert_used_capacity" {
-  source = "../../modules/storage-account/alerts/UsedCapacity"
+  source = "../../modules/storage-account-used"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.storage_scopes
@@ -324,7 +324,7 @@ module "storage_alert_used_capacity" {
 # AI Search
 ########################################
 module "ai_search_service" {
-  source = "../../modules/ai-search-service/resource"
+  source = "../../modules/ai-search-service"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -365,7 +365,7 @@ locals {
 }
 
 module "ai_search_alert_search_latency" {
-  source = "../../modules/ai-search-service/alerts/SearchLatency"
+  source = "../../modules/ai-search-service-lat"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.ai_search_scopes
@@ -375,7 +375,7 @@ module "ai_search_alert_search_latency" {
 }
 
 module "ai_search_alert_throttled_pct" {
-  source = "../../modules/ai-search-service/alerts/ThrottledSearchQueriesPercentage"
+  source = "../../modules/ai-search-service-thrpct"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.ai_search_scopes
@@ -388,7 +388,7 @@ module "ai_search_alert_throttled_pct" {
 # AI Services
 ########################################
 module "ai_services" {
-  source = "../../modules/ai-services/resource"
+  source = "../../modules/ai-services"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -424,7 +424,7 @@ locals {
 }
 
 module "ai_services_alert_availability_rate" {
-  source = "../../modules/ai-services/alerts/AzureOpenAIAvailabilityRate"
+  source = "../../modules/ai-services-avail"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -435,7 +435,7 @@ module "ai_services_alert_availability_rate" {
 }
 
 module "ai_services_alert_normalized_ttft" {
-  source = "../../modules/ai-services/alerts/AzureOpenAINormalizedTTFTInMS"
+  source = "../../modules/ai-services-ttft"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -446,7 +446,7 @@ module "ai_services_alert_normalized_ttft" {
 }
 
 module "ai_services_alert_ttlt" {
-  source = "../../modules/ai-services/alerts/AzureOpenAITTLTInMS"
+  source = "../../modules/ai-services-ttlt"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -457,7 +457,7 @@ module "ai_services_alert_ttlt" {
 }
 
 module "ai_services_alert_processed_tokens" {
-  source = "../../modules/ai-services/alerts/ProcessedInferenceTokens"
+  source = "../../modules/ai-services-tok"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -472,7 +472,7 @@ module "ai_services_alert_processed_tokens" {
 # AI Hub
 ########################################
 module "ai_hub" {
-  source = "../../modules/ai-hub/resource"
+  source = "../../modules/ai-hub"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -506,7 +506,7 @@ module "ai_hub" {
 
 # -------------------- AI Hub Connections --------------------
 module "ai_services_hub_connection" {
-  source = "../../modules/ai-services-hub-connection/resource"
+  source = "../../modules/ai-services-hub-connection"
 
   parent_id          = module.ai_hub.ai_hub_id
   ai_services_module = module.ai_services
@@ -514,7 +514,7 @@ module "ai_services_hub_connection" {
 }
 
 module "ai_search_hub_connection" {
-  source = "../../modules/ai-search-hub-connection/resource"
+  source = "../../modules/ai-search-hub-connection"
 
   parent_id                = module.ai_hub.ai_hub_id
   ai_search_service_module = module.ai_search_service
@@ -522,7 +522,7 @@ module "ai_search_hub_connection" {
 }
 
 module "api_key_hub_connection" {
-  source = "../../modules/api-key-hub-connection/resource"
+  source = "../../modules/api-key-hub-connection"
 
   parent_id       = module.ai_hub.ai_hub_id
   connection_name = "con_storage_blob"
@@ -536,7 +536,7 @@ module "api_key_hub_connection" {
 # AI Project (Identity)
 ########################################
 module "ai_project" {
-  source = "../../modules/ai-project/resource"
+  source = "../../modules/ai-project"
 
   environment          = var.environment
   service_prefix       = "${var.service_prefix}-lab"
@@ -563,18 +563,14 @@ locals {
 
 module "action_group" {
   count = length(local.action_group_receivers) > 0 ? 1 : 0
-  source = "../../modules/action-group-map/resource"
+  source = "../../modules/action-group-map"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
   location             = var.location
   resource_group_name  = azurerm_resource_group.this.name
   region_abbreviations = module.region_abbreviations.regions
-
-  short_name = "alerts"
   enabled    = true
-
   email_receivers = local.action_group_receivers
-
   tags = var.tags
 }
