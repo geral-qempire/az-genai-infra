@@ -95,6 +95,14 @@
                   "modules/ai-services-hub-connection/README",
                   "modules/ai-services-hub-connection/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Services Tokens",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services-tok/README",
+                  "modules/ai-services-tok/CHANGELOG"
+                ]
               }
             ]
           },
