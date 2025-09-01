@@ -1,0 +1,50 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
+## 1. Module
+Create an Azure AI Services connection inside an Azure AI Project (workspace), authenticated with API Key.
+
+Note: Ensure the target Azure AI Services resource has `local_authentication_enabled = true` to allow API key authentication.
+
+## 2. Usage
+```hcl
+module "ai_services" {
+  source = "../ai-services"
+  # ...
+}
+
+module "ai_project" {
+  source = "../ai-project"
+  # ...
+}
+
+module "ai_services_connection" {
+  source = "../ai-services-hub-connection"
+
+  parent_id          = module.ai_project.ai_project_id
+  ai_services_module = module.ai_services
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Project workspace). |
+| `ai_services_module` | `object({ ai_services_id = string, ai_services_name = string, ai_services_primary_key = string })` | `null` | no | Pass `module.ai_services` directly. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `connection_id` | The resource ID of the created connection. |
+| `connection_name` | The name of the created connection. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- AzAPI provider `~> 2.2.0`
+- Random provider `~> 3.6`
+
+

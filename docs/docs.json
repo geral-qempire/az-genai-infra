@@ -87,6 +87,14 @@
                   "modules/ai-services-avail/README",
                   "modules/ai-services-avail/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Services Hub Connection",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services-hub-connection/README",
+                  "modules/ai-services-hub-connection/CHANGELOG"
+                ]
               }
             ]
           },
