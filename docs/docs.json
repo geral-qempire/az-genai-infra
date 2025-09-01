@@ -63,6 +63,14 @@
                   "modules/ai-search-lat/README",
                   "modules/ai-search-lat/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Search Throttled %",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-search-thrpct/README",
+                  "modules/ai-search-thrpct/CHANGELOG"
+                ]
               }
             ]
           },

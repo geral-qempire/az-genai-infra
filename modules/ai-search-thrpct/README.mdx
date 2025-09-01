@@ -5,26 +5,26 @@ icon: 'circle-info'
 ---
 
 ## 1. Module
-Create an Azure Monitor metric alert for Azure AI Search latency:
-- Metric: `SearchLatency` 
+Create an Azure Monitor metric alert for Azure AI Search throttled queries percentage:
+- Metric: `ThrottledSearchQueriesPercentage`
 - Namespace: `Microsoft.Search/searchServices`
 
 ## 2. Usage
 ```hcl
-module "search_latency_alert" {
-  source = "../ai-search-lat"
+module "throttled_search_pct_alert" {
+  source = "../ai-search-thrpct"
 
-  # Optional name. If omitted, defaults to: alrt-lat-<resource-name>
-  # name = "alrt-lat-mysearch"
+  # Optional name. If omitted, defaults to: alrt-thrpct-<resource-name>
+  # name = "alrt-thrpct-mysearch"
 
   resource_group_name = "rg-observability-prod"
   scopes              = [module.ai_search.search_service_id]
 
-  # Alert when average latency exceeds 5ms over a 5-minute window
-  threshold = 5
+  # Alert when throttled search queries exceed 10% over 5 minutes
+  threshold = 10
 
   # Optional settings
-  description   = "Average search latency over 5 minutes above 5ms"
+  description   = "Average throttled search queries percentage over 5 minutes above 10%"
   enabled       = true
   auto_mitigate = true
 
@@ -42,10 +42,10 @@ module "search_latency_alert" {
 ## 3. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
-| `name` | `string` | `null` | no | Name of the metric alert. Defaults to `alrt-lat-<resource-name>`. |
+| `name` | `string` | `null` | no | Name of the metric alert. Defaults to `alrt-thrpct-<resource-name>`. |
 | `resource_group_name` | `string` | n/a | yes | Resource group in which to create the alert. |
 | `scopes` | `list(string)` | n/a | yes | List of Search Service resource IDs to monitor. |
-| `threshold` | `number` | `5` | no | Latency threshold in milliseconds. Fires when average over 5 minutes exceeds this value. |
+| `threshold` | `number` | `10` | no | Percentage threshold. Fires when average over 5 minutes exceeds this value. |
 | `description` | `string` | `null` | no | Custom alert description. Auto-generated if not provided. |
 | `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
 | `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
