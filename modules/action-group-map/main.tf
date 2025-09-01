@@ -14,7 +14,7 @@ resource "azurerm_monitor_action_group" "this" {
     for_each = var.email_receivers
     content {
       name                    = email_receiver.key
-      email_address          = email_receiver.value.email_address
+      email_address           = email_receiver.value.email_address
       use_common_alert_schema = true
     }
   }

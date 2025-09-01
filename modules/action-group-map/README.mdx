@@ -1,3 +1,9 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'server'
+---
+
 ## 1. Module
 Create a single Azure Monitor Action Group with multiple email receivers using common alert schema.
 
@@ -17,20 +23,8 @@ module "action_group" {
   region_abbreviations = module.region_abbreviations.regions
 
   email_receivers = {
-    # Critical alerts
-    critical = {
-      email_address = "critical@acme.com"
-    }
-
-    # Warning alerts
-    warning = {
-      email_address = "alerts@acme.com"
-    }
-
-    # Operations team
-    operations = {
-      email_address = "ops@acme.com"
-    }
+    receiver1 = { email_address = "alerts@acme.com" }
+    receiver2 = { email_address = "ops@acme.com" }
   }
 
   tags = {

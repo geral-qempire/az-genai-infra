@@ -16,8 +16,14 @@
           {
             "group": "Modules", 
             "pages": [
-              "modules/action-group-map/README",
-              "modules/action-group-map/CHANGELOG"
+              {
+                "group": "Action Group Map",
+                "icon": "folder",
+                "pages": [
+                  "modules/action-group-map/README",
+                  "modules/action-group-map/CHANGELOG"
+                ]
+              }
             ]
           },
           {
