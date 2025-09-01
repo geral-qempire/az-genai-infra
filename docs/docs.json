@@ -41,11 +41,27 @@
                 ]
               },
               {
+                "group": "AI Search",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-search/README",
+                  "modules/ai-search/CHANGELOG"
+                ]
+              },
+              {
                 "group": "AI Search Hub Connection",
                 "icon": "folder",
                 "pages": [
                   "modules/ai-search-hub-connection/README",
                   "modules/ai-search-hub-connection/CHANGELOG"
+                ]
+              },
+              {
+                "group": "AI Search Latency",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-search-lat/README",
+                  "modules/ai-search-lat/CHANGELOG"
                 ]
               }
             ]
