@@ -1,5 +1,11 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
 ## 1. Module
-Terraform module to create Azure Application Insights (optionally linked to a Log Analytics Workspace).
+Create Azure Application Insights, optionally linked to a Log Analytics Workspace, with configurable internet ingestion/query and tagging.
 
 ## 2. Usage
 ```hcl
@@ -52,11 +58,10 @@ module "application_insights" {
 | `instrumentation_key` | Instrumentation key for classic ingestion. |
 | `connection_string` | Connection string for Application Insights. |
 | `application_insights_app_id` | The App ID of the Application Insights component. |
-| `application_insights_workspace_id` | Linked Log Analytics Workspace ID if provided, otherwise null. |
+| `application_insights_workspace_id` | Linked Log Analytics Workspace ID if provided, otherwise `null`. |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
-- Existing Resource Group
 
 

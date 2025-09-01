@@ -127,6 +127,14 @@
                   "modules/api-key-hub-connection/README",
                   "modules/api-key-hub-connection/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Application Insights",
+                "icon": "folder",
+                "pages": [
+                  "modules/application-insights/README",
+                  "modules/application-insights/CHANGELOG"
+                ]
               }
             ]
           },
