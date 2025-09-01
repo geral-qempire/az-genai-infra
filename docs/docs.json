@@ -119,6 +119,14 @@
                   "modules/ai-services-ttlt/README",
                   "modules/ai-services-ttlt/CHANGELOG"
                 ]
+              },
+              {
+                "group": "API Key Hub Connection",
+                "icon": "folder",
+                "pages": [
+                  "modules/api-key-hub-connection/README",
+                  "modules/api-key-hub-connection/CHANGELOG"
+                ]
               }
             ]
           },

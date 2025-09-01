@@ -1,0 +1,50 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
+## 1. Module
+Create a Custom API Key connection inside an Azure AI Project (workspace), authenticated with ApiKey.
+
+## 2. Usage
+```hcl main.tf
+module "ai_project" {
+  source = "../ai-project"
+  # ...
+}
+
+module "custom_api_key_connection" {
+  source = "../api-key-hub-connection"
+
+  parent_id       = module.ai_project.ai_project_id
+  connection_name = "con_custom_api"
+  target_url      = "https://api.example.com"
+  api_key         = "replace-with-your-api-key"
+  metadata        = {
+    Purpose = "example"
+  }
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Project workspace). |
+| `connection_name` | `string` | n/a | yes | Name of the connection to create under the AI Project. |
+| `target_url` | `string` | n/a | yes | Target endpoint URL. |
+| `api_key` | `string` | n/a | yes | API key to store in the connection. |
+| `metadata` | `map(string)` | `{}` | no | Optional metadata key/values. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `connection_id` | The resource ID of the created connection. |
+| `connection_name` | The name of the created connection. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- AzAPI provider `~> 2.2.0`
+
+
