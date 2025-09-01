@@ -16,138 +16,14 @@
           {
             "group": "Modules", 
             "pages": [
-              {
-                "group": "Log Analytics",
-                "icon": "folder",
-                "pages": [
-                  "modules/log-analytics-workspace/resource"
-                ]
-              },
-              {
-                "group": "Application Insights",
-                "icon": "folder",
-                "pages": [
-                  "modules/application-insights/resource"
-                ]
-              },
-              {
-                "group": "Key Vault",
-                "icon": "folder",
-                "pages": [
-                  "modules/key-vault/resource",
-                  {
-                    "group": "Alerts",
-                    "icon": "bells",
-                    "pages": [
-                      "modules/key-vault/alerts/availability",
-                      "modules/key-vault/alerts/saturation",
-                      "modules/key-vault/alerts/latency"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "SQL Server",
-                "icon": "folder",
-                "pages": [
-                  "modules/sql-server/resource"
-                ]
-              },
-              {
-                "group": "SQL Database",
-                "icon": "folder",
-                "pages": [
-                  "modules/sql-database/resource",
-                  {
-                    "group": "Alerts",
-                    "icon": "bells",
-                    "pages": [
-                      "modules/sql-database/alerts/availability",
-                      "modules/sql-database/alerts/storage-percent",
-                      "modules/sql-database/alerts/app-cpu-percent",
-                      "modules/sql-database/alerts/app-memory-percent",
-                      "modules/sql-database/alerts/sql-instance-cpu-percent",
-                      "modules/sql-database/alerts/sql-instance-memory-percent"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Storage Account",
-                "icon": "folder",
-                "pages": [
-                  "modules/storage-account/resource",
-                  {
-                    "group": "Alerts",
-                    "icon": "bells",
-                    "pages": [
-                      "modules/storage-account/alerts/availability",
-                      "modules/storage-account/alerts/success-server-latency",
-                      "modules/storage-account/alerts/used-capacity"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "AI Search Service",
-                "icon": "folder",
-                "pages": [
-                  "modules/ai-search-service/resource",
-                  {
-                    "group": "Alerts",
-                    "icon": "bells",
-                    "pages": [
-                      "modules/ai-search-service/alerts/search-latency",
-                      "modules/ai-search-service/alerts/throttled-search-queries-percentage"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "AI Services",
-                "icon": "folder",
-                "pages": [
-                  "modules/ai-services/resource",
-                  {
-                    "group": "Alerts",
-                    "icon": "bells",
-                    "pages": [
-                      "modules/ai-services/alerts/availability",
-                      "modules/ai-services/alerts/first-byte-latency",
-                      "modules/ai-services/alerts/last-byte-latency",
-                      "modules/ai-services/alerts/processed-inference-tokens"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "AI Hub",
-                "icon": "folder",
-                "pages": [
-                  "modules/ai-hub/resource"
-                ]
-              },
-              {
-                "group": "AI Hub Connections",
-                "icon": "folder",
-                "pages": [
-                  "modules/ai-services-connection/resource",
-                  "modules/api-key-hub-connection/resource"
-                ]
-              },
-              {
-                "group": "AI Project (Hub)",
-                "icon": "folder",
-                "pages": [
-                  "modules/ai-project/resource"
-                ]
-              }
+              "modules/action-group-map/README",
+              "modules/action-group-map/CHANGELOG"
             ]
           },
           {
             "group": "Templates",
             "pages": [
-              "templates/framework-core/template"
+
             ]
           }
         ]
