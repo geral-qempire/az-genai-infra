@@ -79,6 +79,14 @@
                   "modules/ai-services/README",
                   "modules/ai-services/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Services Availability",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services-avail/README",
+                  "modules/ai-services-avail/CHANGELOG"
+                ]
               }
             ]
           },
