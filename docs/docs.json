@@ -111,6 +111,14 @@
                   "modules/ai-services-ttft/README",
                   "modules/ai-services-ttft/CHANGELOG"
                 ]
+              },
+              {
+                "group": "AI Services TTLT",
+                "icon": "folder",
+                "pages": [
+                  "modules/ai-services-ttlt/README",
+                  "modules/ai-services-ttlt/CHANGELOG"
+                ]
               }
             ]
           },
