@@ -231,6 +231,14 @@
                   "modules/sql-database-stor/README",
                   "modules/sql-database-stor/CHANGELOG"
                 ]
+              },
+              {
+                "group": "SQL Server",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-server/README",
+                  "modules/sql-server/CHANGELOG"
+                ]
               }
             ]
           },

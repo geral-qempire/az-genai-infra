@@ -1,3 +1,9 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
 ## 1. Module
 Terraform module to create an Azure SQL Server (logical server) with optional Microsoft Entra administrator and Private Endpoint.
 
@@ -57,7 +63,7 @@ module "sql_server" {
 | `server_version` | `string` | `"12.0"` | no | SQL Server version. |
 | `minimum_tls_version` | `string` | `"1.2"` | no | Minimum TLS version. |
 | `public_network_access_enabled` | `bool` | `false` | no | Allow public network access. |
-| `identity` | `object` | `{ type = "SystemAssigned" }` | no | Managed identity configuration. |
+| `identity` | `object({ type = string, identity_ids = optional(list(string), []) })` | `{ type = "SystemAssigned" }` | no | Managed identity configuration. |
 | `enable_private_endpoint` | `bool` | `true` | no | Create a Private Endpoint. |
 | `dns_resource_group_name` | `string` | `""` | no | RG with Private DNS Zone `privatelink.database.windows.net`. |
 | `subnet_id` | `string` | `""` | no | Subnet ID for the Private Endpoint. |
