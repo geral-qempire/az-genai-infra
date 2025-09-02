@@ -247,6 +247,14 @@
                   "modules/storage-account/README",
                   "modules/storage-account/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Storage Account Availability",
+                "icon": "folder",
+                "pages": [
+                  "modules/storage-account-avail/README",
+                  "modules/storage-account-avail/CHANGELOG"
+                ]
               }
             ]
           },

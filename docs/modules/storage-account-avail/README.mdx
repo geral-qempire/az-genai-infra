@@ -1,25 +1,25 @@
 ---
-title: 'Availability'
-description: 'Storage Account requests availability'
-icon: 'bell'
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
 ---
 
-## 1. Alert
+## 1. Module
 Storage Account requests availability.
 
-- **Metric**: `Availability`
-- **Namespace**: `Microsoft.Storage/storageAccounts`
-- **Aggregation**: Average
-- **Operator**: LessThan (fires when availability drops below threshold)
-- **Evaluation Frequency**: 1 minute (PT1M)
-- **Time Window**: 1 minute (PT1M)
-- **Severity**: 1
-- **Auto Mitigate**: false
+- Metric: `Availability`
+- Namespace: `Microsoft.Storage/storageAccounts`
+- Aggregation: Average
+- Operator: LessThan (fires when availability drops below threshold)
+- Evaluation Frequency: 1 minute (PT1M)
+- Time Window: 1 minute (PT1M)
+- Severity: 1
+- Default Threshold: 100
 
 ## 2. Usage
 ```hcl main.tf
 module "storage_availability_alert" {
-  source = "./modules/storage-account-avail" # update to your source
+  source = "../storage-account-avail"
 
   # name defaults to alrt-avail-<storage-account-name>
   resource_group_name = "rg-observability"
@@ -57,9 +57,9 @@ module "storage_availability_alert" {
 | `name` | Name of the metric alert. |
 
 ## 5. Requirements
-- Terraform `>= 1.12.1`
-- AzureRM provider `>= 4.38.1`
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing Storage Account
-  
-Note: This module does not require the `azurerm.dns` provider alias.
+
+
