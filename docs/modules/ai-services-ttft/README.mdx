@@ -10,7 +10,11 @@ Create an Azure Monitor metric alert for Azure OpenAI normalized time-to-first-t
 - Namespace: `Microsoft.CognitiveServices/accounts`
 - Aggregation: `Average`
 - Dimension: `ModelDeploymentName` (defaults to all deployments using `*`)
+- Operator: GreaterThan
+- Evaluation Frequency: 1 minute (PT1M)
+- Time Window: 5 minutes (PT5M)
 - Severity: 2
+- Default Threshold: 5
 
 ## 2. Usage
 ```hcl main.tf

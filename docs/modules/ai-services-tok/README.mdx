@@ -10,7 +10,11 @@ Create an Azure Monitor metric alert for Azure OpenAI processed inference tokens
 - Namespace: `Microsoft.CognitiveServices/accounts`
 - Aggregation: `Total`
 - Dimension: `ModelDeploymentName` (defaults to all deployments using `*`)
+- Operator: GreaterThan
+- Evaluation Frequency: 5 minutes (PT5M)
+- Time Window: 1 hour (PT1H)
 - Severity: 3
+- Default Threshold: 10000000
 
 ## 2. Usage
 ```hcl main.tf

@@ -9,6 +9,12 @@ Create an Azure Monitor metric alert for Azure OpenAI availability rate split by
 - Metric: `AzureOpenAIAvailabilityRate`
 - Namespace: `Microsoft.CognitiveServices/accounts`
 - Dimension: `ModelDeploymentName` (defaults to all deployments using `*`)
+ - Aggregation: Average
+ - Operator: LessThan
+ - Evaluation Frequency: 1 minute (PT1M)
+ - Time Window: 5 minutes (PT5M)
+ - Severity: 1
+ - Default Threshold: 90
 
 ## 2. Usage
 ```hcl
