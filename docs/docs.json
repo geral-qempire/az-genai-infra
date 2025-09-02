@@ -263,6 +263,14 @@
                   "modules/storage-account-sslat/README",
                   "modules/storage-account-sslat/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Storage Account Used Capacity",
+                "icon": "folder",
+                "pages": [
+                  "modules/storage-account-used/README",
+                  "modules/storage-account-used/CHANGELOG"
+                ]
               }
             ]
           },
