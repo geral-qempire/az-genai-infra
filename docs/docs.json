@@ -183,6 +183,14 @@
                   "modules/sql-database/README",
                   "modules/sql-database/CHANGELOG"
                 ]
+              },
+              {
+                "group": "SQL Database Availability",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-database-avail/README",
+                  "modules/sql-database-avail/CHANGELOG"
+                ]
               }
             ]
           },
