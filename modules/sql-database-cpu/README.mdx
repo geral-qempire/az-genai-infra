@@ -9,6 +9,10 @@ Azure Monitor metric alert for SQL Database app CPU percent.
 
 - Metric: `app_cpu_percent`
 - Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: Average
+- Operator: GreaterThan
+- Evaluation Frequency: 1 minute (PT1M)
+- Time Window: 5 minutes (PT5M)
 - Severity: `2`
 
 ## 2. Usage

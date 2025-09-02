@@ -1,40 +1,44 @@
 ---
-title: 'Storage Percent'
-description: 'Percent of database storage used'
-icon: 'bell'
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
 ---
 
-## 1. Alert
-Percent of database storage used.
+## 1. Module
+Azure Monitor metric alert for SQL Database storage percent used.
 
-- **Metric**: `storage_percent`
-- **Namespace**: `Microsoft.Sql/servers/databases`
-- **Aggregation**: Average
-- **Operator**: GreaterThan (fires when percentage exceeds threshold)
-- **Evaluation Frequency**: 1 minute (PT1M)
-- **Time Window**: 5 minutes (PT5M)
-- **Severity**: 3
+- Metric: `storage_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: Average
+- Operator: GreaterThan
+- Evaluation Frequency: 1 minute (PT1M)
+- Time Window: 5 minutes (PT5M)
+- Severity: `3`
 
 ## 2. Usage
 ```hcl main.tf
 module "sql_db_storage_pct_alert" {
-  source = "./modules/sql-database-stor" # update to your source
+  source = "../sql-database-stor"
 
-  # name defaults to alrt-stor-<db-name>
+  # Defaults name to alrt-stor-<db-name>
+  # name = "alrt-stor-appdb"
+
   resource_group_name = "rg-observability"
   scopes              = [module.sql_database.id]
 
-  # Default threshold is 80%
-  # threshold = 80
+  # Threshold in percent (fires when above)
+  threshold = 80
 
-  # Optional: custom description
-  description = "SQL DB storage percent above 80% over 5 minutes"
-
-  # Optional: enable/disable the alert
-  enabled = true
-
-  # Optional: notify action groups when alert fires
+  # Optional
+  description   = "SQL DB storage percent above 80% over 5 minutes"
+  enabled       = true
+  auto_mitigate = true
   action_group_ids = []
+
+  tags = {
+    environment = "dev"
+    project     = "acme"
+  }
 }
 ```
 
@@ -47,7 +51,9 @@ module "sql_db_storage_pct_alert" {
 | `threshold` | `number` | `80` | no | Storage percent threshold. Fires when above this value. |
 | `description` | `string` | `null` | no | Custom description for the alert. Auto-generated if not provided. |
 | `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
+| `auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
 | `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to the metric alert resource. |
 
 ## 4. Outputs
 | Name | Description |

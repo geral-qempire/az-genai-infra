@@ -9,6 +9,10 @@ Azure Monitor metric alert for SQL Database requests availability.
 
 - Metric: `availability`
 - Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: Average
+- Operator: LessThan
+- Evaluation Frequency: 1 minute (PT1M)
+- Time Window: 5 minutes (PT5M)
 - Severity: `1`
 
 ## 2. Usage

@@ -5,32 +5,32 @@ icon: 'circle-info'
 ---
 
 ## 1. Module
-Azure Monitor metric alert for SQL Database SQL instance memory percent.
+Azure Monitor metric alert for SQL Database storage percent used.
 
-- Metric: `sql_instance_memory_percent`
+- Metric: `storage_percent`
 - Namespace: `Microsoft.Sql/servers/databases`
 - Aggregation: Average
 - Operator: GreaterThan
-- Evaluation Frequency: 5 minutes (PT5M)
+- Evaluation Frequency: 1 minute (PT1M)
 - Time Window: 5 minutes (PT5M)
 - Severity: `3`
 
 ## 2. Usage
 ```hcl
-module "sql_db_sql_instance_memory_alert" {
-  source = "../sql-database-sqlmem"
+module "sql_db_storage_pct_alert" {
+  source = "../sql-database-stor"
 
-  # Defaults name to alrt-sqlmem-<db-name>
-  # name = "alrt-sqlmem-appdb"
+  # Defaults name to alrt-stor-<db-name>
+  # name = "alrt-stor-appdb"
 
   resource_group_name = "rg-observability"
   scopes              = [module.sql_database.id]
 
   # Threshold in percent (fires when above)
-  threshold = 90
+  threshold = 80
 
   # Optional
-  description   = "SQL instance memory percent above 90% over 5 minutes"
+  description   = "SQL DB storage percent above 80% over 5 minutes"
   enabled       = true
   auto_mitigate = true
   action_group_ids = []
@@ -45,10 +45,10 @@ module "sql_db_sql_instance_memory_alert" {
 ## 3. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
-| `name` | `string` | `null` | no | Name of the metric alert (defaults to `alrt-sqlmem-<resource-name>`). |
+| `name` | `string` | `null` | no | Name of the metric alert (defaults to `alrt-stor-<resource-name>`). |
 | `resource_group_name` | `string` | n/a | yes | Resource group in which to create the alert. |
 | `scopes` | `list(string)` | n/a | yes | List of SQL Database resource IDs to monitor. |
-| `threshold` | `number` | `90` | no | Memory percent threshold. Fires when above this value. |
+| `threshold` | `number` | `80` | no | Storage percent threshold. Fires when above this value. |
 | `description` | `string` | `null` | no | Custom description for the alert. Auto-generated if not provided. |
 | `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
 | `auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |

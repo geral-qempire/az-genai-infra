@@ -223,6 +223,14 @@
                   "modules/sql-database-sqlmem/README",
                   "modules/sql-database-sqlmem/CHANGELOG"
                 ]
+              },
+              {
+                "group": "SQL Database Storage %",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-database-stor/README",
+                  "modules/sql-database-stor/CHANGELOG"
+                ]
               }
             ]
           },
