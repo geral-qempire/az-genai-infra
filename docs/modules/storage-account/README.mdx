@@ -1,8 +1,14 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
 ## 1. Module
 Terraform module to create an Azure Storage Account with optional per-service Private Endpoints.
 
 ## 2. Usage
-```hcl
+```hcl main.tf
 module "region_abbreviations" {
   source = "../region-abbreviations"
 }
@@ -27,7 +33,7 @@ module "storage_account" {
 
   # Network Rules
   network_rules_default_action = "Deny"
-  network_rules_bypass         = ["AzureServices"] # allowed: AzureServices, Logging, Metrics; empty list for none
+  network_rules_bypass         = ["AzureServices"]
 
   # Private Endpoints (optional)
   enable_private_endpoint_blob  = true

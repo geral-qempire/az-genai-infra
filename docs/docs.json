@@ -239,6 +239,14 @@
                   "modules/sql-server/README",
                   "modules/sql-server/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Storage Account",
+                "icon": "folder",
+                "pages": [
+                  "modules/storage-account/README",
+                  "modules/storage-account/CHANGELOG"
+                ]
               }
             ]
           },
