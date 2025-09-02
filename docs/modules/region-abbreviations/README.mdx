@@ -1,0 +1,32 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
+## 1. Module
+Expose a canonical map of Azure region names (canonical and display forms) to short abbreviations.
+
+## 2. Usage
+```hcl main.tf
+module "region_abbreviations" {
+  source = "../region-abbreviations"
+}
+
+locals {
+  region_abbr = lookup(module.region_abbreviations.regions, var.location, null)
+}
+```
+
+## 3. Inputs
+None.
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `regions` | Map of Azure location names (canonical and display formats) to abbreviations. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1`
+
+
