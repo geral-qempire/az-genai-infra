@@ -143,6 +143,14 @@
                   "modules/key-vault/README",
                   "modules/key-vault/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Key Vault Availability",
+                "icon": "folder",
+                "pages": [
+                  "modules/key-vault-avail/README",
+                  "modules/key-vault-avail/CHANGELOG"
+                ]
               }
             ]
           },
