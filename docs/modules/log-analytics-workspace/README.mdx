@@ -1,8 +1,14 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
 ## 1. Module
-Terraform module to create an Azure Log Analytics Workspace.
+Create an Azure Log Analytics Workspace with configurable SKU, retention, daily quota and tags.
 
 ## 2. Usage
-```hcl
+```hcl main.tf
 module "region_abbreviations" {
   source = "../region-abbreviations"
 }
@@ -36,8 +42,8 @@ module "log_analytics" {
 | `resource_group_name` | `string` | n/a | yes | Resource group in which to create the workspace. |
 | `region_abbreviations` | `map(string)` | n/a | yes | Map of Azure locations to abbreviations. |
 | `sku` | `string` | `"PerGB2018"` | no | Workspace SKU. |
-| `retention_in_days` | `number` | `30` | no | Data retention in days. (7-730) |
-| `daily_quota_gb` | `number` | `-1` | no | Daily ingestion cap in GB. -1 means unlimited. |
+| `retention_in_days` | `number` | `30` | no | Data retention in days (7-730). |
+| `daily_quota_gb` | `number` | `-1` | no | Daily ingestion cap in GB (`-1` unlimited). |
 | `tags` | `map(string)` | `{}` | no | Tags to apply to the workspace. |
 
 ## 4. Outputs
@@ -45,13 +51,12 @@ module "log_analytics" {
 |------|-------------|
 | `log_analytics_workspace_id` | Resource ID of the Log Analytics Workspace. |
 | `log_analytics_workspace_name` | Name of the Log Analytics Workspace. |
-| `log_analytics_workspace_customer_id` | The immutable Workspace (Customer) ID (GUID). |
-| `log_analytics_workspace_primary_shared_key` | Primary shared key for the Workspace (sensitive). |
-| `log_analytics_workspace_secondary_shared_key` | Secondary shared key for the Workspace (sensitive). |
+| `log_analytics_workspace_customer_id` | Immutable Workspace (Customer) ID (GUID). |
+| `log_analytics_workspace_primary_shared_key` | Primary shared key (sensitive). |
+| `log_analytics_workspace_secondary_shared_key` | Secondary shared key (sensitive). |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
-- Existing Resource Group
 
 
