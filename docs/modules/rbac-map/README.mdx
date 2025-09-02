@@ -1,0 +1,48 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
+## 1. Module
+Manage multiple Azure role assignments from a single `rbac` map input. Each entry creates an `azurerm_role_assignment` using the provided `principal_id`, `scope_id`, and either `role_definition_id` or `role_definition_name`.
+
+## 2. Usage
+```hcl main.tf
+module "rbac_map" {
+  source = "../rbac-map"
+
+  rbac = {
+    # Example using role_definition_id
+    engineer_reader = {
+      principal_id       = azuread_service_principal.engineer.object_id
+      scope_id           = azurerm_resource_group.rg.id
+      role_definition_id = "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" # Reader
+      # principal_type   = "ServicePrincipal"
+    }
+
+    # Example using role_definition_name
+    techlead_reader = {
+      principal_id         = azuread_service_principal.techlead.object_id
+      scope_id             = azurerm_resource_group.rg.id
+      role_definition_name = "Reader"
+    }
+  }
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `rbac` | `map(object({ principal_id = string, scope_id = string, role_definition_id = optional(string), role_definition_name = optional(string), principal_type = optional(string) }))` | n/a | yes | Map keyed by an id. Each object specifies the principal to assign, the scope, and the role by id or name. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `role_assignment_ids` | Map of role assignment resource IDs keyed by the RBAC map key. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+
+

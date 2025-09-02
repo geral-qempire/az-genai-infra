@@ -151,6 +151,14 @@
                   "modules/key-vault-avail/README",
                   "modules/key-vault-avail/CHANGELOG"
                 ]
+              },
+              {
+                "group": "RBAC Map",
+                "icon": "folder",
+                "pages": [
+                  "modules/rbac-map/README",
+                  "modules/rbac-map/CHANGELOG"
+                ]
               }
             ]
           },
