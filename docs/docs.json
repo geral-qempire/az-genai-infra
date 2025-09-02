@@ -215,6 +215,14 @@
                   "modules/sql-database-sqlcpu/README",
                   "modules/sql-database-sqlcpu/CHANGELOG"
                 ]
+              },
+              {
+                "group": "SQL Database SQL Instance Memory %",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-database-sqlmem/README",
+                  "modules/sql-database-sqlmem/CHANGELOG"
+                ]
               }
             ]
           },

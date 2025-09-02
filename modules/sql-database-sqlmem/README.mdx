@@ -5,19 +5,19 @@ icon: 'circle-info'
 ---
 
 ## 1. Module
-Azure Monitor metric alert for SQL Database app memory percent.
+Azure Monitor metric alert for SQL Database SQL instance memory percent.
 
-- Metric: `app_memory_percent`
+- Metric: `sql_instance_memory_percent`
 - Namespace: `Microsoft.Sql/servers/databases`
 - Severity: `3`
 
 ## 2. Usage
-```hcl main.tf
-module "sql_db_app_memory_alert" {
-  source = "../sql-database-mem"
+```hcl
+module "sql_db_sql_instance_memory_alert" {
+  source = "../sql-database-sqlmem"
 
-  # Defaults name to alrt-mem-<db-name>
-  # name = "alrt-mem-appdb"
+  # Defaults name to alrt-sqlmem-<db-name>
+  # name = "alrt-sqlmem-appdb"
 
   resource_group_name = "rg-observability"
   scopes              = [module.sql_database.id]
@@ -26,7 +26,7 @@ module "sql_db_app_memory_alert" {
   threshold = 90
 
   # Optional
-  description   = "SQL DB app memory percent above 90% over 5 minutes"
+  description   = "SQL instance memory percent above 90% over 5 minutes"
   enabled       = true
   auto_mitigate = true
   action_group_ids = []
@@ -41,7 +41,7 @@ module "sql_db_app_memory_alert" {
 ## 3. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
-| `name` | `string` | `null` | no | Name of the metric alert (defaults to `alrt-mem-<resource-name>`). |
+| `name` | `string` | `null` | no | Name of the metric alert (defaults to `alrt-sqlmem-<resource-name>`). |
 | `resource_group_name` | `string` | n/a | yes | Resource group in which to create the alert. |
 | `scopes` | `list(string)` | n/a | yes | List of SQL Database resource IDs to monitor. |
 | `threshold` | `number` | `90` | no | Memory percent threshold. Fires when above this value. |
@@ -60,7 +60,7 @@ module "sql_db_app_memory_alert" {
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
-- An existing Azure Resource Group
-- An existing SQL Database
+- Existing Resource Group
+- Existing SQL Database
 
 
