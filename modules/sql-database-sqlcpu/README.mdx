@@ -1,40 +1,40 @@
 ---
-title: 'SQL Instance CPU Percent'
-description: 'CPU usage by all user and system workloads on the SQL Database instance'
-icon: 'bell'
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
 ---
 
-## 1. Alert
-CPU usage by all user and system workloads on the SQL Database instance.
+## 1. Module
+Azure Monitor metric alert for SQL Database SQL instance CPU percent.
 
-- **Metric**: `sql_instance_cpu_percent`
-- **Namespace**: `Microsoft.Sql/servers/databases`
-- **Aggregation**: Average
-- **Operator**: GreaterThan (fires when percentage exceeds threshold)
-- **Evaluation Frequency**: 5 minutes (PT5M)
-- **Time Window**: 15 minutes (PT15M)
-- **Severity**: 3
+- Metric: `sql_instance_cpu_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Severity: `3`
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "sql_db_sql_instance_cpu_alert" {
-  source = "./modules/sql-database-sqlcpu" # update to your source
+  source = "../sql-database-sqlcpu"
 
-  # name defaults to alrt-sqlcpu-<db-name>
+  # Defaults name to alrt-sqlcpu-<db-name>
+  # name = "alrt-sqlcpu-appdb"
+
   resource_group_name = "rg-observability"
   scopes              = [module.sql_database.id]
 
-  # Default threshold is 70%
-  # threshold = 70
+  # Threshold in percent (fires when above)
+  threshold = 70
 
-  # Optional: custom description
-  description = "SQL instance CPU percent above 70% over 15 minutes"
-
-  # Optional: enable/disable the alert
-  enabled = true
-
-  # Optional: notify action groups when alert fires
+  # Optional
+  description   = "SQL instance CPU percent above 70% over 15 minutes"
+  enabled       = true
+  auto_mitigate = true
   action_group_ids = []
+
+  tags = {
+    environment = "dev"
+    project     = "acme"
+  }
 }
 ```
 
@@ -47,7 +47,9 @@ module "sql_db_sql_instance_cpu_alert" {
 | `threshold` | `number` | `70` | no | CPU percent threshold. Fires when above this value. |
 | `description` | `string` | `null` | no | Custom description for the alert. Auto-generated if not provided. |
 | `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
+| `auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
 | `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to the metric alert resource. |
 
 ## 4. Outputs
 | Name | Description |
@@ -58,9 +60,7 @@ module "sql_db_sql_instance_cpu_alert" {
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
-- An existing Azure Resource Group
-- An existing SQL Database
-  
-Note: This module does not require the `azurerm.dns` provider alias.
+- Existing Resource Group
+- Existing SQL Database
 
 
