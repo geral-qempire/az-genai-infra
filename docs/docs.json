@@ -175,6 +175,14 @@
                   "modules/region-abbreviations/README",
                   "modules/region-abbreviations/CHANGELOG"
                 ]
+              },
+              {
+                "group": "SQL Database",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-database/README",
+                  "modules/sql-database/CHANGELOG"
+                ]
               }
             ]
           },
