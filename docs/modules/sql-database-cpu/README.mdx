@@ -1,40 +1,40 @@
 ---
-title: 'App CPU Percent'
-description: 'CPU usage for app workload on a serverless SQL Database'
-icon: 'bell'
+title: 'Readme'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
 ---
 
-## 1. Alert
-CPU usage for app workload on a serverless SQL Database.
+## 1. Module
+Azure Monitor metric alert for SQL Database app CPU percent.
 
-- **Metric**: `app_cpu_percent`
-- **Namespace**: `Microsoft.Sql/servers/databases`
-- **Aggregation**: Average
-- **Operator**: GreaterThan (fires when percentage exceeds threshold)
-- **Evaluation Frequency**: 1 minute (PT1M)
-- **Time Window**: 5 minutes (PT5M)
-- **Severity**: 2
+- Metric: `app_cpu_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Severity: `2`
 
 ## 2. Usage
 ```hcl main.tf
 module "sql_db_app_cpu_alert" {
-  source = "./modules/sql-database-cpu" # update to your source
+  source = "../sql-database-cpu"
 
-  # name defaults to alrt-cpu-<db-name>
+  # Defaults name to alrt-cpu-<db-name>
+  # name = "alrt-cpu-appdb"
+
   resource_group_name = "rg-observability"
   scopes              = [module.sql_database.id]
 
-  # Default threshold is 80%
-  # threshold = 80
+  # Threshold in percent (fires when above)
+  threshold = 80
 
-  # Optional: custom description
-  description = "SQL DB app CPU percent above 80% over 5 minutes"
-
-  # Optional: enable/disable the alert
-  enabled = true
-
-  # Optional: notify action groups when alert fires
+  # Optional
+  description   = "SQL DB app CPU percent above 80% over 5 minutes"
+  enabled       = true
+  auto_mitigate = true
   action_group_ids = []
+
+  tags = {
+    environment = "dev"
+    project     = "acme"
+  }
 }
 ```
 
@@ -47,7 +47,9 @@ module "sql_db_app_cpu_alert" {
 | `threshold` | `number` | `80` | no | CPU percent threshold. Fires when above this value. |
 | `description` | `string` | `null` | no | Custom description for the alert. Auto-generated if not provided. |
 | `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
+| `auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
 | `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to the metric alert resource. |
 
 ## 4. Outputs
 | Name | Description |
@@ -60,7 +62,5 @@ module "sql_db_app_cpu_alert" {
 - AzureRM provider `~> 4.38`
 - An existing Azure Resource Group
 - An existing SQL Database
-  
-Note: This module does not require the `azurerm.dns` provider alias.
 
 

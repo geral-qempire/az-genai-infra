@@ -191,6 +191,14 @@
                   "modules/sql-database-avail/README",
                   "modules/sql-database-avail/CHANGELOG"
                 ]
+              },
+              {
+                "group": "SQL Database App CPU Percent",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-database-cpu/README",
+                  "modules/sql-database-cpu/CHANGELOG"
+                ]
               }
             ]
           },
