@@ -1,0 +1,68 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'circle-info'
+---
+
+## 1. Module
+Create an Azure Monitor metric alert for Key Vault capacity used (SaturationShoebox).
+- Metric: `SaturationShoebox`
+- Namespace: `Microsoft.KeyVault/vaults`
+- Severity: 1
+
+## 2. Usage
+```hcl
+module "kv_saturation_alert" {
+  source = "../key-vault-sat"
+
+  # Optional name. If omitted, defaults to: alrt-sat-<resource-name>
+  # name = "alert-kv-saturation-prod"
+
+  resource_group_name = "rg-observability-prod"
+  scopes              = [module.key_vault.id]
+
+  # Default threshold is 75%
+  # threshold = 75
+
+  # Optional settings
+  description   = "Key Vault capacity used above 75% over 5 minutes"
+  enabled       = true
+  auto_mitigate = true
+
+  action_group_ids = [
+    module.action_group.action_group_id
+  ]
+
+  tags = {
+    environment = "prod"
+    project     = "acme"
+  }
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `name` | `string` | `null` | no | Name of the metric alert. Defaults to `alrt-sat-<resource-name>`. |
+| `resource_group_name` | `string` | n/a | yes | Resource group in which to create the alert. |
+| `scopes` | `list(string)` | n/a | yes | List of Key Vault resource IDs to monitor. |
+| `threshold` | `number` | `75` | no | Used capacity threshold percentage. Fires when above this value. |
+| `description` | `string` | `null` | no | Custom alert description. Auto-generated if not provided. |
+| `enabled` | `bool` | `true` | no | Whether the alert is enabled. |
+| `action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify when the alert fires. |
+| `auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to the metric alert resource. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `id` | Resource ID of the metric alert. |
+| `name` | Name of the metric alert. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- Existing Resource Group
+- Existing Azure Key Vault
+
+
