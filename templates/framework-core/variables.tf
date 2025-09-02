@@ -3,6 +3,8 @@ variable "service_prefix" {
   description = "Prefix or name of the project"
 }
 
+ 
+
 variable "location" {
   type        = string
   description = "Azure region for the deployment."
