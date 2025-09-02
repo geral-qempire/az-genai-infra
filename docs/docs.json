@@ -193,11 +193,19 @@
                 ]
               },
               {
-                "group": "SQL Database App CPU Percent",
+                "group": "SQL Database App CPU %",
                 "icon": "folder",
                 "pages": [
                   "modules/sql-database-cpu/README",
                   "modules/sql-database-cpu/CHANGELOG"
+                ]
+              },
+              {
+                "group": "SQL Database App Memory %",
+                "icon": "folder",
+                "pages": [
+                  "modules/sql-database-mem/README",
+                  "modules/sql-database-mem/CHANGELOG"
                 ]
               }
             ]
