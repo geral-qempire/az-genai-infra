@@ -135,6 +135,14 @@
                   "modules/application-insights/README",
                   "modules/application-insights/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Key Vault",
+                "icon": "folder",
+                "pages": [
+                  "modules/key-vault/README",
+                  "modules/key-vault/CHANGELOG"
+                ]
               }
             ]
           },
