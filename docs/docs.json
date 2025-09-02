@@ -255,6 +255,14 @@
                   "modules/storage-account-avail/README",
                   "modules/storage-account-avail/CHANGELOG"
                 ]
+              },
+              {
+                "group": "Storage Account Success Server Latency",
+                "icon": "folder",
+                "pages": [
+                  "modules/storage-account-sslat/README",
+                  "modules/storage-account-sslat/CHANGELOG"
+                ]
               }
             ]
           },
