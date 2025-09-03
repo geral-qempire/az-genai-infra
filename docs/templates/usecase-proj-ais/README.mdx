@@ -101,7 +101,50 @@ module "usecase-proj-ais" {
 | `role_assignments_managed_identities` | Map of role assignment IDs for Managed Identities. |
 | `role_assignments_service_principals` | Map of role assignment IDs for Service Principals. |
 
-## 5. Requirements
+## 5. Group Roles
+
+### Read Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI User | AI Services |
+| Reader | AI Project |
+
+### Full Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI Contributor | AI Services |
+| Reader | AI Project |
+| BDSO Azure AI Developer | AI Project |
+
+## 6. Managed Identity roles
+The following roles are given to the resources Managed Identities.
+
+| Managed Identity | Role | Resource |
+| --- | --- | --- |
+| AI Services MI | Search Index Data Contributor | AI Search Service |
+| AI Services MI | Search Index Data Reader | AI Search Service |
+| AI Services MI | Search Service Contributor | AI Search Service |
+| AI Search MI | Cognitive Services Contributor | AI Services |
+| AI Search MI | Cognitive Services OpenAI Contributor | AI Services |
+| AI Hub MI | Contributor | Resource Group |
+
+## 7. Service principal roles
+
+### App Service Principal
+
+| Role | Scope |
+| --- | --- |
+| Cognitive Services OpenAI User | AI Services |
+
+## 8. Requirements
 
 - Terraform: >= 1.12.1, < 2.0.0
 - Provider azurerm: ~> 4.38 (with alias `azurerm.dns` configured)
