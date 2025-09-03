@@ -294,7 +294,7 @@
                 ]
               },
               {
-                "group": "Use Case - Proj + Ais + Storage + SQL",
+                "group": "Use Case - Proj + Ais + St + Sql",
                 "icon": "folder",
                 "pages": [
                   "templates/usecase-proj-ais-st-sql/README",
