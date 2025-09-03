@@ -506,7 +506,7 @@ module "ai_hub" {
 
 # -------------------- AI Hub Connections --------------------
 module "ai_services_hub_connection" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-hub-connection?ref=ais-hub-conn-v0.1.0"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-hub-connection?ref=aiscon-v0.1.0"
 
   parent_id          = module.ai_hub.ai_hub_id
   ai_services_module = module.ai_services
@@ -514,7 +514,7 @@ module "ai_services_hub_connection" {
 }
 
 module "ai_search_hub_connection" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-search-hub-connection?ref=srch-hub-conn-v0.1.0"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-search-hub-connection?ref=srchcon-v0.1.0"
 
   parent_id                = module.ai_hub.ai_hub_id
   ai_search_service_module = module.ai_search_service
@@ -522,7 +522,7 @@ module "ai_search_hub_connection" {
 }
 
 module "api_key_hub_connection" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/api-key-hub-connection?ref=apikey-hub-conn-v0.1.0"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/api-key-hub-connection?ref=apicon-v0.1.0"
 
   parent_id       = module.ai_hub.ai_hub_id
   connection_name = "con_storage_blob"

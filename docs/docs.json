@@ -277,7 +277,22 @@
           {
             "group": "Templates",
             "pages": [
-
+              {
+                "group": "Framework - Core",
+                "icon": "folder",
+                "pages": [
+                  "templates/framework-core/README",
+                  "templates/framework-core/Changelog"
+                ]
+              },
+              {
+                "group": "Use Case - Proj + Ais",
+                "icon": "folder",
+                "pages": [
+                  "templates/usecase-proj-ais/README",
+                  "templates/usecase-proj-ais/Changelog"
+                ]
+              }
             ]
           }
         ]

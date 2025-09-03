@@ -1,7 +1,7 @@
 ---
-title: 'Template'
+title: 'README'
 description: 'An overview of requirements, inputs, outputs, and usage.'
-icon: 'puzzle'
+icon: 'circle-info'
 ---
 
 ## 1. Template
@@ -19,101 +19,101 @@ module "framework-core" {
   }
 
   # Context
-  service_prefix = var.service_prefix
-  location       = var.location
-  tenant_id      = var.tenant_id
-  environment    = var.environment
-  tags           = var.tags
+  service_prefix = "chatbot"
+  location       = "westeurope"
+  tenant_id      = "00000000-0000-0000-0000-000000000000"
+  environment    = "dev"
+  tags           = { env = "dev", owner = "ai-platform", costcenter = "CC1234" }
 
   # Networking for Private Endpoints
-  subnet_name              = var.subnet_name
-  vnet_name                = var.vnet_name
-  vnet_resource_group_name = var.vnet_resource_group_name
-  dns_resource_group_name  = var.dns_resource_group_name
+  subnet_name              = "snet-priv-endpoints"
+  vnet_name                = "vnet-hub"
+  vnet_resource_group_name = "rg-we-platform-networking"
+  dns_resource_group_name  = "rg-we-platform-networking"
 
   # Observability
-  log_analytics_workspace_name                = var.log_analytics_workspace_name
-  log_analytics_workspace_resource_group_name = var.log_analytics_workspace_resource_group_name
+  log_analytics_workspace_name                = "law-core-we"
+  log_analytics_workspace_resource_group_name = "rg-we-platform-observability"
 
   # SQL Server (required)
-  serial_number                = var.serial_number
-  administrator_login          = var.administrator_login
-  administrator_login_password = var.administrator_login_password
-  entra_admin_login_name       = var.entra_admin_login_name
-  entra_admin_object_id        = var.entra_admin_object_id
+  serial_number                = "001"
+  administrator_login          = "sqladminuser"
+  administrator_login_password = "ChangeM3Now!"
+  entra_admin_login_name       = "ai-sql-admins@contoso.com"
+  entra_admin_object_id        = "11111111-1111-1111-1111-111111111111"
 
   # SQL Database
-  sql_database_name                        = var.sql_database_name
-  sql_database_sku_name                    = var.sql_database_sku_name
-  sql_database_min_capacity                = var.sql_database_min_capacity
-  sql_database_auto_pause_delay_in_minutes = var.sql_database_auto_pause_delay_in_minutes
-  sql_database_zone_redundant              = var.sql_database_zone_redundant
-  sql_database_backup_interval_in_hours    = var.sql_database_backup_interval_in_hours
-  sql_database_pitr_days                   = var.sql_database_pitr_days
-  sql_database_weekly_ltr_weeks            = var.sql_database_weekly_ltr_weeks
-  sql_database_monthly_ltr_months          = var.sql_database_monthly_ltr_months
-  sql_database_yearly_ltr_years            = var.sql_database_yearly_ltr_years
+  sql_database_name                        = "sqldb-chatbot"
+  sql_database_sku_name                    = "S0"
+  sql_database_min_capacity                = null
+  sql_database_auto_pause_delay_in_minutes = null
+  sql_database_zone_redundant              = false
+  sql_database_backup_interval_in_hours    = 0
+  sql_database_pitr_days                   = 7
+  sql_database_weekly_ltr_weeks            = 0
+  sql_database_monthly_ltr_months          = 0
+  sql_database_yearly_ltr_years            = 0
 
   # Storage Account
-  storage_account_account_tier             = var.storage_account_account_tier
-  storage_account_account_replication_type = var.storage_account_account_replication_type
-  storage_account_account_kind             = var.storage_account_account_kind
-  storage_account_access_tier              = var.storage_account_access_tier
+  storage_account_account_tier             = "Standard"
+  storage_account_account_replication_type = "LRS"
+  storage_account_account_kind             = "StorageV2"
+  storage_account_access_tier              = "Hot"
 
   # Key Vault
-  key_vault_sku_name                   = var.key_vault_sku_name
-  key_vault_soft_delete_retention_days = var.key_vault_soft_delete_retention_days
-  key_vault_purge_protection_enabled   = var.key_vault_purge_protection_enabled
+  key_vault_sku_name                   = "standard"
+  key_vault_soft_delete_retention_days = 90
+  key_vault_purge_protection_enabled   = true
 
   # AI Search
-  ai_search_sku                 = var.ai_search_sku
-  ai_search_semantic_search_sku = var.ai_search_semantic_search_sku
-  ai_search_replica_count       = var.ai_search_replica_count
-  ai_search_partition_count     = var.ai_search_partition_count
+  ai_search_sku                 = "basic"
+  ai_search_semantic_search_sku = "free"
+  ai_search_replica_count       = 1
+  ai_search_partition_count     = 1
 
   # AI Services
-  ai_services_sku_name                   = var.ai_services_sku_name
-  ai_services_soft_delete_retention_days = var.ai_services_soft_delete_retention_days
-  ai_services_purge_protection_enabled   = var.ai_services_purge_protection_enabled
-  ai_services_model_deployment_names     = var.ai_services_model_deployment_names
+  ai_services_sku_name                   = "S0"
+  ai_services_soft_delete_retention_days = 0
+  ai_services_purge_protection_enabled   = false
+  ai_services_model_deployment_names     = ["gpt-4o-mini", "text-embedding-3-large"]
 
   # Alerts toggles - SQL Database
-  sql_db_alert_availability_enabled            = var.sql_db_alert_availability_enabled
-  sql_db_alert_app_cpu_percent_enabled         = var.sql_db_alert_app_cpu_percent_enabled
-  sql_db_alert_app_memory_percent_enabled      = var.sql_db_alert_app_memory_percent_enabled
-  sql_db_alert_instance_cpu_percent_enabled    = var.sql_db_alert_instance_cpu_percent_enabled
-  sql_db_alert_instance_memory_percent_enabled = var.sql_db_alert_instance_memory_percent_enabled
-  sql_db_alert_storage_percent_enabled         = var.sql_db_alert_storage_percent_enabled
+  sql_db_alert_availability_enabled            = false
+  sql_db_alert_app_cpu_percent_enabled         = false
+  sql_db_alert_app_memory_percent_enabled      = false
+  sql_db_alert_instance_cpu_percent_enabled    = false
+  sql_db_alert_instance_memory_percent_enabled = false
+  sql_db_alert_storage_percent_enabled         = false
 
   # Alerts toggles - Storage Account
-  storage_alert_availability_enabled           = var.storage_alert_availability_enabled
-  storage_alert_success_server_latency_enabled = var.storage_alert_success_server_latency_enabled
-  storage_alert_used_capacity_enabled          = var.storage_alert_used_capacity_enabled
+  storage_alert_availability_enabled           = false
+  storage_alert_success_server_latency_enabled = false
+  storage_alert_used_capacity_enabled          = false
 
   # Alerts toggles - Key Vault
-  key_vault_alert_availability_enabled       = var.key_vault_alert_availability_enabled
-  key_vault_alert_saturation_shoebox_enabled = var.key_vault_alert_saturation_shoebox_enabled
+  key_vault_alert_availability_enabled       = false
+  key_vault_alert_saturation_shoebox_enabled = false
 
   # Alerts toggles - AI Search
-  ai_search_alert_search_latency_enabled = var.ai_search_alert_search_latency_enabled
-  ai_search_alert_throttled_pct_enabled  = var.ai_search_alert_throttled_pct_enabled
+  ai_search_alert_search_latency_enabled = false
+  ai_search_alert_throttled_pct_enabled  = false
 
   # Alerts toggles - AI Services
-  ai_services_alert_availability_rate_enabled = var.ai_services_alert_availability_rate_enabled
-  ai_services_alert_normalized_ttft_enabled   = var.ai_services_alert_normalized_ttft_enabled
-  ai_services_alert_ttlt_enabled              = var.ai_services_alert_ttlt_enabled
-  ai_services_alert_processed_tokens_enabled  = var.ai_services_alert_processed_tokens_enabled
+  ai_services_alert_availability_rate_enabled = false
+  ai_services_alert_normalized_ttft_enabled   = false
+  ai_services_alert_ttlt_enabled              = false
+  ai_services_alert_processed_tokens_enabled  = false
 
   # RBAC - AD Groups (optional)
-  ad_read_group_id = var.ad_read_group_id
-  ad_full_group_id = var.ad_full_group_id
+  ad_read_group_id = "22222222-2222-2222-2222-222222222222"
+  ad_full_group_id = "33333333-3333-3333-3333-333333333333"
 
   # RBAC - Service Principals (optional)
-  sp_cicd_id = var.sp_cicd_id
-  sp_app_id  = var.sp_app_id
+  sp_cicd_id = "44444444-4444-4444-4444-444444444444"
+  sp_app_id  = "55555555-5555-5555-5555-555555555555"
 
   # Alerts - Action Group
-  action_group_emails = var.action_group_emails
+  action_group_emails = ["alerts@contoso.com", "devops@contoso.com"]
 }
 ```
 
@@ -326,20 +326,36 @@ The service principal roles are divided into two: CI/CD Sercice principals and A
 
 | Module | Description | Version |
 | --- | --- | --- |
-| `modules/region-abbreviations` | Region codes used for naming. | vX.Y.Z |
-| `modules/application-insights` | Application Insights linked to LAW. | vX.Y.Z |
-| `modules/sql-server` | Azure SQL logical server with PE. | vX.Y.Z |
-| `modules/sql-database` | Azure SQL Database with backup config. | vX.Y.Z |
-| `modules/key-vault` | Azure Key Vault with RBAC + PE. | vX.Y.Z |
-| `modules/storage-account` | Storage Account with Blob/File PEs. | vX.Y.Z |
-| `modules/ai-search-service` | Azure AI Search with MI + PE. | vX.Y.Z |
-| `modules/ai-services` | Azure AI Services with MI + PE. | vX.Y.Z |
-| `modules/ai-hub` | Azure AI Hub (system-assigned identity). | vX.Y.Z |
-| `modules/ai-project` | Azure AI Project (system-assigned identity). | vX.Y.Z |
-| `modules/ai-services-hub-connection` | AI Hub connection to AI Services. | vX.Y.Z |
-| `modules/ai-search-hub-connection` | AI Hub connection to AI Search. | vX.Y.Z |
-| `modules/api-key-hub-connection` | AI Hub API key connection. | vX.Y.Z |
-| `modules/action-group-map` | Azure Monitor Action Group via map input. | vX.Y.Z |
-| `modules/rbac-map` | Azure RBAC role assignments via map input. | vX.Y.Z |
+| `modules/region-abbreviations` | Region codes used for naming. | regabbr-v0.1.0 |
+| `modules/application-insights` | Application Insights linked to LAW. | appi-v0.1.0 |
+| `modules/sql-server` | Azure SQL logical server with PE. | sqlsrv-v0.1.0 |
+| `modules/sql-database` | Azure SQL Database with backup config. | sqldb-v0.1.0 |
+| `modules/sql-database-avail` | SQL Database Availability alert. | sqldb-avail-v0.1.0 |
+| `modules/sql-database-cpu` | SQL Database App CPU Percent alert. | sqldb-cpu-v0.1.0 |
+| `modules/sql-database-mem` | SQL Database App Memory Percent alert. | sqldb-mem-v0.1.0 |
+| `modules/sql-database-sqlcpu` | SQL Database Instance CPU Percent alert. | sqldb-sqlcpu-v0.1.0 |
+| `modules/sql-database-sqlmem` | SQL Database Instance Memory Percent alert. | sqldb-sqlmem-v0.1.0 |
+| `modules/sql-database-stor` | SQL Database Storage Percent alert. | sqldb-stor-v0.1.0 |
+| `modules/key-vault` | Azure Key Vault with RBAC + PE. | kv-v0.1.0 |
+| `modules/key-vault-avail` | Key Vault Availability alert. | kv-avail-v0.1.0 |
+| `modules/key-vault-sat` | Key Vault SaturationShoebox alert. | kv-sat-v0.1.0 |
+| `modules/storage-account` | Storage Account with Blob/File PEs. | st-v0.1.0 |
+| `modules/storage-account-avail` | Storage Account Availability alert. | st-avail-v0.1.0 |
+| `modules/storage-account-sslat` | Storage Account SuccessServerLatency alert. | st-sslat-v0.1.0 |
+| `modules/storage-account-used` | Storage Account UsedCapacity alert. | st-used-v0.1.0 |
+| `modules/ai-search` | Azure AI Search with MI + PE. | srch-v0.1.0 |
+| `modules/ai-search-lat` | AI Search SearchLatency alert. | srch-lat-v0.1.0 |
+| `modules/ai-search-thrpct` | AI Search ThrottledSearchQueriesPercentage alert. | srch-thrpct-v0.1.0 |
+| `modules/ai-services` | Azure AI Services with MI + PE. | ais-v0.1.0 |
+| `modules/ai-services-avail` | AzureOpenAIAvailabilityRate alert. | ais-avail-v0.1.0 |
+| `modules/ai-services-ttft` | AzureOpenAINormalizedTTFTInMS alert. | ais-ttft-v0.1.0 |
+| `modules/ai-services-ttlt` | AzureOpenAITTLTInMS alert. | ais-ttlt-v0.1.0 |
+| `modules/ai-services-tok` | ProcessedInferenceTokens alert. | ais-tok-v0.1.0 |
+| `modules/ai-hub` | Azure AI Hub (system-assigned identity). | hub-v0.1.0 |
+| `modules/ai-project` | Azure AI Project (system-assigned identity). | proj-v0.1.0 |
+| `modules/ai-services-hub-connection` | AI Hub connection to AI Services. | aiscon-v0.1.0 |
+| `modules/ai-search-hub-connection` | AI Hub connection to AI Search. | srchcon-v0.1.0 |
+| `modules/api-key-hub-connection` | AI Hub API key connection. | apicon-v0.1.0 |
+| `modules/action-group-map` | Azure Monitor Action Group via map input. | agm-v0.1.0 |
 
 
