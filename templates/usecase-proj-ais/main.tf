@@ -8,7 +8,7 @@
 # Abbreviations
 ########################################
 module "region_abbreviations" {
-  source = "../../modules/region-abbreviations"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/region-abbreviations?ref=regabbr-v0.1.0"
 }
 
 ########################################
@@ -49,7 +49,7 @@ locals {
 
 module "action_group" {
   count = length(local.action_group_receivers) > 0 ? 1 : 0
-  source = "../../modules/action-group-map"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/action-group-map?ref=agm-v0.1.0"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
@@ -69,7 +69,7 @@ module "action_group" {
 # AI Services (PE + Identity)
 ########################################
 module "ai_services" {
-  source = "../../modules/ai-services"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services?ref=ais-v0.1.0"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -105,7 +105,7 @@ locals {
 }
 
 module "ai_services_alert_availability_rate" {
-  source = "../../modules/ai-services-avail"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-avail?ref=ais-avail-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -116,7 +116,7 @@ module "ai_services_alert_availability_rate" {
 }
 
 module "ai_services_alert_normalized_ttft" {
-  source = "../../modules/ai-services-ttft"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-ttft?ref=ais-ttft-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -127,7 +127,7 @@ module "ai_services_alert_normalized_ttft" {
 }
 
 module "ai_services_alert_ttlt" {
-  source = "../../modules/ai-services-ttlt"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-ttlt?ref=ais-ttlt-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -138,7 +138,7 @@ module "ai_services_alert_ttlt" {
 }
 
 module "ai_services_alert_processed_tokens" {
-  source = "../../modules/ai-services-tok"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-tok?ref=ais-tok-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -153,7 +153,7 @@ module "ai_services_alert_processed_tokens" {
 # AI Project (Identity)
 ########################################
 module "ai_project" {
-  source = "../../modules/ai-project"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-project?ref=proj-v0.1.0"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
@@ -173,7 +173,7 @@ module "ai_project" {
 # Connections (AI Services -> Project)
 ########################################
 module "ai_services_connection" {
-  source = "../../modules/ai-services-hub-connection"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-hub-connection?ref=aiscon-v0.1.0"
 
   parent_id          = module.ai_project.ai_project_id
   ai_services_module = module.ai_services

@@ -3,7 +3,7 @@
 # Abbreviations
 ########################################
 module "region_abbreviations" {
-  source = "../../modules/region-abbreviations"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/region-abbreviations?ref=regabbr-v0.1.0"
 }
 
 ########################################
@@ -39,7 +39,7 @@ data "azurerm_subnet" "private_endpoints" {
 # AI Services (PE + Identity)
 ########################################
 module "ai_services" {
-  source = "../../modules/ai-services"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services?ref=ais-v0.1.0"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -75,7 +75,7 @@ locals {
 }
 
 module "ai_services_alert_availability_rate" {
-  source = "../../modules/ai-services-avail"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-avail?ref=ais-avail-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -86,7 +86,7 @@ module "ai_services_alert_availability_rate" {
 }
 
 module "ai_services_alert_normalized_ttft" {
-  source = "../../modules/ai-services-ttft"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-ttft?ref=ais-ttft-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -97,7 +97,7 @@ module "ai_services_alert_normalized_ttft" {
 }
 
 module "ai_services_alert_ttlt" {
-  source = "../../modules/ai-services-ttlt"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-ttlt?ref=ais-ttlt-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -108,7 +108,7 @@ module "ai_services_alert_ttlt" {
 }
 
 module "ai_services_alert_processed_tokens" {
-  source = "../../modules/ai-services-tok"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-tok?ref=ais-tok-v0.1.0"
 
   resource_group_name     = azurerm_resource_group.this.name
   scopes                  = local.ai_services_scopes
@@ -123,7 +123,7 @@ module "ai_services_alert_processed_tokens" {
 # Storage Account
 ########################################
 module "storage_account" {
-  source = "../../modules/storage-account"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account?ref=st-v0.1.0"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -165,7 +165,7 @@ locals {
 }
 
 module "storage_alert_availability" {
-  source = "../../modules/storage-account-avail"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account-avail?ref=st-avail-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.storage_scopes
@@ -175,7 +175,7 @@ module "storage_alert_availability" {
 }
 
 module "storage_alert_success_server_latency" {
-  source = "../../modules/storage-account-sslat"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account-sslat?ref=st-sslat-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.storage_scopes
@@ -185,7 +185,7 @@ module "storage_alert_success_server_latency" {
 }
 
 module "storage_alert_used_capacity" {
-  source = "../../modules/storage-account-used"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account-used?ref=st-used-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.storage_scopes
@@ -198,7 +198,7 @@ module "storage_alert_used_capacity" {
 # SQL Server (PNA disabled, Private Endpoint)
 ########################################
 module "sql_server" {
-  source = "../../modules/sql-server"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-server?ref=sqlsrv-v0.1.0"
 
   providers = {
     # Forward DNS alias to ensure Private DNS ops use the DNS subscription
@@ -236,7 +236,7 @@ module "sql_server" {
 # SQL Database
 ########################################
 module "sql_database" {
-  source = "../../modules/sql-database"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database?ref=sqldb-v0.1.0"
   
   server_id    = module.sql_server.id
   name         = var.sql_database_name
@@ -262,7 +262,7 @@ locals {
 }
 
 module "sql_db_alert_availability" {
-  source = "../../modules/sql-database-avail"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-avail?ref=sqldb-avail-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -272,7 +272,7 @@ module "sql_db_alert_availability" {
 }
 
 module "sql_db_alert_app_cpu" {
-  source = "../../modules/sql-database-cpu"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-cpu?ref=sqldb-cpu-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -282,7 +282,7 @@ module "sql_db_alert_app_cpu" {
 }
 
 module "sql_db_alert_app_memory" {
-  source = "../../modules/sql-database-mem"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-mem?ref=sqldb-mem-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -292,7 +292,7 @@ module "sql_db_alert_app_memory" {
 }
 
 module "sql_db_alert_instance_cpu" {
-  source = "../../modules/sql-database-sqlcpu"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-sqlcpu?ref=sqldb-sqlcpu-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -302,7 +302,7 @@ module "sql_db_alert_instance_cpu" {
 }
 
 module "sql_db_alert_instance_memory" {
-  source = "../../modules/sql-database-sqlmem"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-sqlmem?ref=sqldb-sqlmem-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -312,7 +312,7 @@ module "sql_db_alert_instance_memory" {
 }
 
 module "sql_db_alert_storage_percent" {
-  source = "../../modules/sql-database-stor"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-stor?ref=sqldb-stor-v0.1.0"
 
   resource_group_name = azurerm_resource_group.this.name
   scopes              = local.sql_db_scopes
@@ -325,7 +325,7 @@ module "sql_db_alert_storage_percent" {
 # AI Project (Identity)
 ########################################
 module "ai_project" {
-  source = "../../modules/ai-project"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-project?ref=proj-v0.1.0"
 
   environment          = var.environment
   service_prefix       = var.service_prefix
@@ -345,7 +345,7 @@ module "ai_project" {
 # Connections (AI Services -> Project)
 ########################################
 module "ai_services_connection" {
-  source = "../../modules/ai-services-hub-connection"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-hub-connection?ref=aiscon-v0.1.0"
 
   parent_id          = module.ai_project.ai_project_id
   ai_services_module = module.ai_services
@@ -364,7 +364,7 @@ locals {
 
 module "action_group" {
   count = length(local.action_group_receivers) > 0 ? 1 : 0
-  source = "../../modules/action-group-map"
+  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/action-group-map?ref=agm-v0.1.0"
 
   environment          = var.environment
   service_prefix       = var.service_prefix

@@ -292,6 +292,14 @@
                   "templates/usecase-proj-ais/README",
                   "templates/usecase-proj-ais/Changelog"
                 ]
+              },
+              {
+                "group": "Use Case - Proj + Ais + Storage + SQL",
+                "icon": "folder",
+                "pages": [
+                  "templates/usecase-proj-ais-st-sql/README",
+                  "templates/usecase-proj-ais-st-sql/Changelog"
+                ]
               }
             ]
           }
