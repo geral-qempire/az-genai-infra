@@ -23,3 +23,27 @@ output "managed_identity_principal_id" {
   value       = try(azurerm_search_service.this.identity[0].principal_id, null)
   description = "Principal ID of the system-assigned managed identity."
 }
+
+########################################
+# Alert Outputs
+########################################
+
+output "search_latency_alert_id" {
+  value       = try(azurerm_monitor_metric_alert.latency[0].id, null)
+  description = "Resource ID of the SearchLatency metric alert (null if disabled)."
+}
+
+output "search_latency_alert_name" {
+  value       = try(azurerm_monitor_metric_alert.latency[0].name, null)
+  description = "Name of the SearchLatency metric alert (null if disabled)."
+}
+
+output "throttled_search_pct_alert_id" {
+  value       = try(azurerm_monitor_metric_alert.throttled_pct[0].id, null)
+  description = "Resource ID of the ThrottledSearchQueriesPercentage metric alert (null if disabled)."
+}
+
+output "throttled_search_pct_alert_name" {
+  value       = try(azurerm_monitor_metric_alert.throttled_pct[0].name, null)
+  description = "Name of the ThrottledSearchQueriesPercentage metric alert (null if disabled)."
+}

@@ -29,7 +29,9 @@ variable "sku" {
   }
 }
 
-### Optional Variables
+########################################
+# Optional Variables
+########################################
 
 variable "partition_count" {
   type        = number
@@ -152,4 +154,156 @@ variable "tags" {
 variable "region_abbreviations" {
   type        = map(string)
   description = "Map of Azure locations to abbreviations. Recommended to pass from the shared modules/region-abbreviations module."
+}
+
+########################################
+# Alerts - SearchLatency
+########################################
+
+variable "enable_search_latency_alert" {
+  type        = bool
+  default     = false
+  description = "Enable the SearchLatency metric alert."
+}
+
+variable "search_latency_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the SearchLatency alert. Defaults to alrt-lat-<resource-name>."
+}
+
+variable "search_latency_alert_threshold" {
+  type        = number
+  default     = 5
+  description = "Latency threshold in milliseconds. Alert fires when Average over window exceeds this value."
+}
+
+variable "search_latency_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the SearchLatency alert. Auto-generated if not provided."
+}
+
+variable "search_latency_alert_severity" {
+  type        = number
+  default     = 3
+  description = "Alert severity (0-4). Default is 3."
+}
+
+variable "search_latency_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the SearchLatency alert is enabled."
+}
+
+variable "search_latency_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the SearchLatency alert should auto mitigate when conditions clear."
+}
+
+variable "search_latency_alert_frequency" {
+  type        = string
+  default     = "PT1M"
+  description = "Evaluation frequency for the SearchLatency alert. Default PT1M."
+}
+
+variable "search_latency_alert_window_size" {
+  type        = string
+  default     = "PT5M"
+  description = "Time window for the SearchLatency alert. Default PT5M."
+}
+
+variable "search_latency_alert_operator" {
+  type        = string
+  default     = "GreaterThan"
+  description = "Operator for the SearchLatency alert criteria."
+}
+
+variable "search_latency_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the SearchLatency alert criteria."
+}
+
+variable "search_latency_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the SearchLatency alert."
+}
+
+########################################
+# Alerts - ThrottledSearchQueriesPercentage
+########################################
+
+variable "enable_throttled_search_pct_alert" {
+  type        = bool
+  default     = false
+  description = "Enable the ThrottledSearchQueriesPercentage metric alert."
+}
+
+variable "throttled_search_pct_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the ThrottledSearchQueriesPercentage alert. Defaults to alrt-thrpct-<resource-name>."
+}
+
+variable "throttled_search_pct_alert_threshold" {
+  type        = number
+  default     = 10
+  description = "Percentage threshold. Alert fires when Average over window exceeds this value."
+}
+
+variable "throttled_search_pct_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the ThrottledSearchQueriesPercentage alert. Auto-generated if not provided."
+}
+
+variable "throttled_search_pct_alert_severity" {
+  type        = number
+  default     = 3
+  description = "Alert severity (0-4). Default is 3."
+}
+
+variable "throttled_search_pct_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the ThrottledSearchQueriesPercentage alert is enabled."
+}
+
+variable "throttled_search_pct_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the ThrottledSearchQueriesPercentage alert should auto mitigate when conditions clear."
+}
+
+variable "throttled_search_pct_alert_frequency" {
+  type        = string
+  default     = "PT1M"
+  description = "Evaluation frequency for the ThrottledSearchQueriesPercentage alert. Default PT1M."
+}
+
+variable "throttled_search_pct_alert_window_size" {
+  type        = string
+  default     = "PT5M"
+  description = "Time window for the ThrottledSearchQueriesPercentage alert. Default PT5M."
+}
+
+variable "throttled_search_pct_alert_operator" {
+  type        = string
+  default     = "GreaterThan"
+  description = "Operator for the ThrottledSearchQueriesPercentage alert criteria."
+}
+
+variable "throttled_search_pct_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the ThrottledSearchQueriesPercentage alert criteria."
+}
+
+variable "throttled_search_pct_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the ThrottledSearchQueriesPercentage alert."
 }
