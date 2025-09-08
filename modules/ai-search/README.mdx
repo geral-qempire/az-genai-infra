@@ -40,12 +40,48 @@ module "ai_search" {
   subnet_id                 = "/subscriptions/xxx/resourceGroups/rg-network-dev/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/snet-privates"
   private_endpoint_location = "westeurope"
 
+  # Alerts
+  enable_search_latency_alert       = true
+  enable_throttled_search_pct_alert = true
+
+  # Optional overrides (examples)
+  search_latency_alert_severity                  = 2
+  search_latency_alert_frequency                 = "PT2M"
+  throttled_search_pct_alert_threshold           = 15
+  throttled_search_pct_alert_action_group_ids    = [module.action_group.action_group_id]
+  search_latency_alert_action_group_ids          = [module.action_group.action_group_id]
+
   tags = {
     environment = "dev"
     project     = "acme"
   }
 }
 ```
+
+### Alerts
+- SearchLatency
+  - Metric: `SearchLatency`
+  - Namespace: `Microsoft.Search/searchServices`
+  - Aggregation: `Average`
+  - Operator: `GreaterThan`
+  - Frequency (default): `PT1M`
+  - Window (default): `PT5M`
+  - Severity (default): `3`
+  - Threshold (default): `5` ms
+  - Name (default): `alrt-lat-<resource-name>`
+  - Enabled (default): `false`
+  
+- ThrottledSearchQueriesPercentage
+  - Metric: `ThrottledSearchQueriesPercentage`
+  - Namespace: `Microsoft.Search/searchServices`
+  - Aggregation: `Average`
+  - Operator: `GreaterThan`
+  - Frequency (default): `PT1M`
+  - Window (default): `PT5M`
+  - Severity (default): `3`
+  - Threshold (default): `10` %
+  - Name (default): `alrt-thrpct-<resource-name>`
+  - Enabled (default): `false`
 
 ## 3. Inputs
 | Name | Type | Default | Required | Description |
@@ -69,6 +105,30 @@ module "ai_search" {
 | `subnet_id` | `string` | `""` | no | Subnet ID for the Private Endpoint. |
 | `private_endpoint_location` | `string` | `""` | no | Location for the Private Endpoint. |
 | `tags` | `map(string)` | `{}` | no | Tags to apply to resources. |
+| `enable_search_latency_alert` | `bool` | `false` | no | Enable the SearchLatency metric alert. |
+| `search_latency_alert_name` | `string` | `null` | no | Custom name for the SearchLatency alert. Defaults to `alrt-lat-<resource-name>`. |
+| `search_latency_alert_threshold` | `number` | `5` | no | Latency threshold in milliseconds. Fires when Average over window exceeds this value. |
+| `search_latency_alert_description` | `string` | `null` | no | Description for the SearchLatency alert. Auto-generated if not provided. |
+| `search_latency_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `search_latency_alert_enabled` | `bool` | `true` | no | Whether the SearchLatency alert is enabled. |
+| `search_latency_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `search_latency_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the SearchLatency alert. |
+| `search_latency_alert_window_size` | `string` | `"PT5M"` | no | Time window for the SearchLatency alert. |
+| `search_latency_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the SearchLatency alert criteria. |
+| `search_latency_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the SearchLatency alert criteria. |
+| `search_latency_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the SearchLatency alert. |
+| `enable_throttled_search_pct_alert` | `bool` | `false` | no | Enable the ThrottledSearchQueriesPercentage metric alert. |
+| `throttled_search_pct_alert_name` | `string` | `null` | no | Custom name for the ThrottledSearchQueriesPercentage alert. Defaults to `alrt-thrpct-<resource-name>`. |
+| `throttled_search_pct_alert_threshold` | `number` | `10` | no | Percentage threshold. Fires when Average over window exceeds this value. |
+| `throttled_search_pct_alert_description` | `string` | `null` | no | Description for the ThrottledSearchQueriesPercentage alert. Auto-generated if not provided. |
+| `throttled_search_pct_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `throttled_search_pct_alert_enabled` | `bool` | `true` | no | Whether the ThrottledSearchQueriesPercentage alert is enabled. |
+| `throttled_search_pct_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `throttled_search_pct_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the ThrottledSearchQueriesPercentage alert. |
+| `throttled_search_pct_alert_window_size` | `string` | `"PT5M"` | no | Time window for the ThrottledSearchQueriesPercentage alert. |
+| `throttled_search_pct_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the ThrottledSearchQueriesPercentage alert criteria. |
+| `throttled_search_pct_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the ThrottledSearchQueriesPercentage alert criteria. |
+| `throttled_search_pct_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the ThrottledSearchQueriesPercentage alert. |
 
 ## 4. Outputs
 | Name | Description |
@@ -78,6 +138,10 @@ module "ai_search" {
 | `search_service_primary_key` | Primary admin key for the Search Service. |
 | `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 | `managed_identity_principal_id` | Principal ID of the system-assigned managed identity. |
+| `search_latency_alert_id` | Resource ID of the SearchLatency metric alert (null if disabled). |
+| `search_latency_alert_name` | Name of the SearchLatency metric alert (null if disabled). |
+| `throttled_search_pct_alert_id` | Resource ID of the ThrottledSearchQueriesPercentage metric alert (null if disabled). |
+| `throttled_search_pct_alert_name` | Name of the ThrottledSearchQueriesPercentage metric alert (null if disabled). |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
