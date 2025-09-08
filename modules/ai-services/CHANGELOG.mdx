@@ -4,6 +4,25 @@ description: "Module updates and announcements"
 icon: 'arrows-spin'
 ---
 
+<Update label="2025/01/15" description="ais-v0.2.0">
+  - **BREAKING CHANGE**: Integrated alert modules directly into the AI Services module.
+  
+  - Merged four separate alert modules (ai-services-avail, ai-services-tok, ai-services-ttft, ai-services-ttlt) into the main module.
+  
+  - Added comprehensive monitoring alerts for Azure OpenAI services:
+    - AzureOpenAIAvailabilityRate alert (default: 90% threshold, severity 1)
+    - Processed Inference Tokens alert (default: 10M tokens threshold, severity 3)
+    - Time To First Token alert (default: 5ms threshold, severity 2)
+    - Time To Last Token alert (default: 5ms threshold, severity 2)
+  
+  - All alerts are disabled by default and can be enabled individually.
+  
+  - Added parameterized configuration for all alert settings (thresholds, frequencies, action groups, etc.).
+  
+  - Alert naming follows the pattern: `alrt-<metric-abbreviation>-<resource-name>`.
+
+</Update>
+
 <Update label="2025/08/01" description="ais-v0.1.0">
   - Initial release of the Azure AI Services module.
 

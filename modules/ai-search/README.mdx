@@ -58,8 +58,9 @@ module "ai_search" {
 }
 ```
 
-### Alerts
-- SearchLatency
+## 3. Alerts
+
+### SearchLatency
   - Metric: `SearchLatency`
   - Namespace: `Microsoft.Search/searchServices`
   - Aggregation: `Average`
@@ -71,7 +72,7 @@ module "ai_search" {
   - Name (default): `alrt-lat-<resource-name>`
   - Enabled (default): `false`
   
-- ThrottledSearchQueriesPercentage
+### ThrottledSearchQueriesPercentage
   - Metric: `ThrottledSearchQueriesPercentage`
   - Namespace: `Microsoft.Search/searchServices`
   - Aggregation: `Average`
@@ -83,7 +84,7 @@ module "ai_search" {
   - Name (default): `alrt-thrpct-<resource-name>`
   - Enabled (default): `false`
 
-## 3. Inputs
+## 4. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
 | `environment` | `string` | n/a | yes | Environment project (dev, qua or prd). |
@@ -130,7 +131,7 @@ module "ai_search" {
 | `throttled_search_pct_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the ThrottledSearchQueriesPercentage alert criteria. |
 | `throttled_search_pct_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the ThrottledSearchQueriesPercentage alert. |
 
-## 4. Outputs
+## 5. Outputs
 | Name | Description |
 |------|-------------|
 | `search_service_id` | Resource ID of the Search Service. |
@@ -143,7 +144,7 @@ module "ai_search" {
 | `throttled_search_pct_alert_id` | Resource ID of the ThrottledSearchQueriesPercentage metric alert (null if disabled). |
 | `throttled_search_pct_alert_name` | Name of the ThrottledSearchQueriesPercentage metric alert (null if disabled). |
 
-## 5. Requirements
+## 6. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
 

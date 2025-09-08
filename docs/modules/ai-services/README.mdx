@@ -5,10 +5,10 @@ icon: 'circle-info'
 ---
 
 ## 1. Module
-Create an Azure AI Services account with configurable network access, identity, optional storage association, and optional Private Endpoint.
+Create an Azure AI Services account with configurable network access, identity, optional storage association, optional Private Endpoint, and integrated monitoring alerts.
 
 ## 2. Usage
-```hcl main.tf
+```hcl
 module "region_abbreviations" {
   source = "../region-abbreviations"
 }
@@ -46,6 +46,22 @@ module "ai_services" {
   subnet_id                 = "/subscriptions/xxx/resourceGroups/rg-network-dev/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/snet-privates"
   private_endpoint_location = "westeurope"
 
+  # Alerts
+  enable_availability_rate_alert = true
+  enable_processed_tokens_alert  = true
+  enable_ttft_alert             = true
+  enable_ttlt_alert             = true
+
+  # Optional alert overrides (examples)
+  availability_rate_alert_threshold           = 95
+  availability_rate_alert_action_group_ids    = [module.action_group.action_group_id]
+  processed_tokens_alert_threshold            = 5000000
+  processed_tokens_alert_action_group_ids     = [module.action_group.action_group_id]
+  ttft_alert_threshold                        = 10
+  ttft_alert_action_group_ids                 = [module.action_group.action_group_id]
+  ttlt_alert_threshold                        = 10
+  ttlt_alert_action_group_ids                 = [module.action_group.action_group_id]
+
   tags = {
     environment = "dev"
     project     = "acme"
@@ -53,7 +69,56 @@ module "ai_services" {
 }
 ```
 
-## 3. Inputs
+## 3. Alerts
+### AzureOpenAIAvailabilityRate
+  - Metric: `AzureOpenAIAvailabilityRate`
+  - Namespace: `Microsoft.CognitiveServices/accounts`
+  - Aggregation: `Average`
+  - Operator: `LessThan`
+  - Frequency (default): `PT1M`
+  - Window (default): `PT5M`
+  - Severity (default): `1`
+  - Threshold (default): `90` %
+  - Name (default): `alrt-avail-<resource-name>`
+  - Enabled (default): `false`
+  
+### Processed Inference Tokens
+  - Metric: `TokenTransaction`
+  - Namespace: `Microsoft.CognitiveServices/accounts`
+  - Aggregation: `Total`
+  - Operator: `GreaterThan`
+  - Frequency (default): `PT5M`
+  - Window (default): `PT1H`
+  - Severity (default): `3`
+  - Threshold (default): `10000000` tokens
+  - Name (default): `alrt-tok-<resource-name>`
+  - Enabled (default): `false`
+
+### Time To First Token
+  - Metric: `AzureOpenAINormalizedTTFTInMS`
+  - Namespace: `Microsoft.CognitiveServices/accounts`
+  - Aggregation: `Average`
+  - Operator: `GreaterThan`
+  - Frequency (default): `PT1M`
+  - Window (default): `PT5M`
+  - Severity (default): `2`
+  - Threshold (default): `5` ms
+  - Name (default): `alrt-ttft-<resource-name>`
+  - Enabled (default): `false`
+
+### Time To Last Token
+  - Metric: `AzureOpenAITTLTInMS`
+  - Namespace: `Microsoft.CognitiveServices/accounts`
+  - Aggregation: `Average`
+  - Operator: `GreaterThan`
+  - Frequency (default): `PT1M`
+  - Window (default): `PT5M`
+  - Severity (default): `2`
+  - Threshold (default): `5` ms
+  - Name (default): `alrt-ttlt-<resource-name>`
+  - Enabled (default): `false`
+
+## 4. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
 | `environment` | `string` | n/a | yes | Environment project (dev, qua or prd). |
@@ -73,8 +138,60 @@ module "ai_services" {
 | `subnet_id` | `string` | `""` | no | Subnet ID for the Private Endpoint. |
 | `private_endpoint_location` | `string` | `""` | no | Location for the Private Endpoint. |
 | `tags` | `map(string)` | `{}` | no | Tags to apply to resources. |
+| `enable_availability_rate_alert` | `bool` | `false` | no | Enable the AzureOpenAIAvailabilityRate metric alert. |
+| `availability_rate_alert_name` | `string` | `null` | no | Custom name for the AvailabilityRate alert. Defaults to `alrt-avail-<resource-name>`. |
+| `availability_rate_alert_threshold` | `number` | `90` | no | Availability rate threshold percentage. Fires when below this value. |
+| `availability_rate_alert_description` | `string` | `null` | no | Description for the AvailabilityRate alert. Auto-generated if not provided. |
+| `availability_rate_alert_severity` | `number` | `1` | no | Alert severity (0-4). |
+| `availability_rate_alert_enabled` | `bool` | `true` | no | Whether the AvailabilityRate alert is enabled. |
+| `availability_rate_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `availability_rate_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the AvailabilityRate alert. |
+| `availability_rate_alert_window_size` | `string` | `"PT5M"` | no | Time window for the AvailabilityRate alert. |
+| `availability_rate_alert_operator` | `string` | `"LessThan"` | no | Operator for the AvailabilityRate alert criteria. |
+| `availability_rate_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the AvailabilityRate alert criteria. |
+| `availability_rate_alert_model_deployment_names` | `list(string)` | `["*"]` | no | Model deployment names to filter on ModelDeploymentName dimension. |
+| `availability_rate_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the AvailabilityRate alert. |
+| `enable_processed_tokens_alert` | `bool` | `false` | no | Enable the Processed Inference Tokens metric alert. |
+| `processed_tokens_alert_name` | `string` | `null` | no | Custom name for the ProcessedTokens alert. Defaults to `alrt-tok-<resource-name>`. |
+| `processed_tokens_alert_threshold` | `number` | `10000000` | no | Token threshold. Fires when total tokens over the window exceed this value. |
+| `processed_tokens_alert_description` | `string` | `null` | no | Description for the ProcessedTokens alert. Auto-generated if not provided. |
+| `processed_tokens_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `processed_tokens_alert_enabled` | `bool` | `true` | no | Whether the ProcessedTokens alert is enabled. |
+| `processed_tokens_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `processed_tokens_alert_frequency` | `string` | `"PT5M"` | no | Evaluation frequency for the ProcessedTokens alert. |
+| `processed_tokens_alert_window_size` | `string` | `"PT1H"` | no | Time window for the ProcessedTokens alert. |
+| `processed_tokens_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the ProcessedTokens alert criteria. |
+| `processed_tokens_alert_aggregation` | `string` | `"Total"` | no | Aggregation for the ProcessedTokens alert criteria. |
+| `processed_tokens_alert_model_deployment_names` | `list(string)` | `["*"]` | no | Model deployment names to filter on ModelDeploymentName dimension. |
+| `processed_tokens_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the ProcessedTokens alert. |
+| `enable_ttft_alert` | `bool` | `false` | no | Enable the Time To First Token metric alert. |
+| `ttft_alert_name` | `string` | `null` | no | Custom name for the TTFT alert. Defaults to `alrt-ttft-<resource-name>`. |
+| `ttft_alert_threshold` | `number` | `5` | no | TTFT threshold in milliseconds. Fires when average over the window exceeds this value. |
+| `ttft_alert_description` | `string` | `null` | no | Description for the TTFT alert. Auto-generated if not provided. |
+| `ttft_alert_severity` | `number` | `2` | no | Alert severity (0-4). |
+| `ttft_alert_enabled` | `bool` | `true` | no | Whether the TTFT alert is enabled. |
+| `ttft_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `ttft_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the TTFT alert. |
+| `ttft_alert_window_size` | `string` | `"PT5M"` | no | Time window for the TTFT alert. |
+| `ttft_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the TTFT alert criteria. |
+| `ttft_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the TTFT alert criteria. |
+| `ttft_alert_model_deployment_names` | `list(string)` | `["*"]` | no | Model deployment names to filter on ModelDeploymentName dimension. |
+| `ttft_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the TTFT alert. |
+| `enable_ttlt_alert` | `bool` | `false` | no | Enable the Time To Last Token metric alert. |
+| `ttlt_alert_name` | `string` | `null` | no | Custom name for the TTLT alert. Defaults to `alrt-ttlt-<resource-name>`. |
+| `ttlt_alert_threshold` | `number` | `5` | no | TTLT threshold in milliseconds. Fires when average over the window exceeds this value. |
+| `ttlt_alert_description` | `string` | `null` | no | Description for the TTLT alert. Auto-generated if not provided. |
+| `ttlt_alert_severity` | `number` | `2` | no | Alert severity (0-4). |
+| `ttlt_alert_enabled` | `bool` | `true` | no | Whether the TTLT alert is enabled. |
+| `ttlt_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `ttlt_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the TTLT alert. |
+| `ttlt_alert_window_size` | `string` | `"PT5M"` | no | Time window for the TTLT alert. |
+| `ttlt_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the TTLT alert criteria. |
+| `ttlt_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the TTLT alert criteria. |
+| `ttlt_alert_model_deployment_names` | `list(string)` | `["*"]` | no | Model deployment names to filter on ModelDeploymentName dimension. |
+| `ttlt_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the TTLT alert. |
 
-## 4. Outputs
+## 5. Outputs
 | Name | Description |
 |------|-------------|
 | `ai_services_id` | Resource ID of the AI Services. |
@@ -83,8 +200,16 @@ module "ai_services" {
 | `ai_services_secondary_key` | Secondary access key for the AI Services account. |
 | `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
 | `managed_identity_principal_id` | Principal ID of the system-assigned managed identity. |
+| `availability_rate_alert_id` | Resource ID of the AvailabilityRate metric alert (null if disabled). |
+| `availability_rate_alert_name` | Name of the AvailabilityRate metric alert (null if disabled). |
+| `processed_tokens_alert_id` | Resource ID of the ProcessedTokens metric alert (null if disabled). |
+| `processed_tokens_alert_name` | Name of the ProcessedTokens metric alert (null if disabled). |
+| `ttft_alert_id` | Resource ID of the TTFT metric alert (null if disabled). |
+| `ttft_alert_name` | Name of the TTFT metric alert (null if disabled). |
+| `ttlt_alert_id` | Resource ID of the TTLT metric alert (null if disabled). |
+| `ttlt_alert_name` | Name of the TTLT metric alert (null if disabled). |
 
-## 5. Requirements
+## 6. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
 
