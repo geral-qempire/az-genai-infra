@@ -324,7 +324,7 @@ module "storage_alert_used_capacity" {
 # AI Search
 ########################################
 module "ai_search_service" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-search?ref=srch-v0.1.0"
+  source = "../../modules/ai-search"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -356,32 +356,13 @@ module "ai_search_service" {
   subnet_id                 = data.azurerm_subnet.private_endpoints.id
   private_endpoint_location = var.location
 
+  # Integrated Alerts
+  enable_search_latency_alert                   = var.ai_search_alert_search_latency_enabled
+  enable_throttled_search_pct_alert             = var.ai_search_alert_throttled_pct_enabled
+  search_latency_alert_action_group_ids         = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  throttled_search_pct_alert_action_group_ids   = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
   tags = var.tags
-}
-
-# -------------------- AI Search Alerts --------------------
-locals {
-  ai_search_scopes = [module.ai_search_service.search_service_id]
-}
-
-module "ai_search_alert_search_latency" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-search-lat?ref=srch-lat-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.ai_search_scopes
-  enabled             = var.ai_search_alert_search_latency_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "ai_search_alert_throttled_pct" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-search-thrpct?ref=srch-thrpct-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.ai_search_scopes
-  enabled             = var.ai_search_alert_throttled_pct_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
 }
 
 ########################################
