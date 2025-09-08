@@ -122,7 +122,7 @@ variable "tags" {
 
 variable "enable_availability_rate_alert" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable the AzureOpenAIAvailabilityRate metric alert."
 }
 
@@ -208,7 +208,7 @@ variable "availability_rate_alert_action_group_ids" {
 
 variable "enable_processed_tokens_alert" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable the Processed Inference Tokens metric alert."
 }
 
@@ -294,7 +294,7 @@ variable "processed_tokens_alert_action_group_ids" {
 
 variable "enable_ttft_alert" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable the Time To First Token metric alert."
 }
 
@@ -380,7 +380,7 @@ variable "ttft_alert_action_group_ids" {
 
 variable "enable_ttlt_alert" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable the Time To Last Token metric alert."
 }
 

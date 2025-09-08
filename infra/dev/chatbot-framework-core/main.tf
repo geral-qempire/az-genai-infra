@@ -75,7 +75,7 @@ module "framework-core" {
   ai_services_sku_name               = var.ai_services_sku_name
   ai_services_model_deployment_names = var.ai_services_model_deployment_names
 
-  # Alert toggles (all default false)
+  # Alert toggles (all default to true)
   sql_db_alert_availability_enabled            = var.sql_db_alert_availability_enabled
   sql_db_alert_app_cpu_percent_enabled         = var.sql_db_alert_app_cpu_percent_enabled
   sql_db_alert_app_memory_percent_enabled      = var.sql_db_alert_app_memory_percent_enabled

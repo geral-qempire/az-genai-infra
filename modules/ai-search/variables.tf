@@ -162,7 +162,7 @@ variable "region_abbreviations" {
 
 variable "enable_search_latency_alert" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable the SearchLatency metric alert."
 }
 
@@ -238,7 +238,7 @@ variable "search_latency_alert_action_group_ids" {
 
 variable "enable_throttled_search_pct_alert" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable the ThrottledSearchQueriesPercentage metric alert."
 }
 

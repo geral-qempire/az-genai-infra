@@ -18,4 +18,26 @@ output "private_endpoint_id" {
   description = "The ID of the Private Endpoint if created, otherwise null."
 }
 
+########################################
+# Alert Outputs
+########################################
 
+output "availability_alert_id" {
+  value       = try(azurerm_monitor_metric_alert.availability[0].id, null)
+  description = "Resource ID of the Availability metric alert (null if disabled)."
+}
+
+output "availability_alert_name" {
+  value       = try(azurerm_monitor_metric_alert.availability[0].name, null)
+  description = "Name of the Availability metric alert (null if disabled)."
+}
+
+output "saturation_alert_id" {
+  value       = try(azurerm_monitor_metric_alert.saturation[0].id, null)
+  description = "Resource ID of the Saturation metric alert (null if disabled)."
+}
+
+output "saturation_alert_name" {
+  value       = try(azurerm_monitor_metric_alert.saturation[0].name, null)
+  description = "Name of the Saturation metric alert (null if disabled)."
+}

@@ -139,23 +139,29 @@ variable "sql_database_yearly_ltr_years" {
   description = "Yearly LTR retention (years). 0 to disable."
 }
 
+variable "sql_database_is_serverless" {
+  type        = bool
+  default     = true
+  description = "Whether the SQL Database is using a serverless SKU. Controls which alerts are available."
+}
+
 # Alerts toggle
-# SQL Database alert toggles (all default to false)
+# SQL Database alert toggles (serverless alerts default to true)
 variable "sql_db_alert_availability_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable SQL Database Availability alert."
 }
 
 variable "sql_db_alert_app_cpu_percent_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable SQL Database App CPU Percent alert."
 }
 
 variable "sql_db_alert_app_memory_percent_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable SQL Database App Memory Percent alert."
 }
 
@@ -173,7 +179,7 @@ variable "sql_db_alert_instance_memory_percent_enabled" {
 
 variable "sql_db_alert_storage_percent_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable SQL Database Storage Percent alert."
 }
 
@@ -256,13 +262,13 @@ variable "ai_search_partition_count" {
 # AI Search alert toggles
 variable "ai_search_alert_search_latency_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable AI Search SearchLatency alert."
 }
 
 variable "ai_search_alert_throttled_pct_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable AI Search ThrottledSearchQueriesPercentage alert."
 }
 
@@ -293,57 +299,57 @@ variable "ai_services_model_deployment_names" {
 ## AI Services alert toggles
 variable "ai_services_alert_availability_rate_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable AzureOpenAIAvailabilityRate alert."
 }
 
 ## Key Vault alert toggles
 variable "key_vault_alert_availability_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable Key Vault Availability alert."
 }
 
 variable "key_vault_alert_saturation_shoebox_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable Key Vault SaturationShoebox alert."
 }
 
 ## Storage Account alert toggles
 variable "storage_alert_availability_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable Storage Account Availability alert."
 }
 
 variable "storage_alert_success_server_latency_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable Storage Account SuccessServerLatency alert."
 }
 
 variable "storage_alert_used_capacity_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable Storage Account UsedCapacity alert."
 }
 
 variable "ai_services_alert_normalized_ttft_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable AzureOpenAINormalizedTTFTInMS alert."
 }
 
 variable "ai_services_alert_ttlt_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable AzureOpenAITTLTInMS alert."
 }
 
 variable "ai_services_alert_processed_tokens_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable ProcessedInferenceTokens alert."
 }
 

@@ -4,6 +4,23 @@ description: "Module updates and announcements"
 icon: 'arrows-spin'
 ---
 
+<Update label="2025/01/15" description="kv-v0.2.0">
+  - **BREAKING CHANGE**: Integrated alert modules directly into the Key Vault module.
+  
+  - Merged two separate alert modules (key-vault-avail, key-vault-sat) into the main module.
+  
+  - Added comprehensive monitoring alerts for Azure Key Vault:
+    - Availability alert (default: 90% threshold, severity 1)
+    - SaturationShoebox alert (default: 75% threshold, severity 1)
+  
+  - All alerts are disabled by default and can be enabled individually.
+  
+  - Added parameterized configuration for all alert settings (thresholds, frequencies, action groups, etc.).
+  
+  - Alert naming follows the pattern: `alrt-<metric-abbreviation>-<resource-name>`.
+
+</Update>
+
 <Update label="2025/08/01" description="kv-v0.1.0">
   - Initial release of the Azure Key Vault module.
 

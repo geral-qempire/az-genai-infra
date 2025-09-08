@@ -159,4 +159,232 @@ variable "network_rules_default_action" {
   description = "The default action for network rules. Possible values are Allow or Deny."
 }
 
+########################################
+# Alerts - Availability
+########################################
+
+variable "enable_availability_alert" {
+  type        = bool
+  default     = true
+  description = "Enable the availability metric alert."
+}
+
+variable "availability_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the availability alert. Defaults to alrt-avail-<resource-name>."
+}
+
+variable "availability_alert_threshold" {
+  type        = number
+  default     = 100
+  description = "Availability threshold percentage. Alert fires when below this value."
+}
+
+variable "availability_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the availability alert. Auto-generated if not provided."
+}
+
+variable "availability_alert_severity" {
+  type        = number
+  default     = 1
+  description = "Alert severity (0-4). Default is 1."
+}
+
+variable "availability_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the availability alert is enabled."
+}
+
+variable "availability_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the availability alert should auto mitigate when conditions clear."
+}
+
+variable "availability_alert_frequency" {
+  type        = string
+  default     = "PT1M"
+  description = "Evaluation frequency for the availability alert. Default PT1M."
+}
+
+variable "availability_alert_window_size" {
+  type        = string
+  default     = "PT1M"
+  description = "Time window for the availability alert. Default PT1M."
+}
+
+variable "availability_alert_operator" {
+  type        = string
+  default     = "LessThan"
+  description = "Operator for the availability alert criteria."
+}
+
+variable "availability_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the availability alert criteria."
+}
+
+variable "availability_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the availability alert."
+}
+
+########################################
+# Alerts - Success Server Latency
+########################################
+
+variable "enable_success_server_latency_alert" {
+  type        = bool
+  default     = true
+  description = "Enable the success server latency metric alert."
+}
+
+variable "success_server_latency_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the success server latency alert. Defaults to alrt-sslat-<resource-name>."
+}
+
+variable "success_server_latency_alert_threshold" {
+  type        = number
+  default     = 1000
+  description = "Latency threshold in milliseconds. Alert fires when above this value."
+}
+
+variable "success_server_latency_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the success server latency alert. Auto-generated if not provided."
+}
+
+variable "success_server_latency_alert_severity" {
+  type        = number
+  default     = 2
+  description = "Alert severity (0-4). Default is 2."
+}
+
+variable "success_server_latency_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the success server latency alert is enabled."
+}
+
+variable "success_server_latency_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the success server latency alert should auto mitigate when conditions clear."
+}
+
+variable "success_server_latency_alert_frequency" {
+  type        = string
+  default     = "PT1M"
+  description = "Evaluation frequency for the success server latency alert. Default PT1M."
+}
+
+variable "success_server_latency_alert_window_size" {
+  type        = string
+  default     = "PT5M"
+  description = "Time window for the success server latency alert. Default PT5M."
+}
+
+variable "success_server_latency_alert_operator" {
+  type        = string
+  default     = "GreaterThan"
+  description = "Operator for the success server latency alert criteria."
+}
+
+variable "success_server_latency_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the success server latency alert criteria."
+}
+
+variable "success_server_latency_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the success server latency alert."
+}
+
+########################################
+# Alerts - Used Capacity
+########################################
+
+variable "enable_used_capacity_alert" {
+  type        = bool
+  default     = true
+  description = "Enable the used capacity metric alert."
+}
+
+variable "used_capacity_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the used capacity alert. Defaults to alrt-used-<resource-name>."
+}
+
+variable "used_capacity_alert_threshold" {
+  type        = number
+  default     = 5e+14
+  description = "Used capacity threshold in bytes. Alert fires when above this value."
+}
+
+variable "used_capacity_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the used capacity alert. Auto-generated if not provided."
+}
+
+variable "used_capacity_alert_severity" {
+  type        = number
+  default     = 3
+  description = "Alert severity (0-4). Default is 3."
+}
+
+variable "used_capacity_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the used capacity alert is enabled."
+}
+
+variable "used_capacity_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the used capacity alert should auto mitigate when conditions clear."
+}
+
+variable "used_capacity_alert_frequency" {
+  type        = string
+  default     = "PT1H"
+  description = "Evaluation frequency for the used capacity alert. Default PT1H."
+}
+
+variable "used_capacity_alert_window_size" {
+  type        = string
+  default     = "PT1H"
+  description = "Time window for the used capacity alert. Default PT1H."
+}
+
+variable "used_capacity_alert_operator" {
+  type        = string
+  default     = "GreaterThan"
+  description = "Operator for the used capacity alert criteria."
+}
+
+variable "used_capacity_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the used capacity alert criteria."
+}
+
+variable "used_capacity_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the used capacity alert."
+}
+
 

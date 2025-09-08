@@ -5,7 +5,7 @@ icon: 'circle-info'
 ---
 
 ## 1. Module
-Terraform module to create an Azure Storage Account with optional per-service Private Endpoints.
+Terraform module to create an Azure Storage Account with optional per-service Private Endpoints and integrated monitoring alerts.
 
 ## 2. Usage
 ```hcl
@@ -46,6 +46,19 @@ module "storage_account" {
   subnet_id                 = "/subscriptions/xxx/resourceGroups/rg-network-dev/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/snet-privates"
   private_endpoint_location = "westeurope"
 
+  # Alerts
+  enable_availability_alert = true
+  enable_success_server_latency_alert = true
+  enable_used_capacity_alert = true
+
+  # Optional alert overrides (examples)
+  availability_alert_severity = 1
+  success_server_latency_alert_threshold = 500
+  used_capacity_alert_threshold = 1e+15
+  availability_alert_action_group_ids = [module.action_group.action_group_id]
+  success_server_latency_alert_action_group_ids = [module.action_group.action_group_id]
+  used_capacity_alert_action_group_ids = [module.action_group.action_group_id]
+
   tags = {
     environment = "dev"
     project     = "acme"
@@ -53,7 +66,47 @@ module "storage_account" {
 }
 ```
 
-## 3. Inputs
+## 3. Alerts
+
+The module includes integrated monitoring alerts for Storage Account metrics:
+
+### Availability
+- Metric: `Availability`
+- Namespace: `Microsoft.Storage/storageAccounts`
+- Aggregation: `Average`
+- Operator: `LessThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT1M`
+- Severity (default): `1`
+- Threshold (default): `100` %
+- Name (default): `alrt-avail-<resource-name>`
+- Enabled (default): `true`
+
+### Success Server Latency
+- Metric: `SuccessServerLatency`
+- Namespace: `Microsoft.Storage/storageAccounts`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `2`
+- Threshold (default): `1000` ms
+- Name (default): `alrt-sslat-<resource-name>`
+- Enabled (default): `true`
+
+### Used Capacity
+- Metric: `UsedCapacity`
+- Namespace: `Microsoft.Storage/storageAccounts`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT1H`
+- Window (default): `PT1H`
+- Severity (default): `3`
+- Threshold (default): `5e+14` bytes
+- Name (default): `alrt-used-<resource-name>`
+- Enabled (default): `true`
+
+## 4. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
 | `environment` | `string` | n/a | yes | Environment project (dev, qua or prd). |
@@ -83,6 +136,16 @@ module "storage_account" {
 |------|-------------|
 | `storage_account_id` | Resource ID of the Storage Account. |
 | `storage_account_name` | Name of the Storage Account. |
+| `storage_account_primary_access_key` | Primary access key for the Storage Account. |
+| `storage_account_primary_blob_endpoint` | Primary Blob service endpoint for the Storage Account. |
+| `private_endpoint_blob_id` | The ID of the Blob private endpoint if created, otherwise null. |
+| `private_endpoint_file_id` | The ID of the File private endpoint if created, otherwise null. |
+| `availability_alert_id` | Resource ID of the availability metric alert (null if disabled). |
+| `availability_alert_name` | Name of the availability metric alert (null if disabled). |
+| `success_server_latency_alert_id` | Resource ID of the success server latency metric alert (null if disabled). |
+| `success_server_latency_alert_name` | Name of the success server latency metric alert (null if disabled). |
+| `used_capacity_alert_id` | Resource ID of the used capacity metric alert (null if disabled). |
+| `used_capacity_alert_name` | Name of the used capacity metric alert (null if disabled). |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1`

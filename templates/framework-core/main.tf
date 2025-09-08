@@ -101,15 +101,19 @@ module "sql_server" {
 # SQL Database
 ########################################
 module "sql_database" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database?ref=sqldb-v0.1.0"
+  source = "../../modules/sql-database"
 
   server_id    = module.sql_server.id
+  resource_group_name = azurerm_resource_group.this.name
   name         = var.sql_database_name
   sku_name     = var.sql_database_sku_name
   min_capacity = var.sql_database_min_capacity
   auto_pause_delay_in_minutes = var.sql_database_auto_pause_delay_in_minutes
 
   zone_redundant = var.sql_database_zone_redundant
+
+  # Serverless configuration
+  is_serverless = var.sql_database_is_serverless
 
   # Backups
   pitr_days                = var.sql_database_pitr_days
@@ -118,80 +122,32 @@ module "sql_database" {
   monthly_ltr_months       = var.sql_database_monthly_ltr_months
   yearly_ltr_years         = var.sql_database_yearly_ltr_years
 
+  # Integrated Alerts
+  enable_availability_alert = var.sql_db_alert_availability_enabled
+  enable_storage_alert      = var.sql_db_alert_storage_percent_enabled
+  enable_app_cpu_alert      = var.sql_db_alert_app_cpu_percent_enabled
+  enable_app_memory_alert   = var.sql_db_alert_app_memory_percent_enabled
+  enable_sql_instance_cpu_alert = var.sql_db_alert_instance_cpu_percent_enabled
+  enable_sql_instance_memory_alert = var.sql_db_alert_instance_memory_percent_enabled
+
+  # Alert Configuration
+  availability_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  storage_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  app_cpu_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  app_memory_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  sql_instance_cpu_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  sql_instance_memory_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
   tags = var.tags
 }
 
-# -------------------- SQL Database Alerts (per-alert toggles) --------------------
-locals {
-  sql_db_scopes = [module.sql_database.id]
-}
-
-module "sql_db_alert_availability" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-avail?ref=sqldb-avail-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.sql_db_scopes
-  enabled             = var.sql_db_alert_availability_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "sql_db_alert_app_cpu" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-cpu?ref=sqldb-cpu-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.sql_db_scopes
-  enabled             = var.sql_db_alert_app_cpu_percent_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "sql_db_alert_app_memory" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-mem?ref=sqldb-mem-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.sql_db_scopes
-  enabled             = var.sql_db_alert_app_memory_percent_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "sql_db_alert_instance_cpu" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-sqlcpu?ref=sqldb-sqlcpu-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.sql_db_scopes
-  enabled             = var.sql_db_alert_instance_cpu_percent_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "sql_db_alert_instance_memory" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-sqlmem?ref=sqldb-sqlmem-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.sql_db_scopes
-  enabled             = var.sql_db_alert_instance_memory_percent_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "sql_db_alert_storage_percent" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/sql-database-stor?ref=sqldb-stor-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.sql_db_scopes
-  enabled             = var.sql_db_alert_storage_percent_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
 
 
 ########################################
 # Key Vault
 ########################################
 module "key_vault" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/key-vault?ref=kv-v0.1.0"
+  source = "../../modules/key-vault"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -217,39 +173,23 @@ module "key_vault" {
   subnet_id                 = data.azurerm_subnet.private_endpoints.id
   private_endpoint_location = var.location
 
+  # Integrated Alerts
+  enable_availability_alert = var.key_vault_alert_availability_enabled
+  enable_saturation_alert   = var.key_vault_alert_saturation_shoebox_enabled
+
+  # Alert Configuration
+  availability_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  saturation_alert_action_group_ids   = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
   tags = var.tags
 }
 
-# -------------------- Key Vault Alerts --------------------
-locals {
-  kv_scopes = [module.key_vault.id]
-}
-
-module "key_vault_alert_availability" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/key-vault-avail?ref=kv-avail-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.kv_scopes
-  enabled             = var.key_vault_alert_availability_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "key_vault_alert_saturation_shoebox" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/key-vault-sat?ref=kv-sat-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.kv_scopes
-  enabled             = var.key_vault_alert_saturation_shoebox_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
 
 ########################################
 # Storage Account
 ########################################
 module "storage_account" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account?ref=st-v0.1.0"
+  source = "../../modules/storage-account"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -282,43 +222,19 @@ module "storage_account" {
   subnet_id                 = data.azurerm_subnet.private_endpoints.id
   private_endpoint_location = var.location
 
+  # Integrated Alerts
+  enable_availability_alert = var.storage_alert_availability_enabled
+  enable_success_server_latency_alert = var.storage_alert_success_server_latency_enabled
+  enable_used_capacity_alert = var.storage_alert_used_capacity_enabled
+
+  # Alert Configuration
+  availability_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  success_server_latency_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  used_capacity_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
   tags = var.tags
 }
 
-# -------------------- Storage Account Alerts --------------------
-locals {
-  storage_scopes = [module.storage_account.storage_account_id]
-}
-
-module "storage_alert_availability" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account-avail?ref=st-avail-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.storage_scopes
-  enabled             = var.storage_alert_availability_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "storage_alert_success_server_latency" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account-sslat?ref=st-sslat-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.storage_scopes
-  enabled             = var.storage_alert_success_server_latency_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
-
-module "storage_alert_used_capacity" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/storage-account-used?ref=st-used-v0.1.0"
-
-  resource_group_name = azurerm_resource_group.this.name
-  scopes              = local.storage_scopes
-  enabled             = var.storage_alert_used_capacity_enabled
-  action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                = var.tags
-}
 
 ########################################
 # AI Search
@@ -369,7 +285,7 @@ module "ai_search_service" {
 # AI Services
 ########################################
 module "ai_services" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services?ref=ais-v0.1.0"
+  source = "../../modules/ai-services"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -396,58 +312,28 @@ module "ai_services" {
   subnet_id                 = data.azurerm_subnet.private_endpoints.id
   private_endpoint_location = var.location
 
+  # Integrated Alerts
+  enable_availability_rate_alert = var.ai_services_alert_availability_rate_enabled
+  enable_processed_tokens_alert  = var.ai_services_alert_processed_tokens_enabled
+  enable_ttft_alert             = var.ai_services_alert_normalized_ttft_enabled
+  enable_ttlt_alert             = var.ai_services_alert_ttlt_enabled
+
+  # Alert Configuration
+  availability_rate_alert_model_deployment_names = var.ai_services_model_deployment_names
+  availability_rate_alert_action_group_ids       = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
+  processed_tokens_alert_model_deployment_names = var.ai_services_model_deployment_names
+  processed_tokens_alert_action_group_ids       = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
+  ttft_alert_model_deployment_names = var.ai_services_model_deployment_names
+  ttft_alert_action_group_ids       = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
+  ttlt_alert_model_deployment_names = var.ai_services_model_deployment_names
+  ttlt_alert_action_group_ids       = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+
   tags = var.tags
 }
 
-# -------------------- AI Services Alerts --------------------
-locals {
-  ai_services_scopes = [module.ai_services.ai_services_id]
-}
-
-module "ai_services_alert_availability_rate" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-avail?ref=ais-avail-v0.1.0"
-
-  resource_group_name     = azurerm_resource_group.this.name
-  scopes                  = local.ai_services_scopes
-  model_deployment_names  = var.ai_services_model_deployment_names
-  enabled                 = var.ai_services_alert_availability_rate_enabled
-  action_group_ids        = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                    = var.tags
-}
-
-module "ai_services_alert_normalized_ttft" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-ttft?ref=ais-ttft-v0.1.0"
-
-  resource_group_name     = azurerm_resource_group.this.name
-  scopes                  = local.ai_services_scopes
-  model_deployment_names  = var.ai_services_model_deployment_names
-  enabled                 = var.ai_services_alert_normalized_ttft_enabled
-  action_group_ids        = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                    = var.tags
-}
-
-module "ai_services_alert_ttlt" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-ttlt?ref=ais-ttlt-v0.1.0"
-
-  resource_group_name     = azurerm_resource_group.this.name
-  scopes                  = local.ai_services_scopes
-  model_deployment_names  = var.ai_services_model_deployment_names
-  enabled                 = var.ai_services_alert_ttlt_enabled
-  action_group_ids        = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                    = var.tags
-}
-
-module "ai_services_alert_processed_tokens" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-tok?ref=ais-tok-v0.1.0"
-
-  resource_group_name     = azurerm_resource_group.this.name
-  scopes                  = local.ai_services_scopes
-  model_deployment_names  = var.ai_services_model_deployment_names
-  enabled                 = var.ai_services_alert_processed_tokens_enabled
-  threshold               = 10
-  action_group_ids        = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  tags                    = var.tags
-}
 
 ########################################
 # AI Hub

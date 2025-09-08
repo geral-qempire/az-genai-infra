@@ -160,18 +160,18 @@ variable "ai_services_model_deployment_names" {
   default = []
 }
 
-# Alerts (default false)
+# Alerts (serverless alerts default to true)
 variable "sql_db_alert_availability_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "sql_db_alert_app_cpu_percent_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "sql_db_alert_app_memory_percent_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "sql_db_alert_instance_cpu_percent_enabled" {
   type    = bool
@@ -183,53 +183,53 @@ variable "sql_db_alert_instance_memory_percent_enabled" {
 }
 variable "sql_db_alert_storage_percent_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "storage_alert_availability_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "storage_alert_success_server_latency_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "storage_alert_used_capacity_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "key_vault_alert_availability_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "key_vault_alert_saturation_shoebox_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "ai_search_alert_search_latency_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_search_alert_throttled_pct_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "ai_services_alert_availability_rate_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_services_alert_normalized_ttft_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_services_alert_ttlt_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_services_alert_processed_tokens_enabled" {
   type    = bool
-  default = false
+  default = true
 }

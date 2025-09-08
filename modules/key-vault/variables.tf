@@ -147,4 +147,164 @@ variable "identity" {
   }
 }
 
+########################################
+# Alerts - Availability
+########################################
+
+variable "enable_availability_alert" {
+  type        = bool
+  default     = true
+  description = "Enable the Key Vault Availability metric alert."
+}
+
+variable "availability_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the Availability alert. Defaults to alrt-avail-<resource-name>."
+}
+
+variable "availability_alert_threshold" {
+  type        = number
+  default     = 90
+  description = "Availability threshold percentage. Alert fires when below this value."
+  validation {
+    condition     = var.availability_alert_threshold >= 0 && var.availability_alert_threshold <= 100
+    error_message = "threshold must be between 0 and 100."
+  }
+}
+
+variable "availability_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the Availability alert. Auto-generated if not provided."
+}
+
+variable "availability_alert_severity" {
+  type        = number
+  default     = 1
+  description = "Alert severity (0-4). Default is 1."
+}
+
+variable "availability_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the Availability alert is enabled."
+}
+
+variable "availability_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the Availability alert should auto mitigate when conditions clear."
+}
+
+variable "availability_alert_frequency" {
+  type        = string
+  default     = "PT1M"
+  description = "Evaluation frequency for the Availability alert. Default PT1M."
+}
+
+variable "availability_alert_window_size" {
+  type        = string
+  default     = "PT5M"
+  description = "Time window for the Availability alert. Default PT5M."
+}
+
+variable "availability_alert_operator" {
+  type        = string
+  default     = "LessThan"
+  description = "Operator for the Availability alert criteria."
+}
+
+variable "availability_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the Availability alert criteria."
+}
+
+variable "availability_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the Availability alert."
+}
+
+########################################
+# Alerts - Saturation
+########################################
+
+variable "enable_saturation_alert" {
+  type        = bool
+  default     = true
+  description = "Enable the Key Vault SaturationShoebox metric alert."
+}
+
+variable "saturation_alert_name" {
+  type        = string
+  default     = null
+  description = "Optional custom name for the Saturation alert. Defaults to alrt-sat-<resource-name>."
+}
+
+variable "saturation_alert_threshold" {
+  type        = number
+  default     = 75
+  description = "Used capacity threshold percentage. Alert fires when above this value."
+  validation {
+    condition     = var.saturation_alert_threshold >= 0 && var.saturation_alert_threshold <= 100
+    error_message = "threshold must be between 0 and 100."
+  }
+}
+
+variable "saturation_alert_description" {
+  type        = string
+  default     = null
+  description = "Optional description for the Saturation alert. Auto-generated if not provided."
+}
+
+variable "saturation_alert_severity" {
+  type        = number
+  default     = 1
+  description = "Alert severity (0-4). Default is 1."
+}
+
+variable "saturation_alert_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the Saturation alert is enabled."
+}
+
+variable "saturation_alert_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "Whether the Saturation alert should auto mitigate when conditions clear."
+}
+
+variable "saturation_alert_frequency" {
+  type        = string
+  default     = "PT1M"
+  description = "Evaluation frequency for the Saturation alert. Default PT1M."
+}
+
+variable "saturation_alert_window_size" {
+  type        = string
+  default     = "PT5M"
+  description = "Time window for the Saturation alert. Default PT5M."
+}
+
+variable "saturation_alert_operator" {
+  type        = string
+  default     = "GreaterThan"
+  description = "Operator for the Saturation alert criteria."
+}
+
+variable "saturation_alert_aggregation" {
+  type        = string
+  default     = "Average"
+  description = "Aggregation for the Saturation alert criteria."
+}
+
+variable "saturation_alert_action_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Action Group IDs to notify for the Saturation alert."
+}
+
 

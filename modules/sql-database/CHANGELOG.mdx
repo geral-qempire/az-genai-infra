@@ -4,6 +4,33 @@ description: "Module updates and announcements"
 icon: 'arrows-spin'
 ---
 
+<Update label="2025/01/27" description="sqldb-v0.2.0">
+  - **BREAKING CHANGE**: Added `resource_group_name` as a required variable.
+
+  - **NEW**: Integrated monitoring alerts directly into the module.
+
+  - **NEW**: Manual serverless configuration via `is_serverless` variable (defaults to `true`).
+
+  - **NEW**: Common alerts available for all SKUs:
+    - Availability alert (default: 90% threshold, severity 1)
+    - Storage percent alert (default: 80% threshold, severity 3)
+
+  - **NEW**: Serverless-specific alerts (when `is_serverless = true`):
+    - App CPU percent alert (default: 80% threshold, severity 2)
+    - App memory percent alert (default: 90% threshold, severity 3)
+
+  - **NEW**: Non-serverless-specific alerts (when `is_serverless = false`):
+    - SQL instance CPU percent alert (default: 70% threshold, severity 3)
+    - SQL instance memory percent alert (default: 90% threshold, severity 3)
+
+  - **NEW**: All alerts follow the naming convention `alrt-<metric-abbreviation>-<resource-name>`.
+
+  - **NEW**: Comprehensive alert configuration options including thresholds, frequencies, action groups, and auto-mitigation.
+
+  - **NEW**: Alert outputs for all metric alerts (ID and name).
+
+  </Update>
+
 <Update label="2025/08/19" description="sqldb-v0.1.0">
   - Initial release of the SQL Database module.
 

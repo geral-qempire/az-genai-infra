@@ -4,6 +4,23 @@ description: "Module updates and announcements"
 icon: 'arrows-spin'
 ---
 
+<Update label="2025/01/27" description="st-v0.2.0">
+  - **NEW**: Integrated monitoring alerts directly into the module.
+
+  - **NEW**: Availability alert (default: 100% threshold, severity 1)
+
+  - **NEW**: Success Server Latency alert (default: 1000ms threshold, severity 2)
+
+  - **NEW**: Used Capacity alert (default: 5e+14 bytes threshold, severity 3)
+
+  - **NEW**: All alerts follow the naming convention `alrt-<metric-abbreviation>-<resource-name>`.
+
+  - **NEW**: Comprehensive alert configuration options including thresholds, frequencies, action groups, and auto-mitigation.
+
+  - **NEW**: Alert outputs for all metric alerts (ID and name).
+
+  </Update>
+
 <Update label="2025/08/19" description="st-v0.1.0">
   - Initial release: Storage Account with optional Private Endpoints per service (blob, file, queue, table, dfs).
 

@@ -5,7 +5,7 @@ icon: 'circle-info'
 ---
 
 ## 1. Module
-Create an Azure Key Vault with secure defaults (RBAC auth, private network access by default), optional Private Endpoint, and customizable retention and access policies.
+Create an Azure Key Vault with secure defaults (RBAC auth, private network access by default), optional Private Endpoint, customizable retention and access policies, and integrated monitoring alerts.
 
 ## 2. Usage
 ```hcl
@@ -38,6 +38,16 @@ module "key_vault" {
   subnet_id                 = "/subscriptions/xxx/resourceGroups/rg-network-dev/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/snet-privates"
   private_endpoint_location = "westeurope"
 
+  # Alerts
+  enable_availability_alert = true
+  enable_saturation_alert   = true
+
+  # Optional alert overrides (examples)
+  availability_alert_threshold        = 95
+  availability_alert_action_group_ids = [module.action_group.action_group_id]
+  saturation_alert_threshold          = 80
+  saturation_alert_action_group_ids   = [module.action_group.action_group_id]
+
   tags = {
     environment = "dev"
     project     = "acme"
@@ -45,7 +55,32 @@ module "key_vault" {
 }
 ```
 
-## 3. Inputs
+## 3. Alerts
+### Availability
+- Metric: `Availability`
+- Namespace: `Microsoft.KeyVault/vaults`
+- Aggregation: `Average`
+- Operator: `LessThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `1`
+- Threshold (default): `90` %
+- Name (default): `alrt-avail-<resource-name>`
+- Enabled (default): `true`
+
+### SaturationShoebox
+- Metric: `SaturationShoebox`
+- Namespace: `Microsoft.KeyVault/vaults`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `1`
+- Threshold (default): `75` %
+- Name (default): `alrt-sat-<resource-name>`
+- Enabled (default): `true`
+
+## 4. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
 | `environment` | `string` | n/a | yes | Environment project (dev, qua or prd). |
@@ -69,6 +104,30 @@ module "key_vault" {
 | `private_endpoint_location` | `string` | `""` | no | Location for the Private Endpoint. |
 | `tags` | `map(string)` | `{}` | no | Tags to apply to resources. |
 | `identity` | `object` | `{ type = "SystemAssigned" }` | no | Managed identity configuration. |
+| `enable_availability_alert` | `bool` | `false` | no | Enable the Key Vault Availability metric alert. |
+| `availability_alert_name` | `string` | `null` | no | Custom name for the Availability alert. Defaults to `alrt-avail-<resource-name>`. |
+| `availability_alert_threshold` | `number` | `90` | no | Availability threshold percentage. Fires when below this value. |
+| `availability_alert_description` | `string` | `null` | no | Description for the Availability alert. Auto-generated if not provided. |
+| `availability_alert_severity` | `number` | `1` | no | Alert severity (0-4). |
+| `availability_alert_enabled` | `bool` | `true` | no | Whether the Availability alert is enabled. |
+| `availability_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `availability_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the Availability alert. |
+| `availability_alert_window_size` | `string` | `"PT5M"` | no | Time window for the Availability alert. |
+| `availability_alert_operator` | `string` | `"LessThan"` | no | Operator for the Availability alert criteria. |
+| `availability_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the Availability alert criteria. |
+| `availability_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the Availability alert. |
+| `enable_saturation_alert` | `bool` | `false` | no | Enable the Key Vault SaturationShoebox metric alert. |
+| `saturation_alert_name` | `string` | `null` | no | Custom name for the Saturation alert. Defaults to `alrt-sat-<resource-name>`. |
+| `saturation_alert_threshold` | `number` | `75` | no | Used capacity threshold percentage. Fires when above this value. |
+| `saturation_alert_description` | `string` | `null` | no | Description for the Saturation alert. Auto-generated if not provided. |
+| `saturation_alert_severity` | `number` | `1` | no | Alert severity (0-4). |
+| `saturation_alert_enabled` | `bool` | `true` | no | Whether the Saturation alert is enabled. |
+| `saturation_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `saturation_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the Saturation alert. |
+| `saturation_alert_window_size` | `string` | `"PT5M"` | no | Time window for the Saturation alert. |
+| `saturation_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the Saturation alert criteria. |
+| `saturation_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the Saturation alert criteria. |
+| `saturation_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the Saturation alert. |
 
 ## 4. Outputs
 | Name | Description |
@@ -77,6 +136,10 @@ module "key_vault" {
 | `name` | Name of the Key Vault. |
 | `vault_uri` | The URI of the Key Vault (e.g., `https://<name>.vault.azure.net/`). |
 | `private_endpoint_id` | The ID of the Private Endpoint if created, otherwise `null`. |
+| `availability_alert_id` | Resource ID of the Availability metric alert (null if disabled). |
+| `availability_alert_name` | Name of the Availability metric alert (null if disabled). |
+| `saturation_alert_id` | Resource ID of the Saturation metric alert (null if disabled). |
+| `saturation_alert_name` | Name of the Saturation metric alert (null if disabled). |
 
 ## 5. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`

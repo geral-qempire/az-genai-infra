@@ -13,6 +13,7 @@ module "sql_database" {
   source = "../sql-database"
 
   server_id      = module.sql_server.id
+  resource_group_name = "rg-platform-dev"
   name           = "appdb"
   sku_name       = "GP_S_Gen5_2"
   min_capacity   = 0.5
@@ -33,6 +34,25 @@ module "sql_database" {
     identity_ids = []
   }
 
+  # Serverless configuration
+  is_serverless = true  # Set to false for non-serverless SKUs (S0, P1, etc.)
+
+  # Alerts
+  enable_availability_alert = true
+  enable_storage_alert      = true
+  enable_app_cpu_alert      = true
+  enable_app_memory_alert   = true
+
+  # Optional overrides (examples)
+  availability_alert_severity                  = 1
+  availability_alert_frequency                 = "PT1M"
+  storage_alert_threshold                      = 85
+  app_cpu_alert_threshold                      = 75
+  availability_alert_action_group_ids          = [module.action_group.action_group_id]
+  storage_alert_action_group_ids               = [module.action_group.action_group_id]
+  app_cpu_alert_action_group_ids               = [module.action_group.action_group_id]
+  app_memory_alert_action_group_ids            = [module.action_group.action_group_id]
+
   tags = {
     environment = "dev"
     project     = "acme"
@@ -40,10 +60,93 @@ module "sql_database" {
 }
 ```
 
-## 3. Inputs
+## 3. Alerts
+
+The module includes integrated monitoring alerts that are configured based on the `is_serverless` variable:
+
+### Common Alerts (Available for all SKUs)
+
+#### Availability
+- Metric: `availability`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: `Average`
+- Operator: `LessThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `1`
+- Threshold (default): `90` %
+- Name (default): `alrt-avail-<resource-name>`
+- Enabled (default): `false`
+
+#### Storage Percent
+- Metric: `storage_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `3`
+- Threshold (default): `80` %
+- Name (default): `alrt-stor-<resource-name>`
+- Enabled (default): `false`
+
+### Serverless-Specific Alerts (when `is_serverless = true`)
+
+#### App CPU Percent
+- Metric: `app_cpu_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `2`
+- Threshold (default): `80` %
+- Name (default): `alrt-cpu-<resource-name>`
+- Enabled (default): `false`
+
+#### App Memory Percent
+- Metric: `app_memory_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT1M`
+- Window (default): `PT5M`
+- Severity (default): `3`
+- Threshold (default): `90` %
+- Name (default): `alrt-mem-<resource-name>`
+- Enabled (default): `false`
+
+### Non-Serverless-Specific Alerts (when `is_serverless = false`)
+
+#### SQL Instance CPU Percent
+- Metric: `sql_instance_cpu_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT5M`
+- Window (default): `PT15M`
+- Severity (default): `3`
+- Threshold (default): `70` %
+- Name (default): `alrt-sqlcpu-<resource-name>`
+- Enabled (default): `false`
+
+#### SQL Instance Memory Percent
+- Metric: `sql_instance_memory_percent`
+- Namespace: `Microsoft.Sql/servers/databases`
+- Aggregation: `Average`
+- Operator: `GreaterThan`
+- Frequency (default): `PT5M`
+- Window (default): `PT5M`
+- Severity (default): `3`
+- Threshold (default): `90` %
+- Name (default): `alrt-sqlmem-<resource-name>`
+- Enabled (default): `false`
+
+## 4. Inputs
 | Name | Type | Default | Required | Description |
 |------|------|---------|:--------:|-------------|
 | `server_id` | `string` | n/a | yes | Parent SQL Server ID. |
+| `resource_group_name` | `string` | n/a | yes | Resource group in which to create the SQL Database. |
 | `name` | `string` | n/a | yes | Database name. |
 | `sku_name` | `string` | `"S0"` | no | SKU name (e.g., `GP_S_Gen5_2`, `S0`, `P1`). |
 | `min_capacity` | `number` | `null` | no | Minimum capacity (serverless SKUs). |
@@ -57,15 +160,100 @@ module "sql_database" {
 | `monthly_ltr_months` | `number` | `0` | no | Monthly LTR retention in months. |
 | `yearly_ltr_years` | `number` | `0` | no | Yearly LTR retention in years. |
 | `identity` | `object({ type = string, identity_ids = optional(list(string), []) })` | `null` | no | Optional identity configuration. |
+| `is_serverless` | `bool` | `true` | no | Whether the SQL Database is using a serverless SKU. Controls which alerts are available. |
+| `enable_availability_alert` | `bool` | `false` | no | Enable the availability metric alert. |
+| `availability_alert_name` | `string` | `null` | no | Custom name for the availability alert. Defaults to `alrt-avail-<resource-name>`. |
+| `availability_alert_threshold` | `number` | `90` | no | Availability threshold percentage. Fires when below this value. |
+| `availability_alert_description` | `string` | `null` | no | Description for the availability alert. Auto-generated if not provided. |
+| `availability_alert_severity` | `number` | `1` | no | Alert severity (0-4). |
+| `availability_alert_enabled` | `bool` | `true` | no | Whether the availability alert is enabled. |
+| `availability_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `availability_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the availability alert. |
+| `availability_alert_window_size` | `string` | `"PT5M"` | no | Time window for the availability alert. |
+| `availability_alert_operator` | `string` | `"LessThan"` | no | Operator for the availability alert criteria. |
+| `availability_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the availability alert criteria. |
+| `availability_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the availability alert. |
+| `enable_storage_alert` | `bool` | `false` | no | Enable the storage_percent metric alert. |
+| `storage_alert_name` | `string` | `null` | no | Custom name for the storage alert. Defaults to `alrt-stor-<resource-name>`. |
+| `storage_alert_threshold` | `number` | `80` | no | Storage percent threshold. Fires when above this value. |
+| `storage_alert_description` | `string` | `null` | no | Description for the storage alert. Auto-generated if not provided. |
+| `storage_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `storage_alert_enabled` | `bool` | `true` | no | Whether the storage alert is enabled. |
+| `storage_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `storage_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the storage alert. |
+| `storage_alert_window_size` | `string` | `"PT5M"` | no | Time window for the storage alert. |
+| `storage_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the storage alert criteria. |
+| `storage_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the storage alert criteria. |
+| `storage_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the storage alert. |
+| `enable_app_cpu_alert` | `bool` | `false` | no | Enable the app_cpu_percent metric alert (serverless SKUs only). |
+| `app_cpu_alert_name` | `string` | `null` | no | Custom name for the app CPU alert. Defaults to `alrt-cpu-<resource-name>`. |
+| `app_cpu_alert_threshold` | `number` | `80` | no | App CPU percent threshold. Fires when above this value. |
+| `app_cpu_alert_description` | `string` | `null` | no | Description for the app CPU alert. Auto-generated if not provided. |
+| `app_cpu_alert_severity` | `number` | `2` | no | Alert severity (0-4). |
+| `app_cpu_alert_enabled` | `bool` | `true` | no | Whether the app CPU alert is enabled. |
+| `app_cpu_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `app_cpu_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the app CPU alert. |
+| `app_cpu_alert_window_size` | `string` | `"PT5M"` | no | Time window for the app CPU alert. |
+| `app_cpu_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the app CPU alert criteria. |
+| `app_cpu_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the app CPU alert criteria. |
+| `app_cpu_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the app CPU alert. |
+| `enable_app_memory_alert` | `bool` | `false` | no | Enable the app_memory_percent metric alert (serverless SKUs only). |
+| `app_memory_alert_name` | `string` | `null` | no | Custom name for the app memory alert. Defaults to `alrt-mem-<resource-name>`. |
+| `app_memory_alert_threshold` | `number` | `90` | no | App memory percent threshold. Fires when above this value. |
+| `app_memory_alert_description` | `string` | `null` | no | Description for the app memory alert. Auto-generated if not provided. |
+| `app_memory_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `app_memory_alert_enabled` | `bool` | `true` | no | Whether the app memory alert is enabled. |
+| `app_memory_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `app_memory_alert_frequency` | `string` | `"PT1M"` | no | Evaluation frequency for the app memory alert. |
+| `app_memory_alert_window_size` | `string` | `"PT5M"` | no | Time window for the app memory alert. |
+| `app_memory_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the app memory alert criteria. |
+| `app_memory_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the app memory alert criteria. |
+| `app_memory_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the app memory alert. |
+| `enable_sql_instance_cpu_alert` | `bool` | `false` | no | Enable the sql_instance_cpu_percent metric alert (non-serverless SKUs only). |
+| `sql_instance_cpu_alert_name` | `string` | `null` | no | Custom name for the SQL instance CPU alert. Defaults to `alrt-sqlcpu-<resource-name>`. |
+| `sql_instance_cpu_alert_threshold` | `number` | `70` | no | SQL instance CPU percent threshold. Fires when above this value. |
+| `sql_instance_cpu_alert_description` | `string` | `null` | no | Description for the SQL instance CPU alert. Auto-generated if not provided. |
+| `sql_instance_cpu_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `sql_instance_cpu_alert_enabled` | `bool` | `true` | no | Whether the SQL instance CPU alert is enabled. |
+| `sql_instance_cpu_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `sql_instance_cpu_alert_frequency` | `string` | `"PT5M"` | no | Evaluation frequency for the SQL instance CPU alert. |
+| `sql_instance_cpu_alert_window_size` | `string` | `"PT15M"` | no | Time window for the SQL instance CPU alert. |
+| `sql_instance_cpu_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the SQL instance CPU alert criteria. |
+| `sql_instance_cpu_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the SQL instance CPU alert criteria. |
+| `sql_instance_cpu_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the SQL instance CPU alert. |
+| `enable_sql_instance_memory_alert` | `bool` | `false` | no | Enable the sql_instance_memory_percent metric alert (non-serverless SKUs only). |
+| `sql_instance_memory_alert_name` | `string` | `null` | no | Custom name for the SQL instance memory alert. Defaults to `alrt-sqlmem-<resource-name>`. |
+| `sql_instance_memory_alert_threshold` | `number` | `90` | no | SQL instance memory percent threshold. Fires when above this value. |
+| `sql_instance_memory_alert_description` | `string` | `null` | no | Description for the SQL instance memory alert. Auto-generated if not provided. |
+| `sql_instance_memory_alert_severity` | `number` | `3` | no | Alert severity (0-4). |
+| `sql_instance_memory_alert_enabled` | `bool` | `true` | no | Whether the SQL instance memory alert is enabled. |
+| `sql_instance_memory_alert_auto_mitigate` | `bool` | `true` | no | Whether the alert should auto mitigate when conditions clear. |
+| `sql_instance_memory_alert_frequency` | `string` | `"PT5M"` | no | Evaluation frequency for the SQL instance memory alert. |
+| `sql_instance_memory_alert_window_size` | `string` | `"PT5M"` | no | Time window for the SQL instance memory alert. |
+| `sql_instance_memory_alert_operator` | `string` | `"GreaterThan"` | no | Operator for the SQL instance memory alert criteria. |
+| `sql_instance_memory_alert_aggregation` | `string` | `"Average"` | no | Aggregation for the SQL instance memory alert criteria. |
+| `sql_instance_memory_alert_action_group_ids` | `list(string)` | `[]` | no | Action Group IDs to notify for the SQL instance memory alert. |
 
-## 4. Outputs
+## 5. Outputs
 | Name | Description |
 |------|-------------|
 | `id` | Resource ID of the SQL database. |
 | `name` | Name of the SQL database. |
 | `identity_ids` | User Assigned Identity IDs attached to the database (or null). |
+| `availability_alert_id` | Resource ID of the availability metric alert (null if disabled). |
+| `availability_alert_name` | Name of the availability metric alert (null if disabled). |
+| `storage_alert_id` | Resource ID of the storage metric alert (null if disabled). |
+| `storage_alert_name` | Name of the storage metric alert (null if disabled). |
+| `app_cpu_alert_id` | Resource ID of the app CPU metric alert (null if disabled or non-serverless). |
+| `app_cpu_alert_name` | Name of the app CPU metric alert (null if disabled or non-serverless). |
+| `app_memory_alert_id` | Resource ID of the app memory metric alert (null if disabled or non-serverless). |
+| `app_memory_alert_name` | Name of the app memory metric alert (null if disabled or non-serverless). |
+| `sql_instance_cpu_alert_id` | Resource ID of the SQL instance CPU metric alert (null if disabled or serverless). |
+| `sql_instance_cpu_alert_name` | Name of the SQL instance CPU metric alert (null if disabled or serverless). |
+| `sql_instance_memory_alert_id` | Resource ID of the SQL instance memory metric alert (null if disabled or serverless). |
+| `sql_instance_memory_alert_name` | Name of the SQL instance memory metric alert (null if disabled or serverless). |
 
-## 5. Requirements
+## 6. Requirements
 - Terraform `>= 1.12.1, < 2.0.0`
 - AzureRM provider `~> 4.38`
 
