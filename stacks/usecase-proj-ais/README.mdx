@@ -1,0 +1,242 @@
+---
+title: 'README'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'circle-info'
+---
+
+## 1. Template
+
+Provision a comprehensive use case with Azure AI Services (Private Endpoint + System Assigned Identity), Azure AI Search, Azure Storage Account, Azure Key Vault, Azure SQL Server and Database, an Azure AI Project, and connections between them. All resources include integrated monitoring alerts and optional RBAC assignments for groups, managed identities, and service principals.
+
+## 2. Usage
+```hcl
+module "usecase-proj-ais" {
+  source = "../../../templates/usecase-proj-ais"
+
+  providers = {
+    azurerm     = azurerm
+    azurerm.dns = azurerm.dns
+  }
+
+  # Context
+  service_prefix = "chatbot"
+  location       = "westeurope"
+  environment    = "dev"
+  tags           = { env = "dev", owner = "ai-platform", costcenter = "CC1234" }
+
+  # Framework core (pre-existing)
+  framework_resource_group_name = "rg-we-platform-core"
+  framework_hub_name            = "aih-we-core"
+
+  # Networking for Private Endpoints
+  subnet_name              = "snet-priv-endpoints"
+  vnet_name                = "vnet-hub"
+  vnet_resource_group_name = "rg-we-platform-networking"
+  dns_resource_group_name  = "rg-we-platform-networking"
+
+  # Tenant ID for Key Vault
+  tenant_id = "00000000-0000-0000-0000-000000000000"
+
+  # AI Services
+  ai_services_sku_name               = "S0"
+  ai_services_model_deployment_names = ["gpt-4o-mini", "text-embedding-3-large"]
+
+  # Alerts - AI Services (optional)
+  ai_services_alert_availability_rate_enabled = false
+  ai_services_alert_normalized_ttft_enabled   = false
+  ai_services_alert_ttlt_enabled              = false
+  ai_services_alert_processed_tokens_enabled  = false
+
+  # Storage Account
+  storage_account_tier             = "Standard"
+  storage_account_replication_type = "LRS"
+  storage_account_kind             = "StorageV2"
+  storage_account_access_tier      = "Hot"
+
+  # Alerts - Storage Account (optional)
+  storage_account_alert_availability_enabled           = false
+  storage_account_alert_success_server_latency_enabled = false
+  storage_account_alert_used_capacity_enabled          = false
+
+  # AI Search
+  ai_search_sku                           = "basic"
+  ai_search_partition_count               = 1
+  ai_search_replica_count                 = 0
+  ai_search_semantic_search_sku           = "free"
+  ai_search_hosting_mode                  = "default"
+  ai_search_api_access                    = "RBAC"
+
+  # Alerts - AI Search (optional)
+  ai_search_alert_search_latency_enabled        = false
+  ai_search_alert_throttled_search_pct_enabled  = false
+
+  # Key Vault
+  key_vault_sku_name                      = "standard"
+  key_vault_soft_delete_retention_days    = 90
+  key_vault_purge_protection_enabled      = true
+
+  # Alerts - Key Vault (optional)
+  key_vault_alert_availability_enabled = false
+  key_vault_alert_saturation_enabled   = false
+
+  # SQL Server
+  sql_server_serial_number                = "001"
+  sql_server_administrator_login          = "sqladmin"
+  sql_server_administrator_login_password = "YourSecurePassword123!"
+  sql_server_entra_admin_login_name       = "admin@contoso.com"
+  sql_server_entra_admin_object_id        = "00000000-0000-0000-0000-000000000000"
+
+  # SQL Database
+  sql_database_name                = "chatbot-db"
+  sql_database_sku_name            = "Basic"
+  sql_database_collation           = "SQL_Latin1_General_CP1_CI_AS"
+  sql_database_is_serverless       = true
+
+  # Alerts - SQL Database (optional)
+  sql_database_alert_availability_enabled        = false
+  sql_database_alert_storage_enabled             = false
+  sql_database_alert_app_cpu_enabled             = false
+  sql_database_alert_app_memory_enabled          = false
+  sql_database_alert_sql_instance_cpu_enabled    = false
+  sql_database_alert_sql_instance_memory_enabled = false
+
+  # Action Group (optional)
+  action_group_enabled = true
+  action_group_emails  = ["alerts@contoso.com", "devops@contoso.com"]
+
+  # RBAC - AD Groups (optional)
+  ad_read_group_id = null
+  ad_full_group_id = null
+
+  # RBAC - Service Principals (optional)
+  sp_cicd_id = null
+  sp_app_id  = null
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `environment` | `string` | n/a | yes | Environment project (dev, qua or prd). |
+| `service_prefix` | `string` | n/a | yes | Prefix or name of the project. |
+| `location` | `string` | n/a | yes | Azure region to deploy resources. |
+| `subnet_name` | `string` | n/a | yes | Subnet name for private endpoints. |
+| `vnet_name` | `string` | n/a | yes | Virtual network name containing the subnet. |
+| `dns_resource_group_name` | `string` | n/a | yes | Resource group with Private DNS zone for AI Services. |
+| `vnet_resource_group_name` | `string` | n/a | yes | Resource group name that contains the VNet. |
+| `framework_resource_group_name` | `string` | n/a | yes | Resource group where the framework hub and resources live. |
+| `framework_hub_name` | `string` | n/a | yes | Existing AI Hub (workspace) name. |
+| `framework_storage_account_name` | `string` | `null` | no | Existing Storage Account name (optional, for reference). |
+| `framework_ai_search_name` | `string` | `null` | no | Existing AI Search name (optional, for reference). |
+| `tags` | `map(string)` | `{}` | no | Optional tags to add to resources. |
+| `ad_read_group_id` | `string` | `null` | no | Object ID of the Entra ID group to grant read-level roles. |
+| `ad_full_group_id` | `string` | `null` | no | Object ID of the Entra ID group to grant full-level roles. |
+| `sp_cicd_id` | `string` | `null` | no | Object ID of the CI/CD service principal. |
+| `sp_app_id` | `string` | `null` | no | Object ID of the application service principal. |
+| `ai_services_sku_name` | `string` | `"S0"` | no | AI Services SKU. |
+| `ai_services_model_deployment_names` | `list(string)` | `[]` | no | Azure OpenAI model deployment names used by AI Services alerts. |
+| `ai_services_alert_availability_rate_enabled` | `bool` | `false` | no | Enable AzureOpenAIAvailabilityRate alert. |
+| `ai_services_alert_normalized_ttft_enabled` | `bool` | `false` | no | Enable AzureOpenAINormalizedTTFTInMS alert. |
+| `ai_services_alert_ttlt_enabled` | `bool` | `false` | no | Enable AzureOpenAITTLTInMS alert. |
+| `ai_services_alert_processed_tokens_enabled` | `bool` | `false` | no | Enable ProcessedInferenceTokens alert. |
+| `action_group_id` | `string` | `null` | no | Resource ID of an Azure Monitor Action Group to notify for all alerts. |
+| `action_group_short_name` | `string` | `"alerts"` | no | Short name for the action group (max 12 characters). |
+| `action_group_enabled` | `bool` | `true` | no | Whether the action group is enabled. |
+| `action_group_email_receivers` | `map(object({ email_address = string }))` | `{}` | no | Map of email receivers for the action group. |
+| `action_group_emails` | `list(string)` | `[]` | no | List of email addresses for the action group. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `resource_group_name` | Name of the created resource group. |
+| `resource_group_id` | ID of the created resource group. |
+| `ai_services_id` | AI Services resource ID. |
+| `ai_project_id` | AI Project ID. |
+| `ai_services_connection_id` | AI Services connection ID (under the Project). |
+| `storage_account_id` | Storage Account resource ID. |
+| `storage_account_name` | Storage Account name. |
+| `ai_search_id` | AI Search service resource ID. |
+| `ai_search_name` | AI Search service name. |
+| `key_vault_id` | Key Vault resource ID. |
+| `key_vault_name` | Key Vault name. |
+| `key_vault_uri` | Key Vault URI. |
+| `sql_server_id` | SQL Server resource ID. |
+| `sql_server_name` | SQL Server name. |
+| `sql_server_fqdn` | SQL Server FQDN. |
+| `sql_database_id` | SQL Database resource ID. |
+| `sql_database_name` | SQL Database name. |
+| `ai_services_alert_ids` | Map of AI Services alert IDs. |
+| `storage_account_alert_ids` | Map of Storage Account alert IDs. |
+| `ai_search_alert_ids` | Map of AI Search alert IDs. |
+| `key_vault_alert_ids` | Map of Key Vault alert IDs. |
+| `sql_database_alert_ids` | Map of SQL Database alert IDs. |
+| `role_assignments_groups` | Map of role assignment IDs for AD Groups. |
+| `role_assignments_managed_identities` | Map of role assignment IDs for Managed Identities. |
+| `role_assignments_service_principals` | Map of role assignment IDs for Service Principals. |
+
+## 5. Group Roles
+
+### Read Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI User | AI Services |
+| Reader | AI Project |
+
+### Full Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI Contributor | AI Services |
+| Reader | AI Project |
+| BDSO Azure AI Developer | AI Project |
+
+## 6. Managed Identity roles
+The following roles are given to the resources Managed Identities.
+
+| Managed Identity | Role | Resource |
+| --- | --- | --- |
+| AI Services MI | Search Index Data Contributor | AI Search Service |
+| AI Services MI | Search Index Data Reader | AI Search Service |
+| AI Services MI | Search Service Contributor | AI Search Service |
+| AI Search MI | Cognitive Services Contributor | AI Services |
+| AI Search MI | Cognitive Services OpenAI Contributor | AI Services |
+| AI Hub MI | Contributor | Resource Group |
+
+## 7. Service principal roles
+
+### App Service Principal
+
+| Role | Scope |
+| --- | --- |
+| Cognitive Services OpenAI User | AI Services |
+
+## 8. Requirements
+
+- Terraform: >= 1.12.1, < 2.0.0
+- Provider azurerm: ~> 4.38 (with alias `azurerm.dns` configured)
+- Provider azapi: >= 2.2.0
+
+### Used Modules
+
+| Module | Description | Version |
+| --- | --- | --- |
+| `modules/region-abbreviations` | Region codes used for naming. | regabbr-v0.1.0 |
+| `modules/action-group-map` | Azure Monitor Action Group via map input. | agm-v0.1.0 |
+| `modules/ai-services` | Azure AI Services with MI + PE + integrated alerts. | ais-v0.2.0 |
+| `modules/storage-account` | Azure Storage Account with PE + integrated alerts. | st-v0.2.0 |
+| `modules/ai-search` | Azure AI Search with PE + integrated alerts. | srch-v0.1.0 |
+| `modules/key-vault` | Azure Key Vault with PE + integrated alerts. | kv-v0.2.0 |
+| `modules/sql-server` | Azure SQL Server. | sqlsrv-v0.1.0 |
+| `modules/sql-database` | Azure SQL Database with integrated alerts. | sqldb-v0.1.0 |
+| `modules/ai-project` | Azure AI Project (system-assigned identity). | proj-v0.1.0 |
+| `modules/ai-services-hub-connection` | AI Services connection to AI Project. | aiscon-v0.1.0 |
+| `modules/rbac-map` | Azure RBAC role assignments via map input. | rbacmap-v0.1.0 |
+
+

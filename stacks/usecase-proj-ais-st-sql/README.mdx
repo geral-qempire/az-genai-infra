@@ -1,0 +1,189 @@
+---
+title: 'README'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'circle-info'
+---
+
+## 1. Template
+
+Provision a use case with Azure AI Services (Private Endpoint + System Assigned Identity), Storage Account (Blob/File Private Endpoints), Azure SQL Server and SQL Database, and an AI Project connected to AI Services. Includes optional alerts for AI Services, Storage, and SQL Database, plus RBAC for groups, managed identities, and service principals.
+
+## 2. Usage
+```hcl
+module "usecase-proj-ais-st-sql" {
+  source = "../../../templates/usecase-proj-ais-st-sql"
+
+  providers = {
+    azurerm     = azurerm
+    azurerm.dns = azurerm.dns
+  }
+
+  # Context
+  service_prefix = "chatbot"
+  location       = "westeurope"
+  tenant_id      = "00000000-0000-0000-0000-000000000000"
+  environment    = "dev"
+  tags           = { env = "dev", owner = "ai-platform", costcenter = "CC1234" }
+
+  # Framework core (pre-existing)
+  framework_resource_group_name = "rg-we-platform-core"
+  framework_hub_name            = "aih-we-core"
+
+  # Networking for Private Endpoints
+  subnet_name              = "snet-priv-endpoints"
+  vnet_name                = "vnet-hub"
+  vnet_resource_group_name = "rg-we-platform-networking"
+  dns_resource_group_name  = "rg-we-platform-networking"
+
+  # AI Services
+  ai_services_sku_name               = "S0"
+  ai_services_model_deployment_names = ["gpt-4o-mini", "text-embedding-3-large"]
+
+  # Storage Account
+  storage_account_account_tier             = "Standard"
+  storage_account_account_replication_type = "LRS"
+  storage_account_account_kind             = "StorageV2"
+  storage_account_access_tier              = "Hot"
+
+  # SQL Server (required)
+  serial_number                = "001"
+  administrator_login          = "sqladminuser"
+  administrator_login_password = "ChangeM3Now!"
+  entra_admin_login_name       = "ai-sql-admins@contoso.com"
+  entra_admin_object_id        = "11111111-1111-1111-1111-111111111111"
+
+  # SQL Database
+  sql_database_name                        = "sqldb-chatbot"
+  sql_database_sku_name                    = "S0"
+  sql_database_min_capacity                = null
+  sql_database_auto_pause_delay_in_minutes = null
+  sql_database_zone_redundant              = false
+  sql_database_backup_interval_in_hours    = 0
+  sql_database_pitr_days                   = 7
+  sql_database_weekly_ltr_weeks            = 0
+  sql_database_monthly_ltr_months          = 0
+  sql_database_yearly_ltr_years            = 0
+
+  # Alerts - SQL Database (optional)
+  sql_db_alert_availability_enabled            = false
+  sql_db_alert_app_cpu_percent_enabled         = false
+  sql_db_alert_app_memory_percent_enabled      = false
+  sql_db_alert_instance_cpu_percent_enabled    = false
+  sql_db_alert_instance_memory_percent_enabled = false
+  sql_db_alert_storage_percent_enabled         = false
+
+  # Alerts - Storage Account (optional)
+  storage_alert_availability_enabled           = false
+  storage_alert_success_server_latency_enabled = false
+  storage_alert_used_capacity_enabled          = false
+
+  # Alerts - AI Services (optional)
+  ai_services_alert_availability_rate_enabled = false
+  ai_services_alert_normalized_ttft_enabled   = false
+  ai_services_alert_ttlt_enabled              = false
+  ai_services_alert_processed_tokens_enabled  = false
+
+  # Action Group (optional)
+  action_group_enabled = true
+  action_group_emails  = ["alerts@contoso.com", "devops@contoso.com"]
+
+  # RBAC - AD Groups (optional)
+  ad_read_group_id = null
+  ad_full_group_id = null
+
+  # RBAC - Service Principals (optional)
+  sp_cicd_id = null
+  sp_app_id  = null
+}
+```
+
+## 3. Inputs
+Refer to `variables.tf` for the complete list of inputs including AI Services, Storage Account, SQL Server/Database, alert toggles, Action Group config, and optional RBAC for AD groups and Service Principals.
+
+## 4. Outputs
+Refer to `output.tf` for the list of outputs including resource IDs and names for AI Services, Storage Account, SQL Server, SQL Database, the Services→Project connection, and any role assignment IDs created.
+
+## 5. Group Roles
+
+### Read Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI User | AI Services |
+| Reader | AI Project |
+| Reader | SQL Server |
+| Reader | SQL Database |
+| Reader | Storage Account |
+| Storage Blob Data Reader | Storage Account |
+
+### Full Group
+
+| Role | Scope |
+| --- | --- |
+| BDSO Alert Operator | Resource Group |
+| Reader | AI Services |
+| Cognitive Services User | AI Services |
+| Cognitive Services OpenAI Contributor | AI Services |
+| Reader | AI Project |
+| BDSO Azure AI Developer | AI Project |
+| Reader | SQL Server |
+| Reader | SQL Database |
+| Reader | Storage Account |
+| Storage Blob Data Contributor | Storage Account |
+
+## 6. Managed Identity roles
+The following roles are given to the resources Managed Identities.
+
+| Managed Identity | Role | Resource |
+| --- | --- | --- |
+| AI Services MI | Search Index Data Contributor | AI Search Service (from framework) |
+| AI Services MI | Search Index Data Reader | AI Search Service (from framework) |
+| AI Services MI | Search Service Contributor | AI Search Service (from framework) |
+| AI Search MI | Storage Blob Data Contributor | Storage Account |
+| AI Project MI | Reader | Storage Account (Blob Private Endpoint) |
+| AI Project MI | Reader | Storage Account (File Private Endpoint) |
+| AI Search MI | Cognitive Services Contributor | AI Services |
+| AI Search MI | Cognitive Services OpenAI Contributor | AI Services |
+| AI Hub MI | Contributor | Resource Group |
+
+## 7. Service principal roles
+
+### App Service Principal
+
+| Role | Scope |
+| --- | --- |
+| Cognitive Services OpenAI User | AI Services |
+| Storage Blob Data Reader | Storage Account |
+| Reader | Storage Account |
+
+### CI/CD Service Principal
+
+| Role | Scope |
+| --- | --- |
+| Storage Blob Data Contributor | Storage Account |
+| Reader | Storage Account |
+
+## 8. Requirements
+
+- Terraform: >= 1.12.1, < 2.0.0
+- Provider azurerm: ~> 4.38 (with alias `azurerm.dns` configured)
+- Provider azapi: >= 2.2.0
+
+### Used Modules
+
+| Module | Description | Version |
+| --- | --- | --- |
+| `modules/region-abbreviations` | Region codes used for naming. | regabbr-v0.1.0 |
+| `modules/action-group-map` | Azure Monitor Action Group via map input. | agm-v0.1.0 |
+| `modules/ai-services` | Azure AI Services with MI + PE and integrated alerts. | ais-v0.1.0 |
+| `modules/storage-account` | Storage Account with Blob/File PEs and integrated alerts. | st-v0.1.0 |
+| `modules/sql-server` | Azure SQL logical server with PE. | sqlsrv-v0.1.0 |
+| `modules/sql-database` | Azure SQL Database with backup config and integrated alerts. | sqldb-v0.1.0 |
+| `modules/ai-project` | Azure AI Project (system-assigned identity). | proj-v0.1.0 |
+| `modules/ai-services-hub-connection` | AI Services connection to AI Project. | aiscon-v0.1.0 |
+| `modules/rbac-map` | Azure RBAC role assignments via map input. | rbacmap-v0.1.0 |
+
+
