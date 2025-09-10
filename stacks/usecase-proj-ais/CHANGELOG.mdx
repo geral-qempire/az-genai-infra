@@ -1,0 +1,41 @@
+---
+title: "Changelog"
+description: "Template updates and announcements"
+icon: 'arrows-spin'
+---
+
+<Update label="2025/01/27" description="uc-proj-ais-v0.2.0">
+  - **BREAKING CHANGE**: Major update to include comprehensive Azure resources with integrated alerts.
+  
+  - **NEW**: Added Azure Storage Account module with integrated alerts (availability, success server latency, used capacity).
+  
+  - **NEW**: Added Azure AI Search module with integrated alerts (search latency, throttled search percentage).
+  
+  - **NEW**: Added Azure Key Vault module with integrated alerts (availability, saturation).
+  
+  - **NEW**: Added Azure SQL Server and SQL Database modules with integrated alerts (availability, storage, app CPU/memory, SQL instance CPU/memory).
+  
+  - **UPDATED**: AI Services module upgraded to v0.2.0 with integrated alerts (availability rate, processed tokens, TTFT, TTLT).
+  
+  - **REMOVED**: Old separate alert modules for AI Services (ai-services-avail, ai-services-ttft, ai-services-ttlt, ai-services-tok).
+  
+  - **UPDATED**: RBAC configuration now uses the new AI Search module instead of framework references.
+  
+  - **NEW**: Comprehensive alert outputs for all resources.
+  
+  - **NEW**: All alerts follow the naming convention `alrt-<metric-abbreviation>-<resource-name>`.
+  
+  - **NEW**: All alerts are disabled by default and can be enabled individually via variables.
+  
+  - **UPDATED**: All module references now use local paths instead of versioned Git references.
+
+</Update>
+
+<Update label="2025/09/03" description="uc-proj-ais-v0.1.0">
+  - Initial release of the Simple Use Case template.
+  - Provisions AI Services (PE + MI), AI Project, and connection between them.
+  - Includes optional alerts and RBAC assignments for groups, MIs, and SPs.
+
+</Update>
+
+
