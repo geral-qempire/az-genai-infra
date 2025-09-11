@@ -28,7 +28,6 @@ on:
 permissions:
   contents: read
 
-# Prevent overlapping runs on the same folder
 concurrency:
   group: tf-${{ inputs.path }}
   cancel-in-progress: false
@@ -37,16 +36,15 @@ jobs:
   run:
     name: ${{ inputs.action }} • ${{ inputs.environment }} • ${{ inputs.path }}
     runs-on: ubuntu-latest
-    # Attach job to the chosen GitHub Environment (use it for approvals if you want)
     environment: ${{ inputs.environment }}
     env:
       TF_IN_AUTOMATION: true
-      TF_PLUGIN_CACHE_DIR: ${{ runner.tool_cache }}/terraform_plugins
+      # Azure SP creds (recommend scoping these per Environment)
       ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
-      # ARM_SKIP_PROVIDER_REGISTRATION: true  # uncomment if needed in your org
+      # ARM_SKIP_PROVIDER_REGISTRATION: true  # uncomment if needed
 
     steps:
       - name: Checkout
@@ -75,8 +73,11 @@ jobs:
           client-secret:   ${{ secrets.AZURE_CLIENT_SECRET }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Enable plugin cache
-        run: mkdir -p "$TF_PLUGIN_CACHE_DIR"
+      # ✅ Set TF plugin cache via $GITHUB_ENV (uses RUNNER_TOOL_CACHE, no contexts needed)
+      - name: Enable Terraform plugin cache
+        run: |
+          echo "TF_PLUGIN_CACHE_DIR=$RUNNER_TOOL_CACHE/terraform_plugins" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TOOL_CACHE/terraform_plugins"
 
       - name: Terraform init (remote backend)
         run: terraform -chdir="${{ inputs.path }}" init -input=false
@@ -97,12 +98,12 @@ jobs:
           terraform -chdir="${{ inputs.path }}" plan -input=false -no-color -out=tfplan.binary
           terraform -chdir="${{ inputs.path }}" show -no-color tfplan.binary > plan.txt
           {
-            echo "### ${ { inputs.action } } for \`${{ inputs.path }}\` on **${{ inputs.environment }}**"
+            echo "### ${{ inputs.action }} for \`${{ inputs.path }}\` on **${{ inputs.environment }}**"
             echo
             echo '```'
             sed -n '1,300p' plan.txt
             echo '```'
-          } >> $GITHUB_STEP_SUMMARY
+          } >> "$GITHUB_STEP_SUMMARY"
         shell: bash
 
       - name: Apply (same job, uses the plan file)
