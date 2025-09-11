@@ -1,10 +1,10 @@
-name: terraform-deploy (single job)
+name: terraform-deploy
 
 on:
   workflow_dispatch:
     inputs:
       path:
-        description: "Folder to deploy (e.g., live/qua/app1)"
+        description: "Folder to deploy (e.g., projects/app1 or platform/network)"
         required: true
         type: string
       environment:
@@ -28,6 +28,7 @@ on:
 permissions:
   contents: read
 
+# Prevent overlapping runs on the same folder
 concurrency:
   group: tf-${{ inputs.path }}
   cancel-in-progress: false
@@ -36,6 +37,7 @@ jobs:
   run:
     name: ${{ inputs.action }} • ${{ inputs.environment }} • ${{ inputs.path }}
     runs-on: ubuntu-latest
+    # Attach to the chosen GitHub Environment (use it for approvals if you want)
     environment: ${{ inputs.environment }}
     env:
       TF_IN_AUTOMATION: true
@@ -44,7 +46,7 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
-      # ARM_SKIP_PROVIDER_REGISTRATION: true  # uncomment if needed
+      # ARM_SKIP_PROVIDER_REGISTRATION: true  # uncomment if your org requires it
 
     steps:
       - name: Checkout
@@ -52,13 +54,22 @@ jobs:
 
       - name: Validate input path
         run: |
-          set -e
+          set -euo pipefail
+
+          # Basic safety against odd paths
           case "${{ inputs.path }}" in
-            live/*) ;; 
-            *) echo "Path must start with live/"; exit 1;;
+            /*|*..*|*~*|*//* ) echo "Unsafe path"; exit 1;;
           esac
+
+          # ✅ Allow exactly these roots
+          case "${{ inputs.path }}" in
+            projects/*|platform/*) ;;
+            *) echo "Path must start with projects/ or platform/"; exit 1;;
+          esac
+
+          # Must exist and contain Terraform files
           test -d "${{ inputs.path }}" || (echo "Directory not found"; exit 1)
-          ls "${{ inputs.path }}"/*.tf >/dev/null 2>&1 || (echo "No .tf files in path"; exit 1)
+          ls -1 "${{ inputs.path }}"/*.tf >/dev/null 2>&1 || (echo "No .tf files in path"; exit 1)
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -73,7 +84,6 @@ jobs:
           client-secret:   ${{ secrets.AZURE_CLIENT_SECRET }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # ✅ Set TF plugin cache via $GITHUB_ENV (uses RUNNER_TOOL_CACHE, no contexts needed)
       - name: Enable Terraform plugin cache
         run: |
           echo "TF_PLUGIN_CACHE_DIR=$RUNNER_TOOL_CACHE/terraform_plugins" >> "$GITHUB_ENV"
@@ -104,7 +114,6 @@ jobs:
             sed -n '1,300p' plan.txt
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-        shell: bash
 
       - name: Apply (same job, uses the plan file)
         if: inputs.action == 'apply'
