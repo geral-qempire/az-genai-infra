@@ -1,5 +1,5 @@
 module "framework-core" {
-  source = "../../../templates/framework-core"
+  source = "../../../stacks/framework-core"
 
   # Providers
   providers = {

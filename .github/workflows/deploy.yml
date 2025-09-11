@@ -1,0 +1,114 @@
+name: terraform-deploy (single job)
+
+on:
+  workflow_dispatch:
+    inputs:
+      path:
+        description: "Folder to deploy (e.g., live/qua/app1)"
+        required: true
+        type: string
+      environment:
+        description: "Environment/workspace"
+        required: true
+        type: choice
+        options: [dev, qua, prd]
+        default: dev
+      action:
+        description: "Action to run"
+        required: true
+        type: choice
+        options: [plan, apply, destroy]
+        default: plan
+      terraform_version:
+        description: "Terraform version"
+        required: true
+        type: string
+        default: "1.9.5"
+
+permissions:
+  contents: read
+
+# Prevent overlapping runs on the same folder
+concurrency:
+  group: tf-${{ inputs.path }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    name: ${{ inputs.action }} • ${{ inputs.environment }} • ${{ inputs.path }}
+    runs-on: ubuntu-latest
+    # Attach job to the chosen GitHub Environment (use it for approvals if you want)
+    environment: ${{ inputs.environment }}
+    env:
+      TF_IN_AUTOMATION: true
+      TF_PLUGIN_CACHE_DIR: ${{ runner.tool_cache }}/terraform_plugins
+      ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
+      # ARM_SKIP_PROVIDER_REGISTRATION: true  # uncomment if needed in your org
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate input path
+        run: |
+          set -e
+          case "${{ inputs.path }}" in
+            live/*) ;; 
+            *) echo "Path must start with live/"; exit 1;;
+          esac
+          test -d "${{ inputs.path }}" || (echo "Directory not found"; exit 1)
+          ls "${{ inputs.path }}"/*.tf >/dev/null 2>&1 || (echo "No .tf files in path"; exit 1)
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+
+      - name: Azure login (Service Principal)
+        uses: azure/login@v2
+        with:
+          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
+          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
+          client-secret:   ${{ secrets.AZURE_CLIENT_SECRET }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Enable plugin cache
+        run: mkdir -p "$TF_PLUGIN_CACHE_DIR"
+
+      - name: Terraform init (remote backend)
+        run: terraform -chdir="${{ inputs.path }}" init -input=false
+
+      - name: Select or create workspace
+        run: |
+          set -e
+          terraform -chdir="${{ inputs.path }}" workspace select "${{ inputs.environment }}" \
+            || terraform -chdir="${{ inputs.path }}" workspace new "${{ inputs.environment }}"
+
+      - name: Validate
+        run: terraform -chdir="${{ inputs.path }}" validate
+
+      - name: Plan (always run plan for plan/apply)
+        if: inputs.action != 'destroy'
+        run: |
+          set -e
+          terraform -chdir="${{ inputs.path }}" plan -input=false -no-color -out=tfplan.binary
+          terraform -chdir="${{ inputs.path }}" show -no-color tfplan.binary > plan.txt
+          {
+            echo "### ${ { inputs.action } } for \`${{ inputs.path }}\` on **${{ inputs.environment }}**"
+            echo
+            echo '```'
+            sed -n '1,300p' plan.txt
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
+        shell: bash
+
+      - name: Apply (same job, uses the plan file)
+        if: inputs.action == 'apply'
+        run: terraform -chdir="${{ inputs.path }}" apply -input=false -auto-approve tfplan.binary
+
+      - name: Destroy
+        if: inputs.action == 'destroy'
+        run: terraform -chdir="${{ inputs.path }}" destroy -input=false -auto-approve

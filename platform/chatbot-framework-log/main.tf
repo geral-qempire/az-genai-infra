@@ -1,5 +1,5 @@
 module "log_template" {
-  source = "../../../templates/framework-log"
+  source = "../../../stacks/framework-log"
 
   infra_subscription_id = var.infra_subscription_id
   environment           = var.environment
