@@ -3,122 +3,219 @@ name: terraform-deploy
 on:
   workflow_dispatch:
     inputs:
-      path:
-        description: "Folder to deploy (e.g., projects/app1 or platform/network)"
-        required: true
-        type: string
-      environment:
-        description: "Environment/workspace"
-        required: true
-        type: choice
-        options: [dev, qua, prd]
-        default: dev
       action:
-        description: "Action to run"
+        description: "Pick what to run"
         required: true
         type: choice
-        options: [plan, apply, destroy]
+        options:
+          - plan
+          - apply
+          - destroy
         default: plan
-      terraform_version:
-        description: "Terraform version"
+      working_directory:
+        description: "Terraform working directory (e.g. projects/dev/chatbot-framework-core)"
         required: true
         type: string
-        default: "1.9.5"
+        default: projects/dev/chatbot-framework-core
+      environment:
+        description: "Target environment (must match a GitHub Environment)"
+        required: true
+        type: choice
+        options:
+          - Dev
+          - Qua
+          - Prd
+        default: Dev
+      terraform_version:
+        description: "Terraform CLI version"
+        required: true
+        type: string
+        default: "1.12.1"
+      var_file:
+        description: "Optional -var-file to use (relative to working_directory)"
+        required: false
+        type: string
+        default: "terraform.tfvars"
+      confirm_destroy:
+        description: "Confirm destroy (required for destroy)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
+  id-token: write
   contents: read
 
-# Prevent overlapping runs on the same folder
 concurrency:
-  group: tf-${{ inputs.path }}
+  group: tf-${{ inputs.working_directory }}-${{ inputs.environment }}
   cancel-in-progress: false
 
-jobs:
-  run:
-    name: ${{ inputs.action }} • ${{ inputs.environment }} • ${{ inputs.path }}
-    runs-on: ubuntu-latest
-    # Attach to the chosen GitHub Environment (use it for approvals if you want)
-    environment: ${{ inputs.environment }}
-    env:
-      TF_IN_AUTOMATION: true
-      # Azure SP creds (recommend scoping these per Environment)
-      ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
-      ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
-      # ARM_SKIP_PROVIDER_REGISTRATION: true  # uncomment if your org requires it
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  ARM_USE_OIDC: "true"
+  ARM_USE_AZUREAD: "true"
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
 
+jobs:
+  plan:
+    if: ${{ inputs.action == 'plan' }}
+    name: Plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Validate input path
-        run: |
-          set -euo pipefail
-
-          # Basic safety against odd paths
-          case "${{ inputs.path }}" in
-            /*|*..*|*~*|*//* ) echo "Unsafe path"; exit 1;;
-          esac
-
-          # ✅ Allow exactly these roots
-          case "${{ inputs.path }}" in
-            projects/*|platform/*) ;;
-            *) echo "Path must start with projects/ or platform/"; exit 1;;
-          esac
-
-          # Must exist and contain Terraform files
-          test -d "${{ inputs.path }}" || (echo "Directory not found"; exit 1)
-          ls -1 "${{ inputs.path }}"/*.tf >/dev/null 2>&1 || (echo "No .tf files in path"; exit 1)
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
 
-      - name: Azure login (Service Principal)
+      - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
-          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
-          client-secret:   ${{ secrets.AZURE_CLIENT_SECRET }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Enable Terraform plugin cache
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.temp }}/.terraform.d/plugin-cache
+            ./.terraform
+          key: ${{ runner.os }}-tf-${{ hashFiles('.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-tf-
+
+      - name: Terraform fmt
+        run: terraform fmt -check -no-color
+
+      - name: Terraform init
+        run: terraform init -input=false
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/.terraform.d/plugin-cache
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform plan
         run: |
-          echo "TF_PLUGIN_CACHE_DIR=$RUNNER_TOOL_CACHE/terraform_plugins" >> "$GITHUB_ENV"
-          mkdir -p "$RUNNER_TOOL_CACHE/terraform_plugins"
+          if [ -n "${{ inputs.var_file }}" ] && [ -f "${{ inputs.var_file }}" ]; then
+            terraform plan -no-color -input=false -var-file="${{ inputs.var_file }}" -out=tfplan
+          else
+            terraform plan -no-color -input=false -out=tfplan
+          fi
 
-      - name: Terraform init (remote backend)
-        run: terraform -chdir="${{ inputs.path }}" init -input=false
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ inputs.working_directory }}/tfplan
 
-      - name: Select or create workspace
+  apply:
+    if: ${{ inputs.action == 'apply' }}
+    name: Apply
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.temp }}/.terraform.d/plugin-cache
+            ./.terraform
+          key: ${{ runner.os }}-tf-${{ hashFiles('.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-tf-
+
+      - name: Terraform init
+        run: terraform init -input=false
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/.terraform.d/plugin-cache
+
+      - name: Terraform plan (for apply)
         run: |
-          set -e
-          terraform -chdir="${{ inputs.path }}" workspace select "${{ inputs.environment }}" \
-            || terraform -chdir="${{ inputs.path }}" workspace new "${{ inputs.environment }}"
+          if [ -n "${{ inputs.var_file }}" ] && [ -f "${{ inputs.var_file }}" ]; then
+            terraform plan -no-color -input=false -var-file="${{ inputs.var_file }}" -out=tfplan
+          else
+            terraform plan -no-color -input=false -out=tfplan
+          fi
 
-      - name: Validate
-        run: terraform -chdir="${{ inputs.path }}" validate
+      - name: Terraform apply
+        run: terraform apply -input=false -auto-approve tfplan
 
-      - name: Plan (always run plan for plan/apply)
-        if: inputs.action != 'destroy'
+  destroy:
+    if: ${{ inputs.action == 'destroy' && inputs.confirm_destroy }}
+    name: Destroy
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.temp }}/.terraform.d/plugin-cache
+            ./.terraform
+          key: ${{ runner.os }}-tf-${{ hashFiles('.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-tf-
+
+      - name: Terraform init
+        run: terraform init -input=false
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/.terraform.d/plugin-cache
+
+      - name: Terraform destroy
         run: |
-          set -e
-          terraform -chdir="${{ inputs.path }}" plan -input=false -no-color -out=tfplan.binary
-          terraform -chdir="${{ inputs.path }}" show -no-color tfplan.binary > plan.txt
-          {
-            echo "### ${{ inputs.action }} for \`${{ inputs.path }}\` on **${{ inputs.environment }}**"
-            echo
-            echo '```'
-            sed -n '1,300p' plan.txt
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Apply (same job, uses the plan file)
-        if: inputs.action == 'apply'
-        run: terraform -chdir="${{ inputs.path }}" apply -input=false -auto-approve tfplan.binary
-
-      - name: Destroy
-        if: inputs.action == 'destroy'
-        run: terraform -chdir="${{ inputs.path }}" destroy -input=false -auto-approve
+          if [ -n "${{ inputs.var_file }}" ] && [ -f "${{ inputs.var_file }}" ]; then
+            terraform destroy -no-color -input=false -auto-approve -var-file="${{ inputs.var_file }}"
+          else
+            terraform destroy -no-color -input=false -auto-approve
+          fi
