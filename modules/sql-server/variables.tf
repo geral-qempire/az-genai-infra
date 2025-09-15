@@ -50,7 +50,7 @@ variable "entra_admin_login_name" {
   description = "The login name (UPN or display name) of the Microsoft Entra administrator."
 }
 
- 
+
 
 variable "entra_admin_object_id" {
   type        = string

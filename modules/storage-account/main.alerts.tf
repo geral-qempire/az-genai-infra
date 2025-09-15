@@ -4,7 +4,7 @@
 
 locals {
   storage_account_resource_name = azurerm_storage_account.this.name
-  
+
   # Default alert names following the pattern alrt-<metric-abbreviation>-<resource-name>
   default_avail_alert_name = "alrt-avail-${local.storage_account_resource_name}"
   default_sslat_alert_name = "alrt-sslat-${local.storage_account_resource_name}"

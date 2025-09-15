@@ -48,7 +48,7 @@ locals {
 }
 
 module "action_group" {
-  count = length(local.action_group_receivers) > 0 ? 1 : 0
+  count  = length(local.action_group_receivers) > 0 ? 1 : 0
   source = "../../modules/action-group-map"
 
   environment          = var.environment
@@ -62,7 +62,7 @@ module "action_group" {
   email_receivers = local.action_group_receivers
 
   tags = var.tags
-} 
+}
 
 ########################################
 # AI Services (PE + Identity)
@@ -98,8 +98,8 @@ module "ai_services" {
   # Alerts
   enable_availability_rate_alert = var.ai_services_alert_availability_rate_enabled
   enable_processed_tokens_alert  = var.ai_services_alert_processed_tokens_enabled
-  enable_ttft_alert             = var.ai_services_alert_normalized_ttft_enabled
-  enable_ttlt_alert             = var.ai_services_alert_ttlt_enabled
+  enable_ttft_alert              = var.ai_services_alert_normalized_ttft_enabled
+  enable_ttlt_alert              = var.ai_services_alert_ttlt_enabled
 
   # Action groups for alerts
   availability_rate_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])

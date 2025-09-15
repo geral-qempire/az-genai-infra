@@ -45,6 +45,6 @@ output "role_assignments_groups" {
   value       = try(module.rbac_ad_groups.role_assignment_ids, {})
 }
 
- 
+
 
 

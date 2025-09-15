@@ -3,9 +3,9 @@
 ########################################
 
 locals {
-  search_resource_name        = azurerm_search_service.this.name
-  default_latency_alert_name  = "alrt-lat-${local.search_resource_name}"
-  default_thrpct_alert_name   = "alrt-thrpct-${local.search_resource_name}"
+  search_resource_name       = azurerm_search_service.this.name
+  default_latency_alert_name = "alrt-lat-${local.search_resource_name}"
+  default_thrpct_alert_name  = "alrt-thrpct-${local.search_resource_name}"
 }
 
 ########################################

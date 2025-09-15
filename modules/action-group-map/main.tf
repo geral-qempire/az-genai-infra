@@ -1,6 +1,6 @@
 locals {
-  region_abbreviation = lookup(var.region_abbreviations, var.location, false)
-  action_group_name   = "ag-${local.region_abbreviation}-${var.service_prefix}-${var.environment}"
+  region_abbreviation     = lookup(var.region_abbreviations, var.location, false)
+  action_group_name       = "ag-${local.region_abbreviation}-${var.service_prefix}-${var.environment}"
   action_group_short_name = substr(replace(local.action_group_name, "-", ""), 0, 12)
 }
 

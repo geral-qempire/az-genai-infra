@@ -33,7 +33,7 @@ data "azurerm_subnet" "private_endpoints" {
   resource_group_name  = var.vnet_resource_group_name
 }
 
- 
+
 
 ########################################
 # AI Services (PE + Identity + Integrated Alerts)
@@ -69,8 +69,8 @@ module "ai_services" {
   # Alerts
   enable_availability_rate_alert = var.ai_services_alert_availability_rate_enabled
   enable_processed_tokens_alert  = var.ai_services_alert_processed_tokens_enabled
-  enable_ttft_alert             = var.ai_services_alert_normalized_ttft_enabled
-  enable_ttlt_alert             = var.ai_services_alert_ttlt_enabled
+  enable_ttft_alert              = var.ai_services_alert_normalized_ttft_enabled
+  enable_ttlt_alert              = var.ai_services_alert_ttlt_enabled
 
   # Action groups for alerts
   availability_rate_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
@@ -120,14 +120,14 @@ module "storage_account" {
   private_endpoint_location = var.location
 
   # Alerts
-  enable_availability_alert = var.storage_alert_availability_enabled
+  enable_availability_alert           = var.storage_alert_availability_enabled
   enable_success_server_latency_alert = var.storage_alert_success_server_latency_enabled
-  enable_used_capacity_alert = var.storage_alert_used_capacity_enabled
+  enable_used_capacity_alert          = var.storage_alert_used_capacity_enabled
 
   # Action groups for alerts
-  availability_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  availability_alert_action_group_ids           = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
   success_server_latency_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
-  used_capacity_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  used_capacity_alert_action_group_ids          = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
 
   tags = var.tags
 }
@@ -145,11 +145,11 @@ module "sql_server" {
   }
 
   entra_admin_tenant_id = var.tenant_id
-  environment          = var.environment
-  service_prefix       = var.service_prefix
-  resource_group_name  = azurerm_resource_group.this.name
-  location             = var.location
-  region_abbreviations = module.region_abbreviations.regions
+  environment           = var.environment
+  service_prefix        = var.service_prefix
+  resource_group_name   = azurerm_resource_group.this.name
+  location              = var.location
+  region_abbreviations  = module.region_abbreviations.regions
 
   serial_number                = var.serial_number
   administrator_login          = var.administrator_login
@@ -176,12 +176,12 @@ module "sql_server" {
 ########################################
 module "sql_database" {
   source = "../../modules/sql-database"
-  
-  server_id    = module.sql_server.id
-  resource_group_name = azurerm_resource_group.this.name
-  name         = var.sql_database_name
-  sku_name     = var.sql_database_sku_name
-  min_capacity = var.sql_database_min_capacity
+
+  server_id                   = module.sql_server.id
+  resource_group_name         = azurerm_resource_group.this.name
+  name                        = var.sql_database_name
+  sku_name                    = var.sql_database_sku_name
+  min_capacity                = var.sql_database_min_capacity
   auto_pause_delay_in_minutes = var.sql_database_auto_pause_delay_in_minutes
 
   zone_redundant = var.sql_database_zone_redundant
@@ -194,19 +194,19 @@ module "sql_database" {
   yearly_ltr_years         = var.sql_database_yearly_ltr_years
 
   # Alerts
-  enable_availability_alert     = var.sql_db_alert_availability_enabled
-  enable_storage_alert          = var.sql_db_alert_storage_percent_enabled
-  enable_app_cpu_alert          = var.sql_db_alert_app_cpu_percent_enabled
-  enable_app_memory_alert       = var.sql_db_alert_app_memory_percent_enabled
-  enable_sql_instance_cpu_alert = var.sql_db_alert_instance_cpu_percent_enabled
+  enable_availability_alert        = var.sql_db_alert_availability_enabled
+  enable_storage_alert             = var.sql_db_alert_storage_percent_enabled
+  enable_app_cpu_alert             = var.sql_db_alert_app_cpu_percent_enabled
+  enable_app_memory_alert          = var.sql_db_alert_app_memory_percent_enabled
+  enable_sql_instance_cpu_alert    = var.sql_db_alert_instance_cpu_percent_enabled
   enable_sql_instance_memory_alert = var.sql_db_alert_instance_memory_percent_enabled
 
   # Action groups for alerts
-  availability_alert_action_group_ids     = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
-  storage_alert_action_group_ids          = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
-  app_cpu_alert_action_group_ids          = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
-  app_memory_alert_action_group_ids       = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
-  sql_instance_cpu_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  availability_alert_action_group_ids        = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  storage_alert_action_group_ids             = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  app_cpu_alert_action_group_ids             = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  app_memory_alert_action_group_ids          = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
+  sql_instance_cpu_alert_action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
   sql_instance_memory_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : (var.action_group_id != null && var.action_group_id != "" ? [var.action_group_id] : [])
 
   tags = var.tags
@@ -255,7 +255,7 @@ locals {
 }
 
 module "action_group" {
-  count = length(local.action_group_receivers) > 0 ? 1 : 0
+  count  = length(local.action_group_receivers) > 0 ? 1 : 0
   source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/action-group-map?ref=agm-v0.1.0"
 
   environment          = var.environment

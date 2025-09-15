@@ -4,14 +4,14 @@
 
 locals {
   database_resource_name = azurerm_mssql_database.this.name
-  
+
   # Default alert names following the pattern alrt-<metric-abbreviation>-<resource-name>
-  default_avail_alert_name    = "alrt-avail-${local.database_resource_name}"
-  default_stor_alert_name     = "alrt-stor-${local.database_resource_name}"
-  default_cpu_alert_name      = "alrt-cpu-${local.database_resource_name}"
-  default_mem_alert_name      = "alrt-mem-${local.database_resource_name}"
-  default_sqlcpu_alert_name   = "alrt-sqlcpu-${local.database_resource_name}"
-  default_sqlmem_alert_name   = "alrt-sqlmem-${local.database_resource_name}"
+  default_avail_alert_name  = "alrt-avail-${local.database_resource_name}"
+  default_stor_alert_name   = "alrt-stor-${local.database_resource_name}"
+  default_cpu_alert_name    = "alrt-cpu-${local.database_resource_name}"
+  default_mem_alert_name    = "alrt-mem-${local.database_resource_name}"
+  default_sqlcpu_alert_name = "alrt-sqlcpu-${local.database_resource_name}"
+  default_sqlmem_alert_name = "alrt-sqlmem-${local.database_resource_name}"
 }
 
 ########################################

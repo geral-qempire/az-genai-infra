@@ -7,9 +7,9 @@ resource "random_string" "suffix" {
 }
 
 resource "azapi_resource" "this" {
-  type      = "Microsoft.MachineLearningServices/workspaces/connections@2024-10-01"
-  name      = "con_${var.ai_search_service_module.search_service_name}-${random_string.suffix.result}"
-  parent_id = var.parent_id
+  type                      = "Microsoft.MachineLearningServices/workspaces/connections@2024-10-01"
+  name                      = "con_${var.ai_search_service_module.search_service_name}-${random_string.suffix.result}"
+  parent_id                 = var.parent_id
   schema_validation_enabled = false
 
   body = {

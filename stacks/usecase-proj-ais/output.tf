@@ -35,8 +35,8 @@ output "ai_services_alert_ids" {
   value = {
     availability_rate = module.ai_services.availability_rate_alert_id
     processed_tokens  = module.ai_services.processed_tokens_alert_id
-    ttft             = module.ai_services.ttft_alert_id
-    ttlt             = module.ai_services.ttlt_alert_id
+    ttft              = module.ai_services.ttft_alert_id
+    ttlt              = module.ai_services.ttlt_alert_id
   }
 }
 

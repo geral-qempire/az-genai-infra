@@ -8,8 +8,8 @@ provider "azurerm" {
 }
 
 provider "azurerm" {
-  alias          = "dns"
-  features       {}
+  alias = "dns"
+  features {}
   subscription_id = var.dns_subscription_id
 }
 

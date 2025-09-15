@@ -120,7 +120,7 @@ output "sql_database_auto_pause_delay_in_minutes" {
   value       = var.sql_database_auto_pause_delay_in_minutes
 }
 
- 
+
 
 ########################################
 # Key Vault

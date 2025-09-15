@@ -35,7 +35,7 @@ resource "azurerm_private_endpoint" "this" {
   }
 
   private_dns_zone_group {
-    name                 = "default"
+    name = "default"
     private_dns_zone_ids = [
       data.azurerm_private_dns_zone.dns_zone[0].id,
       data.azurerm_private_dns_zone.dns_zone_notebooks[0].id

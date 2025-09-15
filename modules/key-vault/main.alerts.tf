@@ -3,7 +3,7 @@
 ########################################
 
 locals {
-  key_vault_resource_name = azurerm_key_vault.this.name
+  key_vault_resource_name  = azurerm_key_vault.this.name
   default_avail_alert_name = "alrt-avail-${local.key_vault_resource_name}"
   default_sat_alert_name   = "alrt-sat-${local.key_vault_resource_name}"
 }

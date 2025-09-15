@@ -9,15 +9,15 @@ locals {
 }
 
 resource "azurerm_search_service" "this" {
-  name                          = lower("srch-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
-  resource_group_name           = var.resource_group_name
-  location                      = var.location
-  sku                           = var.sku
-  hosting_mode                  = var.hosting_mode
-  local_authentication_enabled  = (
+  name                = lower("srch-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku                 = var.sku
+  hosting_mode        = var.hosting_mode
+  local_authentication_enabled = (
     var.api_access == "API" || var.api_access == "Both"
   )
-  authentication_failure_mode   = (
+  authentication_failure_mode = (
     var.api_access == "Both" ? "http403" : null
   )
   public_network_access_enabled = var.public_network_access_enabled

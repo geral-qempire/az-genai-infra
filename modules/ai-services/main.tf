@@ -3,8 +3,8 @@
  */
 
 locals {
-  region_abbreviation      = lookup(var.region_abbreviations, var.location, false)
-  generated_custom_domain  = lower("ais-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
+  region_abbreviation     = lookup(var.region_abbreviations, var.location, false)
+  generated_custom_domain = lower("ais-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
 }
 
 resource "azurerm_ai_services" "this" {

@@ -7,9 +7,9 @@ resource "random_string" "suffix" {
 }
 
 resource "azapi_resource" "this" {
-  type      = "Microsoft.MachineLearningServices/workspaces/connections@2025-06-01"
-  name      = "con_${var.ai_services_module.ai_services_name}-${random_string.suffix.result}"
-  parent_id = var.parent_id
+  type                      = "Microsoft.MachineLearningServices/workspaces/connections@2025-06-01"
+  name                      = "con_${var.ai_services_module.ai_services_name}-${random_string.suffix.result}"
+  parent_id                 = var.parent_id
   schema_validation_enabled = false
 
   body = {
@@ -17,7 +17,7 @@ resource "azapi_resource" "this" {
       category = "AIServices"
       authType = "ApiKey"
       # Append trailing slash to match service normalization and avoid perpetual diffs
-      target   = "https://${var.ai_services_module.ai_services_name}.cognitiveservices.azure.com/"
+      target = "https://${var.ai_services_module.ai_services_name}.cognitiveservices.azure.com/"
       metadata = {
         ResourceId = var.ai_services_module.ai_services_id
       }

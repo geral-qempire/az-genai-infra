@@ -8,16 +8,16 @@ locals {
   region_abbreviation = lookup(var.region_abbreviations, var.location, false)
   environment_initial = lower(substr(var.environment, 0, 1))
   server_name         = lower("azpds${local.environment_initial}${var.serial_number}")
- }
+}
 
 resource "azurerm_mssql_server" "this" {
-  name                                  = local.server_name
-  resource_group_name                   = var.resource_group_name
-  location                              = var.location
-  version                               = var.server_version
-  minimum_tls_version                   = var.minimum_tls_version
-  public_network_access_enabled         = var.public_network_access_enabled
-  tags                                  = var.tags
+  name                          = local.server_name
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  version                       = var.server_version
+  minimum_tls_version           = var.minimum_tls_version
+  public_network_access_enabled = var.public_network_access_enabled
+  tags                          = var.tags
 
   administrator_login          = var.administrator_login
   administrator_login_password = var.administrator_login_password

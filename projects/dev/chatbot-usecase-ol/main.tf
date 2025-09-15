@@ -12,7 +12,7 @@ module "simple_usecase" {
 
   tenant_id = var.tenant_id
 
-  service_prefix = var.service_prefix   
+  service_prefix = var.service_prefix
   location       = var.location
   environment    = var.environment
 
@@ -48,14 +48,14 @@ module "simple_usecase" {
   entra_admin_object_id        = var.entra_admin_object_id
   sql_database_name            = var.sql_database_name
 
-  sql_database_sku_name                 = var.sql_database_sku_name
-  sql_database_min_capacity             = var.sql_database_min_capacity
-  sql_database_zone_redundant           = var.sql_database_zone_redundant
+  sql_database_sku_name                    = var.sql_database_sku_name
+  sql_database_min_capacity                = var.sql_database_min_capacity
+  sql_database_zone_redundant              = var.sql_database_zone_redundant
   sql_database_auto_pause_delay_in_minutes = var.sql_database_auto_pause_delay_in_minutes
-  sql_database_backup_interval_in_hours = var.sql_database_backup_interval_in_hours
-  sql_database_weekly_ltr_weeks         = var.sql_database_weekly_ltr_weeks
-  sql_database_monthly_ltr_months       = var.sql_database_monthly_ltr_months
-  sql_database_yearly_ltr_years         = var.sql_database_yearly_ltr_years
+  sql_database_backup_interval_in_hours    = var.sql_database_backup_interval_in_hours
+  sql_database_weekly_ltr_weeks            = var.sql_database_weekly_ltr_weeks
+  sql_database_monthly_ltr_months          = var.sql_database_monthly_ltr_months
+  sql_database_yearly_ltr_years            = var.sql_database_yearly_ltr_years
 
   # Alerts (default false)
   ai_services_alert_availability_rate_enabled = var.ai_services_alert_availability_rate_enabled

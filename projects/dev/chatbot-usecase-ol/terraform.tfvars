@@ -16,7 +16,7 @@ tags = {
   businessUnit    = "41400 - DDA-DATA SCIENCE"
   applicationName = "UCO"
   applicationCode = "CA1117"
-} 
+}
 
 # Framework core (existing)
 framework_resource_group_name  = "rg-sdc-chatbot-core"
@@ -50,30 +50,30 @@ entra_admin_object_id        = "035f0181-53de-4884-9e2e-e7ae13a4b4a1"
 entra_admin_login_name       = "DB Admin"
 
 # SQL Database
-sql_database_name                     = "ol-db"
-sql_database_sku_name                 = "GP_S_Gen5_2"
-sql_database_min_capacity             = 0.5
-sql_database_zone_redundant           = false
+sql_database_name                        = "ol-db"
+sql_database_sku_name                    = "GP_S_Gen5_2"
+sql_database_min_capacity                = 0.5
+sql_database_zone_redundant              = false
 sql_database_auto_pause_delay_in_minutes = 15
-sql_database_backup_interval_in_hours = 12
-sql_database_weekly_ltr_weeks         = 0
-sql_database_monthly_ltr_months       = 0
-sql_database_yearly_ltr_years         = 0
+sql_database_backup_interval_in_hours    = 12
+sql_database_weekly_ltr_weeks            = 0
+sql_database_monthly_ltr_months          = 0
+sql_database_yearly_ltr_years            = 0
 
 # Action Group (optional)
 action_group_emails = ["diogoazevedo15@gmail.com"]
 
 # Alert toggles (optional, default false)
-ai_services_alert_availability_rate_enabled = true
-ai_services_alert_normalized_ttft_enabled   = true
-ai_services_alert_ttlt_enabled              = true
-ai_services_alert_processed_tokens_enabled  = true
-storage_alert_availability_enabled                = true
-storage_alert_success_server_latency_enabled      = true
-storage_alert_used_capacity_enabled               = true
-sql_db_alert_availability_enabled           = true
-sql_db_alert_app_cpu_percent_enabled        = true
-sql_db_alert_app_memory_percent_enabled     = true
-sql_db_alert_instance_cpu_percent_enabled   = true
+ai_services_alert_availability_rate_enabled  = true
+ai_services_alert_normalized_ttft_enabled    = true
+ai_services_alert_ttlt_enabled               = true
+ai_services_alert_processed_tokens_enabled   = true
+storage_alert_availability_enabled           = true
+storage_alert_success_server_latency_enabled = true
+storage_alert_used_capacity_enabled          = true
+sql_db_alert_availability_enabled            = true
+sql_db_alert_app_cpu_percent_enabled         = true
+sql_db_alert_app_memory_percent_enabled      = true
+sql_db_alert_instance_cpu_percent_enabled    = true
 sql_db_alert_instance_memory_percent_enabled = true
-sql_db_alert_storage_percent_enabled        = true
+sql_db_alert_storage_percent_enabled         = true

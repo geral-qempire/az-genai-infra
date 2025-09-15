@@ -69,13 +69,13 @@ module "sql_server" {
     # Forward DNS alias to ensure Private DNS ops use the DNS subscription
     azurerm.dns = azurerm.dns
   }
-  
+
   entra_admin_tenant_id = var.tenant_id
-  environment          = var.environment
-  service_prefix       = var.service_prefix
-  resource_group_name  = azurerm_resource_group.this.name
-  location             = var.location
-  region_abbreviations = module.region_abbreviations.regions
+  environment           = var.environment
+  service_prefix        = var.service_prefix
+  resource_group_name   = azurerm_resource_group.this.name
+  location              = var.location
+  region_abbreviations  = module.region_abbreviations.regions
 
   serial_number                = var.serial_number
   administrator_login          = var.administrator_login
@@ -103,11 +103,11 @@ module "sql_server" {
 module "sql_database" {
   source = "../../modules/sql-database"
 
-  server_id    = module.sql_server.id
-  resource_group_name = azurerm_resource_group.this.name
-  name         = var.sql_database_name
-  sku_name     = var.sql_database_sku_name
-  min_capacity = var.sql_database_min_capacity
+  server_id                   = module.sql_server.id
+  resource_group_name         = azurerm_resource_group.this.name
+  name                        = var.sql_database_name
+  sku_name                    = var.sql_database_sku_name
+  min_capacity                = var.sql_database_min_capacity
   auto_pause_delay_in_minutes = var.sql_database_auto_pause_delay_in_minutes
 
   zone_redundant = var.sql_database_zone_redundant
@@ -123,19 +123,19 @@ module "sql_database" {
   yearly_ltr_years         = var.sql_database_yearly_ltr_years
 
   # Integrated Alerts
-  enable_availability_alert = var.sql_db_alert_availability_enabled
-  enable_storage_alert      = var.sql_db_alert_storage_percent_enabled
-  enable_app_cpu_alert      = var.sql_db_alert_app_cpu_percent_enabled
-  enable_app_memory_alert   = var.sql_db_alert_app_memory_percent_enabled
-  enable_sql_instance_cpu_alert = var.sql_db_alert_instance_cpu_percent_enabled
+  enable_availability_alert        = var.sql_db_alert_availability_enabled
+  enable_storage_alert             = var.sql_db_alert_storage_percent_enabled
+  enable_app_cpu_alert             = var.sql_db_alert_app_cpu_percent_enabled
+  enable_app_memory_alert          = var.sql_db_alert_app_memory_percent_enabled
+  enable_sql_instance_cpu_alert    = var.sql_db_alert_instance_cpu_percent_enabled
   enable_sql_instance_memory_alert = var.sql_db_alert_instance_memory_percent_enabled
 
   # Alert Configuration
-  availability_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  storage_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  app_cpu_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  app_memory_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  sql_instance_cpu_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  availability_alert_action_group_ids        = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  storage_alert_action_group_ids             = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  app_cpu_alert_action_group_ids             = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  app_memory_alert_action_group_ids          = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  sql_instance_cpu_alert_action_group_ids    = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
   sql_instance_memory_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
 
   tags = var.tags
@@ -159,10 +159,10 @@ module "key_vault" {
   location             = var.location
   region_abbreviations = module.region_abbreviations.regions
 
-  tenant_id                    = var.tenant_id
-  sku_name                     = var.key_vault_sku_name
-  soft_delete_retention_days   = var.key_vault_soft_delete_retention_days
-  purge_protection_enabled     = var.key_vault_purge_protection_enabled
+  tenant_id                     = var.tenant_id
+  sku_name                      = var.key_vault_sku_name
+  soft_delete_retention_days    = var.key_vault_soft_delete_retention_days
+  purge_protection_enabled      = var.key_vault_purge_protection_enabled
   public_network_access_enabled = false
   enable_rbac_authorization     = true
   network_acls_bypass           = "AzureServices"
@@ -223,14 +223,14 @@ module "storage_account" {
   private_endpoint_location = var.location
 
   # Integrated Alerts
-  enable_availability_alert = var.storage_alert_availability_enabled
+  enable_availability_alert           = var.storage_alert_availability_enabled
   enable_success_server_latency_alert = var.storage_alert_success_server_latency_enabled
-  enable_used_capacity_alert = var.storage_alert_used_capacity_enabled
+  enable_used_capacity_alert          = var.storage_alert_used_capacity_enabled
 
   # Alert Configuration
-  availability_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  availability_alert_action_group_ids           = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
   success_server_latency_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  used_capacity_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  used_capacity_alert_action_group_ids          = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
 
   tags = var.tags
 }
@@ -252,9 +252,9 @@ module "ai_search_service" {
   location             = var.location
   region_abbreviations = module.region_abbreviations.regions
 
-  api_access                    = "Both"
-  hosting_mode                  = "default"
-  
+  api_access   = "Both"
+  hosting_mode = "default"
+
   sku                           = var.ai_search_sku
   partition_count               = var.ai_search_partition_count
   replica_count                 = var.ai_search_replica_count
@@ -273,10 +273,10 @@ module "ai_search_service" {
   private_endpoint_location = var.location
 
   # Integrated Alerts
-  enable_search_latency_alert                   = var.ai_search_alert_search_latency_enabled
-  enable_throttled_search_pct_alert             = var.ai_search_alert_throttled_pct_enabled
-  search_latency_alert_action_group_ids         = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
-  throttled_search_pct_alert_action_group_ids   = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  enable_search_latency_alert                 = var.ai_search_alert_search_latency_enabled
+  enable_throttled_search_pct_alert           = var.ai_search_alert_throttled_pct_enabled
+  search_latency_alert_action_group_ids       = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
+  throttled_search_pct_alert_action_group_ids = length(local.action_group_receivers) > 0 ? [module.action_group[0].action_group_id] : []
 
   tags = var.tags
 }
@@ -297,10 +297,10 @@ module "ai_services" {
   location             = var.location
   region_abbreviations = module.region_abbreviations.regions
 
-  sku_name                = var.ai_services_sku_name
+  sku_name                     = var.ai_services_sku_name
   local_authentication_enabled = true
-  public_network_access   = "Enabled"
-  network_acls_bypass     = "AzureServices"
+  public_network_access        = "Enabled"
+  network_acls_bypass          = "AzureServices"
 
   identity = {
     type = "SystemAssigned"
@@ -315,8 +315,8 @@ module "ai_services" {
   # Integrated Alerts
   enable_availability_rate_alert = var.ai_services_alert_availability_rate_enabled
   enable_processed_tokens_alert  = var.ai_services_alert_processed_tokens_enabled
-  enable_ttft_alert             = var.ai_services_alert_normalized_ttft_enabled
-  enable_ttlt_alert             = var.ai_services_alert_ttlt_enabled
+  enable_ttft_alert              = var.ai_services_alert_normalized_ttft_enabled
+  enable_ttlt_alert              = var.ai_services_alert_ttlt_enabled
 
   # Alert Configuration
   availability_rate_alert_model_deployment_names = var.ai_services_model_deployment_names
@@ -356,7 +356,7 @@ module "ai_hub" {
   application_insights_id = module.application_insights.application_insights_id
 
   public_network_access = "Enabled"
-  managed_network = "AllowOnlyApprovedOutbound"
+  managed_network       = "AllowOnlyApprovedOutbound"
 
   identity = {
     type = "SystemAssigned"
@@ -429,7 +429,7 @@ locals {
 }
 
 module "action_group" {
-  count = length(local.action_group_receivers) > 0 ? 1 : 0
+  count  = length(local.action_group_receivers) > 0 ? 1 : 0
   source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/action-group-map?ref=agm-v0.1.0"
 
   environment          = var.environment
@@ -437,7 +437,7 @@ module "action_group" {
   location             = var.location
   resource_group_name  = azurerm_resource_group.this.name
   region_abbreviations = module.region_abbreviations.regions
-  enabled    = true
-  email_receivers = local.action_group_receivers
-  tags = var.tags
+  enabled              = true
+  email_receivers      = local.action_group_receivers
+  tags                 = var.tags
 }

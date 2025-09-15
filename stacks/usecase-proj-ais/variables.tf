@@ -140,7 +140,7 @@ variable "action_group_enabled" {
 }
 
 variable "action_group_email_receivers" {
-  type        = map(object({
+  type = map(object({
     email_address = string
   }))
   default     = {}

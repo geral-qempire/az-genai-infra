@@ -22,7 +22,7 @@ ad_read_group_id = "bcf79a5f-d4fd-4b6f-ba28-57e050690cc9"
 ad_full_group_id = "2a9ee019-37d4-474c-a138-565b2a7c2bb6"
 
 # Service Principals
-sp_app_id = "84f7041e-f33e-4217-84ae-810dac40fa70"
+sp_app_id  = "84f7041e-f33e-4217-84ae-810dac40fa70"
 sp_cicd_id = "24e609e8-840e-475c-ac8b-c6e4c074d870"
 
 # Network (for private endpoints)
@@ -46,8 +46,8 @@ action_group_emails = ["diogoazevedo15@gmail.com"]
 
 # Alert toggles (optional, default true)
 ai_services_alert_availability_rate_enabled = true
-ai_services_alert_normalized_ttft_enabled   = true  
-ai_services_alert_ttlt_enabled              = true    
+ai_services_alert_normalized_ttft_enabled   = true
+ai_services_alert_ttlt_enabled              = true
 ai_services_alert_processed_tokens_enabled  = true
 
 

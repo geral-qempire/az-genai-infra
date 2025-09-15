@@ -1,7 +1,7 @@
 resource "azapi_resource" "this" {
-  type      = "Microsoft.MachineLearningServices/workspaces/connections@2025-06-01"
-  name      = var.connection_name
-  parent_id = var.parent_id
+  type                      = "Microsoft.MachineLearningServices/workspaces/connections@2025-06-01"
+  name                      = var.connection_name
+  parent_id                 = var.parent_id
   schema_validation_enabled = false
 
   body = {

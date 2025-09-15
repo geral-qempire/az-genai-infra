@@ -10,10 +10,10 @@ environment    = "shared"
 
 # Tags
 tags = {
-  environment = "DEV"
-  useCase     = "CHATBOT-COMMON"
-  costCenter  = "41000 - DDA"
-  businessUnit = "41400 - DDA-DATA SCIENCE"
+  environment     = "DEV"
+  useCase         = "CHATBOT-COMMON"
+  costCenter      = "41000 - DDA"
+  businessUnit    = "41400 - DDA-DATA SCIENCE"
   applicationName = "MAAIF"
   applicationCode = "CA1148"
 }
@@ -23,14 +23,14 @@ tags = {
 ad_full_group_id = "2a9ee019-37d4-474c-a138-565b2a7c2bb6"
 
 # Service Principals
-sp_app_id = "84f7041e-f33e-4217-84ae-810dac40fa70"
+sp_app_id  = "84f7041e-f33e-4217-84ae-810dac40fa70"
 sp_cicd_id = "24e609e8-840e-475c-ac8b-c6e4c074d870"
 
 # Network (for private endpoints)
 subnet_name              = "snet-dev"
 vnet_name                = "vnet-sdc-genai"
 vnet_resource_group_name = "rg-sdc-genai-networking"
-dns_resource_group_name = "rg-swc-dns"    
+dns_resource_group_name  = "rg-swc-dns"
 
 # Observability
 log_analytics_workspace_name                = "log-sdc-genai-log-dev"
@@ -44,15 +44,15 @@ entra_admin_object_id        = "035f0181-53de-4884-9e2e-e7ae13a4b4a1"
 entra_admin_login_name       = "SQL ADMIN"
 
 # SQL Database
-sql_database_name                     = "chatbot-db"
-sql_database_sku_name                 = "GP_S_Gen5_2"
-sql_database_min_capacity             = 0.5
-sql_database_zone_redundant           = false
+sql_database_name                        = "chatbot-db"
+sql_database_sku_name                    = "GP_S_Gen5_2"
+sql_database_min_capacity                = 0.5
+sql_database_zone_redundant              = false
 sql_database_auto_pause_delay_in_minutes = 15
-sql_database_backup_interval_in_hours = 12
-sql_database_weekly_ltr_weeks         = 0
-sql_database_monthly_ltr_months       = 0
-sql_database_yearly_ltr_years         = 0
+sql_database_backup_interval_in_hours    = 12
+sql_database_weekly_ltr_weeks            = 0
+sql_database_monthly_ltr_months          = 0
+sql_database_yearly_ltr_years            = 0
 
 # Storage Account
 storage_account_account_tier             = "Standard"
@@ -82,8 +82,8 @@ action_group_emails = ["diogoazevedo15@gmail.com"]
 sql_db_alert_availability_enabled            = true
 sql_db_alert_app_cpu_percent_enabled         = true
 sql_db_alert_app_memory_percent_enabled      = true
-sql_db_alert_instance_cpu_percent_enabled    = false  # Non-serverless only
-sql_db_alert_instance_memory_percent_enabled = false  # Non-serverless only
+sql_db_alert_instance_cpu_percent_enabled    = false # Non-serverless only
+sql_db_alert_instance_memory_percent_enabled = false # Non-serverless only
 sql_db_alert_storage_percent_enabled         = true
 storage_alert_availability_enabled           = true
 storage_alert_success_server_latency_enabled = true

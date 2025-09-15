@@ -85,8 +85,8 @@ output "ai_services_alert_ids" {
   value = {
     availability_rate = module.ai_services.availability_rate_alert_id
     processed_tokens  = module.ai_services.processed_tokens_alert_id
-    ttft             = module.ai_services.ttft_alert_id
-    ttlt             = module.ai_services.ttlt_alert_id
+    ttft              = module.ai_services.ttft_alert_id
+    ttlt              = module.ai_services.ttlt_alert_id
   }
 }
 
@@ -95,7 +95,7 @@ output "storage_account_alert_ids" {
   value = {
     availability           = module.storage_account.availability_alert_id
     success_server_latency = module.storage_account.success_server_latency_alert_id
-    used_capacity         = module.storage_account.used_capacity_alert_id
+    used_capacity          = module.storage_account.used_capacity_alert_id
   }
 }
 
@@ -103,10 +103,10 @@ output "sql_database_alert_ids" {
   description = "Map of SQL Database alert IDs."
   value = {
     availability        = module.sql_database.availability_alert_id
-    storage            = module.sql_database.storage_alert_id
-    app_cpu            = module.sql_database.app_cpu_alert_id
-    app_memory         = module.sql_database.app_memory_alert_id
-    sql_instance_cpu   = module.sql_database.sql_instance_cpu_alert_id
+    storage             = module.sql_database.storage_alert_id
+    app_cpu             = module.sql_database.app_cpu_alert_id
+    app_memory          = module.sql_database.app_memory_alert_id
+    sql_instance_cpu    = module.sql_database.sql_instance_cpu_alert_id
     sql_instance_memory = module.sql_database.sql_instance_memory_alert_id
   }
 }

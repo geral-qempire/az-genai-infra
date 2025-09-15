@@ -70,7 +70,7 @@ locals {
         role_definition_name = "Cognitive Services OpenAI User"
         principal_type       = "ServicePrincipal"
       }
-      
+
     } : {}
   )
 }

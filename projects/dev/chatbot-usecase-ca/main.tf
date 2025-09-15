@@ -10,7 +10,7 @@ module "simple_usecase" {
   # Tags
   tags = var.tags
 
-  service_prefix = var.service_prefix   
+  service_prefix = var.service_prefix
   location       = var.location
   environment    = var.environment
 
@@ -26,12 +26,12 @@ module "simple_usecase" {
 
 
   # Service Principals
-  sp_app_id = var.sp_app_id
+  sp_app_id  = var.sp_app_id
   sp_cicd_id = var.sp_cicd_id
 
   # Framework core (existing)
-  framework_resource_group_name = var.framework_resource_group_name
-  framework_hub_name            = var.framework_hub_name
+  framework_resource_group_name  = var.framework_resource_group_name
+  framework_hub_name             = var.framework_hub_name
   framework_storage_account_name = var.framework_storage_account_name
   framework_ai_search_name       = var.framework_ai_search_name
 

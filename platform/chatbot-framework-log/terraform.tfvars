@@ -1,7 +1,7 @@
 infra_subscription_id = "2a4f4e29-3789-4e47-867d-62a6eb17950b" # REQUIRED: target subscription ID
-environment           = "dev"                                   # optional (defaults to dev)
-service_prefix        = "genai-log"                               # REQUIRED: project prefix
-location              = "swedencentral"                            # REQUIRED: Azure region
+environment           = "dev"                                  # optional (defaults to dev)
+service_prefix        = "genai-log"                            # REQUIRED: project prefix
+location              = "swedencentral"                        # REQUIRED: Azure region
 
 law_sku               = "PerGB2018"
 law_retention_in_days = 30
