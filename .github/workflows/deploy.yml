@@ -65,13 +65,11 @@ jobs:
           terraform_version: ${{ inputs.terraform_version }}
           terraform_wrapper: false
 
-      - name: Azure login (client secret)
+      - name: Azure login (service principal secret)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          auth-type: service-principal-secret
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Cache Terraform
         uses: actions/cache@v4
@@ -122,13 +120,11 @@ jobs:
           terraform_version: ${{ inputs.terraform_version }}
           terraform_wrapper: false
 
-      - name: Azure login (client secret)
+      - name: Azure login (service principal secret)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          auth-type: service-principal-secret
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Cache Terraform
         uses: actions/cache@v4
@@ -170,13 +166,11 @@ jobs:
           terraform_version: ${{ inputs.terraform_version }}
           terraform_wrapper: false
 
-      - name: Azure login (client secret)
+      - name: Azure login (service principal secret)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          auth-type: service-principal-secret
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Cache Terraform
         uses: actions/cache@v4
