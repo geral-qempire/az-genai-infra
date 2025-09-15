@@ -31,16 +31,6 @@ on:
         required: true
         type: string
         default: "1.12.1"
-      var_file:
-        description: "Optional -var-file to use (relative to working_directory)"
-        required: false
-        type: string
-        default: "terraform.tfvars"
-      confirm_destroy:
-        description: "Confirm destroy (required for destroy)"
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -105,12 +95,7 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform plan
-        run: |
-          if [ -n "${{ inputs.var_file }}" ] && [ -f "${{ inputs.var_file }}" ]; then
-            terraform plan -no-color -input=false -var-file="${{ inputs.var_file }}" -out=tfplan
-          else
-            terraform plan -no-color -input=false -out=tfplan
-          fi
+        run: terraform plan -no-color -input=false -out=tfplan
 
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
@@ -161,18 +146,13 @@ jobs:
           TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/.terraform.d/plugin-cache
 
       - name: Terraform plan (for apply)
-        run: |
-          if [ -n "${{ inputs.var_file }}" ] && [ -f "${{ inputs.var_file }}" ]; then
-            terraform plan -no-color -input=false -var-file="${{ inputs.var_file }}" -out=tfplan
-          else
-            terraform plan -no-color -input=false -out=tfplan
-          fi
+        run: terraform plan -no-color -input=false -out=tfplan
 
       - name: Terraform apply
         run: terraform apply -input=false -auto-approve tfplan
 
   destroy:
-    if: ${{ inputs.action == 'destroy' && inputs.confirm_destroy }}
+    if: ${{ inputs.action == 'destroy' }}
     name: Destroy
     runs-on: ubuntu-latest
     environment:
@@ -214,9 +194,4 @@ jobs:
           TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/.terraform.d/plugin-cache
 
       - name: Terraform destroy
-        run: |
-          if [ -n "${{ inputs.var_file }}" ] && [ -f "${{ inputs.var_file }}" ]; then
-            terraform destroy -no-color -input=false -auto-approve -var-file="${{ inputs.var_file }}"
-          else
-            terraform destroy -no-color -input=false -auto-approve
-          fi
+        run: terraform destroy -no-color -input=false -auto-approve
