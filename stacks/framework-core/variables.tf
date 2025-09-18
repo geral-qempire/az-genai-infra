@@ -387,3 +387,12 @@ variable "action_group_emails" {
   default     = []
   description = "List of email addresses for the action group. If empty, no action group is created."
 }
+
+########################################
+# AI Hub - FQDN Outbound Rules
+########################################
+variable "fqdn_rules" {
+  type        = list(string)
+  default     = []
+  description = "Optional list of FQDNs to allow as outbound rules in AI Hub."
+}

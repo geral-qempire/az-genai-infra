@@ -1,0 +1,51 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'server'
+---
+
+## 1. Module
+Create an Azure Machine Learning (AI Hub) workspace outbound rule for Private Endpoint destinations using AzAPI. This module is scoped to PrivateEndpoint rules only.
+
+## 2. Usage
+```hcl
+module "ai_hub" {
+  source = "../ai-hub"
+  # ...
+}
+
+module "ai_hub_pep_outbound_rule_kv" {
+  source = "../ai-hub-pep-outbound-rule"
+
+  name                 = "pe-kv"
+  parent_id            = module.ai_hub.ai_hub_id
+  service_resource_id  = module.key_vault.id
+  sub_resource_target  = "vault"
+
+  # Optional
+  spark_enabled = false
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `name` | `string` | n/a | yes | The outbound rule name. |
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Hub workspace). |
+| `service_resource_id` | `string` | n/a | yes | Destination service resource ID. |
+| `sub_resource_target` | `string` | n/a | yes | Destination subresource target (e.g. blob, vault, account, searchService, sqlServer). |
+| `spark_enabled` | `bool` | `false` | no | Whether Spark uses this private endpoint. |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `outbound_rule_id` | The resource ID of the outbound rule. |
+| `outbound_rule_name` | The name of the outbound rule. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- AzAPI provider `~> 2.2.0`
+- Random provider `~> 3.6`
+
+

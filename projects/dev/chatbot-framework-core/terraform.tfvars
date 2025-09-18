@@ -4,7 +4,7 @@ dns_subscription_id   = "0d2447a1-c993-432b-be88-01ba39e66f84"
 tenant_id             = "0e20503f-b4f9-44ce-9d36-e5be1a78af16"
 
 # Core
-service_prefix = "chatbot-core"
+service_prefix = "frame-core"
 location       = "swedencentral"
 environment    = "shared"
 

@@ -3,7 +3,7 @@ infra_subscription_id = "2a4f4e29-3789-4e47-867d-62a6eb17950b"
 dns_subscription_id   = "0d2447a1-c993-432b-be88-01ba39e66f84"
 
 # Core
-service_prefix = "chatbot-ca"
+service_prefix = "frame-ca"
 location       = "swedencentral"
 environment    = "dev"
 
@@ -32,10 +32,10 @@ vnet_resource_group_name = "rg-sdc-genai-networking"
 dns_resource_group_name  = "rg-swc-dns"
 
 # Framework core (existing)
-framework_resource_group_name  = "rg-sdc-chatbot-core"
-framework_hub_name             = "hub-sdc-chatbot-core-dev"
-framework_storage_account_name = "stsdcchatbotcoredev"
-framework_ai_search_name       = "srch-sdc-chatbot-core-dev"
+framework_resource_group_name  = "rg-sdc-frame-core"
+framework_hub_name             = "hub-sdc-frame-core-dev"
+framework_storage_account_name = "stsdcframecoredev"
+framework_ai_search_name       = "srch-sdc-frame-core-dev"
 
 # AI Services
 ai_services_sku_name               = "S0"

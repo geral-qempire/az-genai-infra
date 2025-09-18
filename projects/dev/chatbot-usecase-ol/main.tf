@@ -1,5 +1,5 @@
 module "simple_usecase" {
-  source = "../../../templates/usecase-proj-ais-st-sql"
+  source = "../../../stacks/usecase-proj-ais-st-sql"
 
   # Providers
   providers = {

@@ -132,6 +132,21 @@ module "ai_project" {
 }
 
 ########################################
+# Framework Hub Outbound Rule (PE → AI Services)
+########################################
+module "framework_hub_pep_outbound_rule_ai_services" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = data.azurerm_machine_learning_workspace.framework_hub.id
+  service_resource_id = module.ai_services.ai_services_id
+  sub_resource_target = "account"
+
+  spark_enabled = false
+
+  depends_on = [module.ai_services]
+}
+
+########################################
 # Connections (AI Services -> Project)
 ########################################
 module "ai_services_connection" {
@@ -140,7 +155,7 @@ module "ai_services_connection" {
   parent_id          = module.ai_project.ai_project_id
   ai_services_module = module.ai_services
 
-  depends_on = [module.ai_project, module.ai_services]
+  depends_on = [module.ai_project, module.ai_services, module.framework_hub_pep_outbound_rule_ai_services]
 }
 
 

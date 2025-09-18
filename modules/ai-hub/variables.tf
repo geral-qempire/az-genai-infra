@@ -86,6 +86,12 @@ variable "tags" {
   description = "Optional tags to add to resources."
 }
 
+variable "fqdn_rules" {
+  type        = list(string)
+  default     = []
+  description = "Optional list of FQDNs to create outbound rules for (created sequentially)."
+}
+
 variable "enable_private_endpoint" {
   type        = bool
   default     = true

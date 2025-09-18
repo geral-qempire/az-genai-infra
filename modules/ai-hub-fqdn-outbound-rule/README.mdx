@@ -1,0 +1,42 @@
+---
+title: 'README'
+description: 'Quick overview of module usage, inputs, outputs and requirements.'
+icon: 'server'
+---
+
+## 1. Module
+Create an Azure Machine Learning (AI Hub) workspace outbound rule of type FQDN using AzAPI.
+
+## 2. Usage
+```hcl
+module "ai_hub_fqdn_outbound_rule_mcr" {
+  source = "../ai-hub-fqdn-outbound-rule"
+
+  name          = "fqdn-mcr"
+  parent_id     = module.ai_hub.ai_hub_id
+  fqdn          = "mcr.microsoft.com"
+  spark_enabled = false
+}
+```
+
+## 3. Inputs
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `name` | `string` | n/a | yes | The outbound rule name. |
+| `parent_id` | `string` | n/a | yes | Parent resource ID (AI Hub workspace). |
+| `fqdn` | `string` | n/a | yes | Target FQDN to allow. |
+| `spark_enabled` | `bool` | `false` | no | Whether Spark uses this rule (if applicable). |
+
+## 4. Outputs
+| Name | Description |
+|------|-------------|
+| `outbound_rule_id` | The resource ID of the outbound rule. |
+| `outbound_rule_name` | The name of the outbound rule. |
+
+## 5. Requirements
+- Terraform `>= 1.12.1, < 2.0.0`
+- AzureRM provider `~> 4.38`
+- AzAPI provider `~> 2.2.0`
+- Random provider `~> 3.6`
+
+

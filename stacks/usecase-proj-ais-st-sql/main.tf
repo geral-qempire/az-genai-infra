@@ -234,15 +234,77 @@ module "ai_project" {
 }
 
 ########################################
+# Framework Hub Outbound Rules (Private Endpoint)
+########################################
+module "framework_hub_pep_outbound_rule_ai_services" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = data.azurerm_machine_learning_workspace.framework_hub.id
+  service_resource_id = module.ai_services.ai_services_id
+  sub_resource_target = "account"
+
+  spark_enabled = false
+
+  depends_on = [module.ai_services]
+}
+
+module "framework_hub_pep_outbound_rule_storage_blob" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = data.azurerm_machine_learning_workspace.framework_hub.id
+  service_resource_id = module.storage_account.storage_account_id
+  sub_resource_target = "blob"
+
+  spark_enabled = false
+
+  depends_on = [module.storage_account]
+}
+
+module "framework_hub_pep_outbound_rule_storage_file" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = data.azurerm_machine_learning_workspace.framework_hub.id
+  service_resource_id = module.storage_account.storage_account_id
+  sub_resource_target = "file"
+
+  spark_enabled = false
+
+  depends_on = [module.storage_account]
+}
+
+module "framework_hub_pep_outbound_rule_sql_server" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = data.azurerm_machine_learning_workspace.framework_hub.id
+  service_resource_id = module.sql_server.id
+  sub_resource_target = "sqlServer"
+
+  spark_enabled = false
+
+  depends_on = [module.sql_server]
+}
+
+########################################
 # Connections (AI Services -> Project)
 ########################################
+module "api_key_hub_connection" {
+  source = "../../modules/api-key-hub-connection"
+
+  parent_id       = module.ai_project.ai_project_id
+  connection_name = "con_blob_${module.storage_account.storage_account_name}"
+  target_url      = module.storage_account.storage_account_primary_blob_endpoint
+  api_key         = module.storage_account.storage_account_primary_access_key
+  metadata        = { Purpose = "StorageBlob" }
+  depends_on      = [module.ai_project, module.storage_account]
+}
+
 module "ai_services_connection" {
   source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-hub-connection?ref=aiscon-v0.1.0"
 
   parent_id          = module.ai_project.ai_project_id
   ai_services_module = module.ai_services
 
-  depends_on = [module.ai_project, module.ai_services]
+  depends_on = [module.ai_project, module.ai_services, module.framework_hub_pep_outbound_rule_ai_services]
 }
 
 ########################################

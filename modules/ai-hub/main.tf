@@ -38,4 +38,21 @@ resource "azurerm_ai_foundry" "this" {
   }
 }
 
+########################################
+# Optional: FQDN Outbound Rules (chained)
+########################################
+
+module "fqdn_outbound_rules" {
+  count  = length(var.fqdn_rules)
+  source = "../ai-hub-fqdn-outbound-rule"
+
+  name          = "fqdn-${count.index + 1}"
+  parent_id     = azurerm_ai_foundry.this.id
+  fqdn          = element(var.fqdn_rules, count.index)
+  spark_enabled = false
+
+  # Ensure hub is created before creating outbound rules
+  depends_on = [azurerm_ai_foundry.this]
+}
+
 

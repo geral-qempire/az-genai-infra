@@ -40,6 +40,12 @@ module "ai_hub" {
   subnet_id                 = "/subscriptions/xxx/resourceGroups/rg-network-dev/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/snet-privates"
   private_endpoint_location = "westeurope"
 
+  # Optional FQDN outbound rules (created sequentially)
+  fqdn_rules = [
+    "mcr.microsoft.com",
+    "pypi.org"
+  ]
+
   tags = {
     environment = "dev"
     project     = "acme"
@@ -67,6 +73,7 @@ module "ai_hub" {
 | `dns_resource_group_name` | `string` | `""` | no | DNS zone resource group for the private endpoint. |
 | `subnet_id` | `string` | `""` | no | Subnet ID for the private endpoint. |
 | `private_endpoint_location` | `string` | `""` | no | Location to deploy the Private Endpoint; falls back to module location when empty. |
+| `fqdn_rules` | `list(string)` | `[]` | no | Optional list of FQDNs to allow as outbound rules (created sequentially). |
 
 ## 4. Outputs
 | Name | Description |

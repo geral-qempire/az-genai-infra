@@ -233,3 +233,9 @@ variable "ai_services_alert_processed_tokens_enabled" {
   type    = bool
   default = true
 }
+
+# Optional: FQDN Outbound Rules for AI Hub
+variable "fqdn_rules" {
+  type    = list(string)
+  default = []
+}

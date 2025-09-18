@@ -4,7 +4,7 @@ dns_subscription_id   = "0d2447a1-c993-432b-be88-01ba39e66f84"
 tenant_id             = "0e20503f-b4f9-44ce-9d36-e5be1a78af16"
 
 # Core
-service_prefix = "chatbot-ol"
+service_prefix = "frame-ol"
 location       = "swedencentral"
 environment    = "dev"
 
@@ -19,10 +19,10 @@ tags = {
 }
 
 # Framework core (existing)
-framework_resource_group_name  = "rg-sdc-chatbot-core"
-framework_hub_name             = "hub-sdc-chatbot-core-dev"
-framework_storage_account_name = "stsdcchatbotcoredev"
-framework_ai_search_name       = "srch-sdc-chatbot-core-dev"
+framework_resource_group_name  = "rg-sdc-frame-core"
+framework_hub_name             = "hub-sdc-frame-core-dev"
+framework_storage_account_name = "stsdcframecoredev"
+framework_ai_search_name       = "srch-sdc-frame-core-dev"
 
 # AD Groups
 ad_read_group_id = "bcf79a5f-d4fd-4b6f-ba28-57e050690cc9"

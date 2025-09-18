@@ -98,6 +98,35 @@ module "framework-core" {
   ai_services_alert_ttlt_enabled              = var.ai_services_alert_ttlt_enabled
   ai_services_alert_processed_tokens_enabled  = var.ai_services_alert_processed_tokens_enabled
 
+  # AI Hub: FQDN Outbound Rules
+  fqdn_rules = [
+    "*.vscode.dev",
+    "*.vscode-unpkg.net",
+    "*.vscode-cdn.net",
+    "*.vscodeexperiments.azureedge.net",
+    "default.exp-tas.com",
+    "code.visualstudio.com",
+    "update.code.visualstudio.com",
+    "*.vo.msecnd.net",
+    "marketplace.visualstudio.com",
+    "vscode.blob.core.windows.net",
+    "*.gallerycdn.vsassets.io",
+    "vscode.download.prss.microsoft.com",
+    "anaconda.com",
+    "*.anaconda.com",
+    "*.anaconda.org",
+    "pypi.org",
+    "pytorch.org",
+    "*.pytorch.org",
+    "*.tensorflow.org",
+    "github.com",
+    "*.pythonhosted.org",
+    "*.docker.io",
+    "docker.io",
+    "*.docker.com",
+    "graph.microsoft.com",
+    "login.microsoftonline.com"
+  ]
 }
 
 

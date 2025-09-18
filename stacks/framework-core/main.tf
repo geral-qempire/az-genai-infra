@@ -339,7 +339,7 @@ module "ai_services" {
 # AI Hub
 ########################################
 module "ai_hub" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-hub?ref=hub-v0.1.0"
+  source = "../../modules/ai-hub"
 
   providers = {
     azurerm.dns = azurerm.dns
@@ -369,27 +369,73 @@ module "ai_hub" {
   private_endpoint_location = var.location
 
   tags = var.tags
+
+  # Pass optional FQDN outbound rules into AI Hub module
+  fqdn_rules = var.fqdn_rules
 }
 
-# -------------------- AI Hub Connections --------------------
+########################################
+# AI Hub Private Endpoint Outbound Rules
+########################################
+module "ai_hub_pep_outbound_rule_ai_services" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = module.ai_hub.ai_hub_id
+  service_resource_id = module.ai_services.ai_services_id
+  sub_resource_target = "account"
+
+  spark_enabled = false
+
+  depends_on = [module.ai_hub, module.ai_services]
+}
+
+# AI Search outbound rule
+module "ai_hub_pep_outbound_rule_ai_search" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = module.ai_hub.ai_hub_id
+  service_resource_id = module.ai_search_service.search_service_id
+  sub_resource_target = "searchService"
+
+  spark_enabled = false
+
+  depends_on = [module.ai_hub, module.ai_search_service]
+}
+
+module "ai_hub_pep_outbound_rule_sql_server" {
+  source = "../../modules/ai-hub-pep-outbound-rule"
+
+  parent_id           = module.ai_hub.ai_hub_id
+  service_resource_id = module.sql_server.id
+  sub_resource_target = "sqlServer"
+
+  spark_enabled = false
+
+  depends_on = [module.ai_hub, module.sql_server]
+}
+
+
+########################################
+# AI Hub Connections
+########################################
 module "ai_services_hub_connection" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-services-hub-connection?ref=aiscon-v0.1.0"
+  source = "../../modules/ai-services-hub-connection"
 
   parent_id          = module.ai_hub.ai_hub_id
   ai_services_module = module.ai_services
-  depends_on         = [module.ai_hub, module.ai_services]
+  depends_on         = [module.ai_hub, module.ai_services, module.ai_hub_pep_outbound_rule_ai_services]
 }
 
 module "ai_search_hub_connection" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-search-hub-connection?ref=srchcon-v0.1.0"
+  source = "../../modules/ai-search-hub-connection"
 
   parent_id                = module.ai_hub.ai_hub_id
   ai_search_service_module = module.ai_search_service
-  depends_on               = [module.ai_hub, module.ai_search_service]
+  depends_on               = [module.ai_hub, module.ai_search_service, module.ai_hub_pep_outbound_rule_ai_search]
 }
 
 module "api_key_hub_connection" {
-  source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/api-key-hub-connection?ref=apicon-v0.1.0"
+  source = "../../modules/api-key-hub-connection"
 
   parent_id       = module.ai_hub.ai_hub_id
   connection_name = "con_storage_blob"
@@ -399,8 +445,9 @@ module "api_key_hub_connection" {
   depends_on      = [module.ai_hub, module.storage_account]
 }
 
+
 ########################################
-# AI Project (Identity)
+# AI Project
 ########################################
 module "ai_project" {
   source = "git::https://github.com/geral-qempire/az-genai-infra.git//modules/ai-project?ref=proj-v0.1.0"
