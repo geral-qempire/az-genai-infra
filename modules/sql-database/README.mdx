@@ -24,8 +24,8 @@ module "sql_database" {
   # Backups
   pitr_days                = 7
   backup_interval_in_hours = 12
-  weekly_ltr_weeks         = 16
-  monthly_ltr_months       = 16
+  weekly_ltr_weeks         = 112
+  monthly_ltr_months       = 480
   yearly_ltr_years         = 0
 
   # Optional identity
@@ -156,9 +156,9 @@ The module includes integrated monitoring alerts that are configured based on th
 | `tags` | `map(string)` | `{}` | no | Tags to apply to resources. |
 | `pitr_days` | `number` | `7` | no | PITR retention days. |
 | `backup_interval_in_hours` | `number` | `0` | no | Differential backup interval (0 to omit). |
-| `weekly_ltr_weeks` | `number` | `0` | no | Weekly LTR retention in weeks. |
-| `monthly_ltr_months` | `number` | `0` | no | Monthly LTR retention in months. |
-| `yearly_ltr_years` | `number` | `0` | no | Yearly LTR retention in years. |
+| `weekly_ltr_weeks` | `number` | `0` | no | Weekly LTR retention in days. |
+| `monthly_ltr_months` | `number` | `0` | no | Monthly LTR retention in days. |
+| `yearly_ltr_years` | `number` | `0` | no | Yearly LTR retention in days. |
 | `identity` | `object({ type = string, identity_ids = optional(list(string), []) })` | `null` | no | Optional identity configuration. |
 | `is_serverless` | `bool` | `true` | no | Whether the SQL Database is using a serverless SKU. Controls which alerts are available. |
 | `enable_availability_alert` | `bool` | `false` | no | Enable the availability metric alert. |

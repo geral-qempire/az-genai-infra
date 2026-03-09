@@ -10,17 +10,15 @@ variable "service_prefix" { type = string }
 variable "location" { type = string }
 variable "environment" { type = string }
 
-# Action Group (optional)
-variable "action_group_emails" {
-  type    = list(string)
-  default = []
-}
+# Existing AI Hub
+variable "hub_resource_group_name" { type = string }
+variable "hub_name" { type = string }
 
-# Network
-variable "subnet_name" { type = string }
-variable "vnet_name" { type = string }
-variable "dns_resource_group_name" { type = string }
-variable "vnet_resource_group_name" { type = string }
+# AI Project
+variable "friendly_name" {
+  type    = string
+  default = ""
+}
 
 # AD Groups
 variable "ad_read_group_id" {
@@ -42,11 +40,11 @@ variable "sp_cicd_id" {
   default = null
 }
 
-# Framework core (existing)
-variable "framework_resource_group_name" { type = string }
-variable "framework_hub_name" { type = string }
-variable "framework_storage_account_name" { type = string }
-variable "framework_ai_search_name" { type = string }
+# Network
+variable "subnet_name" { type = string }
+variable "vnet_name" { type = string }
+variable "dns_resource_group_name" { type = string }
+variable "vnet_resource_group_name" { type = string }
 
 # AI Services
 variable "ai_services_sku_name" {
@@ -58,24 +56,30 @@ variable "ai_services_model_deployment_names" {
   default = []
 }
 
-# Alerts (default false)
+# AI Services Alerts
 variable "ai_services_alert_availability_rate_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_services_alert_normalized_ttft_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_services_alert_ttlt_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 variable "ai_services_alert_processed_tokens_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 
-
-
-
+# Action Group
+variable "action_group_id" {
+  type    = string
+  default = null
+}
+variable "action_group_emails" {
+  type    = list(string)
+  default = []
+}

@@ -1,0 +1,203 @@
+---
+title: 'README'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'circle-info'
+---
+
+## 1. Template
+
+Provision a Storage Account with pre-configured tiers for dev or qa/prd workloads. Includes secure defaults (private endpoints configurable per deployment, RBAC authorization, monitoring alerts) and RBAC profiles for tech leads and developers.
+
+**Note:** This template expects an existing Resource Group. The Resource Group should be created separately before deploying this stack.
+
+**Available Tiers:**
+- **Tier 1 (LRS)**: Development workloads with locally redundant storage
+- **Tier 2 (ZRS)**: QA/Production workloads with zone-redundant storage
+
+## 2. Usage
+
+```hcl
+module "storage_account_tiers" {
+  source = "../../stacks/storage_account_tiers"
+
+  providers = {
+    azurerm     = azurerm
+    azurerm.dns = azurerm.dns
+  }
+
+  # Context
+  resource_group_name = "rg-ne-acme-dev" # Existing Resource Group (created by automation)
+  service_prefix      = "acme"
+  location            = "northeurope"
+  environment         = "dev"
+  tags                = { env = "dev", owner = "storage-team", costcenter = "CC1234" }
+
+  # Tier Selection
+  tier = "tier1" # Options: "tier1" (LRS, dev) or "tier2" (ZRS, qa/prd)
+
+  # Networking for Private Endpoints
+  subnet_name              = "snet-priv-endpoints"
+  vnet_name                = "vnet-hub"
+  vnet_resource_group_name = "rg-ne-platform-networking"
+  dns_resource_group_name  = "rg-ne-platform-networking"
+
+  # Private Endpoints (configurable - enable only what you need)
+  enable_private_endpoint_blob  = true
+  enable_private_endpoint_file  = true
+  enable_private_endpoint_table = false
+  enable_private_endpoint_queue = false
+
+  # RBAC - User Profiles
+  ad_read_group_id = "22222222-2222-2222-2222-222222222222" # Developers group ID
+  ad_full_group_id = "33333333-3333-3333-3333-333333333333" # Tech leads group ID
+
+  # Action Group (Optional)
+  action_group_enabled = true
+  action_group_emails  = ["alerts@contoso.com"]
+  # OR use existing action group:
+  # action_group_id = "/subscriptions/xxx/resourceGroups/rg-monitoring/providers/Microsoft.Insights/actionGroups/ag-alerts"
+}
+```
+
+## 3. Tiers Configuration
+
+### Tier 1 (LRS) - Development Workloads
+
+**Storage Account Settings:**
+- Account Tier: `Standard`
+- Replication: `LRS` (Locally Redundant Storage)
+- Account Kind: `StorageV2`
+- Access Tier: `Hot`
+- Public Network Access: `disabled`
+- Shared Access Key: `enabled`
+- Infrastructure Encryption: `disabled`
+- Network Rules Default Action: `Deny`
+- Network Rules Bypass: `AzureServices`
+- Soft Delete Retention: Blob `7 days`, File `7 days`
+- SFTP: `disabled`
+- Default Alerts: `enabled` (Availability, Success Server Latency, Used Capacity)
+
+**RBAC Roles:**
+- **Tech Leads**: Storage Blob Data Contributor, Storage File Data Contributor, Storage Table Data Contributor, Storage Queue Data Contributor, Reader
+- **Developers**: Storage Blob Data Reader, Storage File Data Reader, Storage Table Data Reader, Storage Queue Data Reader, Reader
+
+### Tier 2 (ZRS) - QA/Production Workloads
+
+**Storage Account Settings:**
+- Account Tier: `Standard`
+- Replication: `ZRS` (Zone-Redundant Storage)
+- Account Kind: `StorageV2`
+- Access Tier: `Hot`
+- Public Network Access: `disabled`
+- Shared Access Key: `enabled`
+- Infrastructure Encryption: `disabled`
+- Network Rules Default Action: `Deny`
+- Network Rules Bypass: `AzureServices`
+- Soft Delete Retention: Blob `30 days`, File `30 days`
+- SFTP: `disabled`
+- Default Alerts: `enabled` (Availability, Success Server Latency, Used Capacity)
+
+**RBAC Roles:**
+- **Tech Leads**: Storage Blob Data Contributor, Storage File Data Contributor, Storage Table Data Contributor, Storage Queue Data Contributor, Reader
+- **Developers**: Storage Blob Data Reader, Storage File Data Reader, Storage Table Data Reader, Storage Queue Data Reader, Reader
+
+## 4. Inputs
+
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `resource_group_name` | `string` | n/a | yes | Name of the existing Resource Group where the Storage Account will be deployed. |
+| `service_prefix` | `string` | n/a | yes | Prefix or name of the project. |
+| `location` | `string` | n/a | yes | Azure region for the deployment. |
+| `subnet_name` | `string` | n/a | yes | Subnet name for private endpoints. |
+| `vnet_name` | `string` | n/a | yes | Virtual network name containing the subnet. |
+| `vnet_resource_group_name` | `string` | n/a | yes | Resource group name that contains the VNet. |
+| `dns_resource_group_name` | `string` | n/a | yes | Resource group name that contains Private DNS zones and the VNet/subnet. |
+| `environment` | `string` | `"dev"` | no | Environment label (dev, qua, prd). |
+| `tier` | `string` | `"tier1"` | no | Storage Account tier to deploy. Options: `tier1` (LRS, dev) or `tier2` (ZRS, qa/prd). |
+| `enable_private_endpoint_blob` | `bool` | `true` | no | Enable private endpoint for blob service. |
+| `enable_private_endpoint_file` | `bool` | `true` | no | Enable private endpoint for file service. |
+| `enable_private_endpoint_table` | `bool` | `true` | no | Enable private endpoint for table service. |
+| `enable_private_endpoint_queue` | `bool` | `true` | no | Enable private endpoint for queue service. |
+| `ad_read_group_id` | `string` | `null` | no | Azure AD Group ID for developers (read access profile). Leave null to skip developer RBAC assignments. |
+| `ad_full_group_id` | `string` | `null` | no | Azure AD Group ID for tech leads (full access profile). Leave null to skip tech lead RBAC assignments. |
+| `action_group_enabled` | `bool` | `true` | no | Whether the action group is enabled. |
+| `action_group_email_receivers` | `map(object({ email_address = string }))` | `{}` | no | Map of email receivers for the action group, keyed by receiver name. |
+| `action_group_emails` | `list(string)` | `[]` | no | List of email addresses for the action group. Will be converted to email_receivers map internally. |
+| `action_group_id` | `string` | `null` | no | Optional existing action group ID to use for alerts instead of creating a new one. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to all resources created by this template. |
+
+## 5. Outputs
+
+| Name | Description |
+|------|-------------|
+| `location` | Azure region where resources are deployed. |
+| `tags` | Tags applied to all resources created by this template. |
+| `resource_group_id` | Resource Group ID. |
+| `resource_group_name` | Resource Group name. |
+| `private_endpoints_subnet_id` | Subnet ID used for Private Endpoints. |
+| `storage_account_id` | Storage Account ID. |
+| `storage_account_name` | Storage Account name. |
+| `storage_account_primary_blob_endpoint` | Storage Account primary blob endpoint. |
+| `private_endpoint_blob_id` | Blob Private Endpoint ID (if created). |
+| `private_endpoint_file_id` | File Private Endpoint ID (if created). |
+| `storage_account_availability_alert_id` | Storage Account Availability alert ID (null if disabled). |
+| `storage_account_availability_alert_name` | Storage Account Availability alert name (null if disabled). |
+| `storage_account_success_server_latency_alert_id` | Storage Account Success Server Latency alert ID (null if disabled). |
+| `storage_account_success_server_latency_alert_name` | Storage Account Success Server Latency alert name (null if disabled). |
+| `storage_account_used_capacity_alert_id` | Storage Account Used Capacity alert ID (null if disabled). |
+| `storage_account_used_capacity_alert_name` | Storage Account Used Capacity alert name (null if disabled). |
+| `role_assignments_storage_account` | Map of role assignment IDs created for Storage Account RBAC, keyed by assignment alias. |
+| `action_group_id` | Resource ID of the action group created by this template (if any). |
+| `action_group_name` | Name of the action group created by this template (if any). |
+| `selected_tier` | The tier that was deployed (tier1 or tier2). |
+
+## 6. User Profiles and RBAC Roles
+
+### Tech Leads Profile (ad_full_group_id)
+
+The following roles are assigned to the tech leads group:
+
+| Role | Scope | Description |
+|------|-------|-------------|
+| Storage Blob Data Contributor | Storage Account | Full access to blob containers and blobs (create, read, update, delete) |
+| Storage File Data Contributor | Storage Account | Full access to file shares and files (create, read, update, delete) |
+| Storage Table Data Contributor | Storage Account | Full access to table data (create, read, update, delete table entities) |
+| Storage Queue Data Contributor | Storage Account | Full access to queue data (create, read, update, delete queue messages) |
+| Reader | Storage Account | Read metadata about the Storage Account resource |
+
+### Developers Profile (ad_read_group_id)
+
+The following roles are assigned to the developers group:
+
+| Role | Scope | Description |
+|------|-------|-------------|
+| Storage Blob Data Reader | Storage Account | Read and list blob containers and blobs |
+| Storage File Data Reader | Storage Account | Read and list file shares and files |
+| Storage Table Data Reader | Storage Account | Read and query table entities |
+| Storage Queue Data Reader | Storage Account | Read and peek queue messages |
+| Reader | Storage Account | Read metadata about the Storage Account resource |
+
+## 7. Requirements
+
+- Terraform: `>= 1.12.1, < 2.0.0`
+- Provider azurerm: `~> 4.38` (with alias `azurerm.dns` configured)
+
+### Used Modules
+
+- `modules/storage-account` - Storage Account deployment
+- `modules/region-abbreviations` - Region abbreviation mappings
+- `modules/rbac-map` - RBAC role assignments
+- `modules/action-group-map` - Action group for alerts (optional)
+
+## 8. Notes
+
+- **Private Endpoints**: Private endpoints are configurable per deployment via the `enable_private_endpoint_*` variables. You can enable only the endpoints you need (blob, file, table, queue) to optimize costs. By default, all are enabled, but you can disable any that aren't required.
+
+- **Location Constraint**: This template is configured for NorthEurope region, which supports LRS and ZRS redundancy options due to ExpressRoute configuration constraints.
+
+- **Soft Delete Retention**: Blob and file soft delete retention periods are configured in the tier definitions (7 days for tier1/dev, 30 days for tier2/qa/prd). Note that these properties may need to be configured via Azure Portal, CLI, or module extension if not supported by the base storage-account module.
+
+- **SFTP**: SFTP is disabled by default in all tiers. If SFTP support is needed, it should be enabled via Azure Portal, CLI, or module extension.
+
+- **Access Tiers**: The default access tier is `Hot` for all tiers. Cool and Archive access tiers can be configured per use case but are not included in the base tier configurations.
+

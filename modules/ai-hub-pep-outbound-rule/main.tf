@@ -42,12 +42,12 @@ resource "azapi_resource" "this" {
   # Short delay to allow ARM propagation before subsequent dependent operations
   provisioner "local-exec" {
     when    = create
-    command = "sleep 20"
+    command = "sleep 8"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "sleep 20"
+    command = "sleep 8"
   }
 }
 

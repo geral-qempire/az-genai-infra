@@ -4,6 +4,16 @@ description: "Module updates and announcements"
 icon: 'arrows-spin'
 ---
 
+<Update label="2025/01/30" description="sqldb-v0.3.0">
+  - **BREAKING CHANGE**: Long-term retention parameters now accept values in days instead of their previous units:
+    - `weekly_ltr_weeks`: Now expects days instead of weeks
+    - `monthly_ltr_months`: Now expects days instead of months
+    - `yearly_ltr_years`: Now expects days instead of years
+  
+  - All LTR retention periods now use days as the unit of measurement for consistency.
+
+</Update>
+
 <Update label="2025/01/27" description="sqldb-v0.2.0">
   - **BREAKING CHANGE**: Added `resource_group_name` as a required variable.
 

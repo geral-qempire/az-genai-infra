@@ -1,0 +1,134 @@
+# Basic Configuration
+# Note: The resource group and action group must already exist
+resource_group_name = "rg-alerts-monitoring"
+
+tags = {
+  environment = "dev"
+  owner       = "platform-team"
+  costcenter  = "CC1234"
+}
+
+# Action Group Configuration
+# Note: The action group must already exist in the resource group above
+action_group_name = "ag-alerts"
+
+# Optional: Override with a specific action group ID if needed
+# action_group_id = "/subscriptions/.../resourceGroups/.../providers/Microsoft.Insights/actionGroups/ag-alerts"
+
+# Resource IDs - Replace with your actual resource IDs
+# Format: "resource-name" = "/subscriptions/.../resourceGroups/.../providers/.../..."
+
+# SQL Database IDs (all types)
+sql_database_ids = {
+  "sqldb-chatbot" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.Sql/servers/azpdswechatbot001/databases/sqldb-chatbot"
+}
+
+# SQL Database Serverless IDs (for app CPU/memory alerts)
+sql_database_serverless_ids = {
+  "sqldb-chatbot-serverless" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.Sql/servers/azpdswechatbot001/databases/sqldb-chatbot-serverless"
+}
+
+# SQL Database Provisioned IDs (for instance CPU/memory alerts)
+sql_database_provisioned_ids = {
+  "sqldb-chatbot-provisioned" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.Sql/servers/azpdswechatbot001/databases/sqldb-chatbot-provisioned"
+}
+
+# Key Vault IDs
+key_vault_ids = {
+  "kv-chatbot" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.KeyVault/vaults/kv-we-chatbot-dev"
+}
+
+# Storage Account IDs
+storage_account_ids = {
+  "st-chatbot" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.Storage/storageAccounts/stwechatbotdev"
+}
+
+# AI Search IDs
+ai_search_ids = {
+  "srch-chatbot" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.Search/searchServices/srch-we-chatbot-dev"
+}
+
+# AI Services IDs
+ai_services_ids = {
+  "ais-chatbot" = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-we-chatbot/providers/Microsoft.CognitiveServices/accounts/ais-we-chatbot-dev"
+}
+
+# Note: The action group is loaded from the existing resource group
+# You can override individual alerts by providing action_group_ids if needed
+
+# SQL Database Alert Configuration
+sql_db_availability_enabled = true
+sql_db_availability_threshold = 90
+sql_db_availability_action_group_ids = [] # Not needed - uses loaded action group
+
+sql_db_storage_enabled = true
+sql_db_storage_threshold = 80
+sql_db_storage_action_group_ids = [] # Not needed - uses auto-created action group
+
+sql_db_app_cpu_enabled = true
+sql_db_app_cpu_threshold = 80
+sql_db_app_cpu_action_group_ids = [] # Not needed - uses auto-created action group
+
+sql_db_app_memory_enabled = true
+sql_db_app_memory_threshold = 90
+sql_db_app_memory_action_group_ids = [] # Not needed - uses auto-created action group
+
+sql_db_instance_cpu_enabled = true
+sql_db_instance_cpu_threshold = 70
+sql_db_instance_cpu_action_group_ids = [] # Not needed - uses auto-created action group
+
+sql_db_instance_memory_enabled = true
+sql_db_instance_memory_threshold = 90
+sql_db_instance_memory_action_group_ids = [] # Not needed - uses auto-created action group
+
+# Key Vault Alert Configuration
+key_vault_availability_enabled = true
+key_vault_availability_threshold = 90
+key_vault_availability_action_group_ids = [] # Not needed - uses auto-created action group
+
+key_vault_saturation_enabled = true
+key_vault_saturation_threshold = 75
+key_vault_saturation_action_group_ids = [] # Not needed - uses auto-created action group
+
+# Storage Account Alert Configuration
+storage_availability_enabled = true
+storage_availability_threshold = 90
+storage_availability_action_group_ids = [] # Not needed - uses auto-created action group
+
+storage_latency_enabled = true
+storage_latency_threshold = 500
+storage_latency_action_group_ids = [] # Not needed - uses auto-created action group
+
+storage_used_capacity_enabled = true
+storage_used_capacity_threshold = 1000000000000 # 1TB in bytes
+storage_used_capacity_action_group_ids = [] # Not needed - uses auto-created action group
+
+# AI Search Alert Configuration
+ai_search_latency_enabled = true
+ai_search_latency_threshold = 1000
+ai_search_latency_action_group_ids = [] # Not needed - uses auto-created action group
+
+ai_search_throttled_enabled = true
+ai_search_throttled_threshold = 5
+ai_search_throttled_action_group_ids = [] # Not needed - uses auto-created action group
+
+# AI Services Alert Configuration
+ai_services_availability_enabled = true
+ai_services_availability_threshold = 90
+ai_services_availability_model_deployment_names = ["gpt-4o-mini", "text-embedding-3-large"]
+ai_services_availability_action_group_ids = [] # Not needed - uses auto-created action group
+
+ai_services_tokens_enabled = true
+ai_services_tokens_threshold = 10000000
+ai_services_tokens_model_deployment_names = ["gpt-4o-mini", "text-embedding-3-large"]
+ai_services_tokens_action_group_ids = [] # Not needed - uses auto-created action group
+
+ai_services_ttft_enabled = true
+ai_services_ttft_threshold = 5
+ai_services_ttft_model_deployment_names = ["gpt-4o-mini", "text-embedding-3-large"]
+ai_services_ttft_action_group_ids = [] # Not needed - uses auto-created action group
+
+ai_services_ttlt_enabled = true
+ai_services_ttlt_threshold = 5
+ai_services_ttlt_model_deployment_names = ["gpt-4o-mini", "text-embedding-3-large"]
+ai_services_ttlt_action_group_ids = [] # Not needed - uses auto-created action group

@@ -20,9 +20,9 @@ resource "azurerm_mssql_database" "this" {
   dynamic "long_term_retention_policy" {
     for_each = (var.weekly_ltr_weeks > 0 || var.monthly_ltr_months > 0 || var.yearly_ltr_years > 0) ? [1] : []
     content {
-      weekly_retention  = var.weekly_ltr_weeks > 0 ? "P${var.weekly_ltr_weeks}W" : null
-      monthly_retention = var.monthly_ltr_months > 0 ? "P${var.monthly_ltr_months}M" : null
-      yearly_retention  = var.yearly_ltr_years > 0 ? "P${var.yearly_ltr_years}Y" : null
+      weekly_retention  = var.weekly_ltr_weeks > 0 ? "P${var.weekly_ltr_weeks}D" : null
+      monthly_retention = var.monthly_ltr_months > 0 ? "P${var.monthly_ltr_months}D" : null
+      yearly_retention  = var.yearly_ltr_years > 0 ? "P${var.yearly_ltr_years}D" : null
       # Set a default week_of_year only when yearly retention is configured
       week_of_year = var.yearly_ltr_years > 0 ? 1 : null
     }

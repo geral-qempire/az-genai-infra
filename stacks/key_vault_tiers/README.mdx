@@ -1,0 +1,170 @@
+---
+title: 'README'
+description: 'An overview of requirements, inputs, outputs, and usage.'
+icon: 'circle-info'
+---
+
+## 1. Template
+
+Provision a Key Vault with pre-configured tiers for normal or high-load workloads. Includes secure defaults (private endpoint, RBAC authorization, monitoring alerts) and RBAC profiles for tech leads and developers.
+
+**Note:** This template expects an existing Resource Group. The Resource Group should be created separately before deploying this stack.
+
+**Available Tiers:**
+- **Tier 1 (Standard)**: Normal workloads, suitable for most projects including production
+- **Tier 2 (Premium)**: High-load workloads with enhanced security features (HSM-protected keys)
+
+## 2. Usage
+
+```hcl
+module "key_vault_tiers" {
+  source = "../../stacks/key_vault_tiers"
+
+  providers = {
+    azurerm     = azurerm
+    azurerm.dns = azurerm.dns
+  }
+
+  # Context
+  resource_group_name = "rg-we-acme-dev" # Existing Resource Group (created by automation)
+  service_prefix      = "acme"
+  location            = "westeurope"
+  tenant_id           = "00000000-0000-0000-0000-000000000000"
+  environment         = "dev"
+  tags                = { env = "dev", owner = "security-team", costcenter = "CC1234" }
+
+  # Tier Selection
+  tier = "tier1" # Options: "tier1" (standard) or "tier2" (premium)
+
+  # Networking for Private Endpoint
+  subnet_name              = "snet-priv-endpoints"
+  vnet_name                = "vnet-hub"
+  vnet_resource_group_name = "rg-we-platform-networking"
+  dns_resource_group_name  = "rg-we-platform-networking"
+
+  # RBAC - User Profiles
+  ad_read_group_id = "22222222-2222-2222-2222-222222222222" # Developers group ID
+  ad_full_group_id  = "33333333-3333-3333-3333-333333333333" # Tech leads group ID
+
+  # Action Group (Optional)
+  action_group_enabled = true
+  action_group_emails  = ["alerts@contoso.com"]
+  # OR use existing action group:
+  # action_group_id = "/subscriptions/xxx/resourceGroups/rg-monitoring/providers/Microsoft.Insights/actionGroups/ag-alerts"
+}
+```
+
+## 3. Tiers Configuration
+
+### Tier 1 (Standard) - Normal Workloads
+
+**Key Vault Settings:**
+- SKU: `standard`
+- Soft Delete Retention: `90 days`
+- Purge Protection: `enabled`
+- Public Network Access: `disabled`
+- RBAC Authorization: `enabled`
+- Network ACLs Bypass: `AzureServices`
+- Private Endpoint: `enabled`
+- Default Alerts: `enabled` (Availability and Saturation)
+
+**RBAC Roles:**
+- **Tech Leads**: Key Vault Certificates Officer, Key Vault Crypto Officer, Key Vault Secrets Officer, Reader
+- **Developers**: Key Vault Certificate User, Key Vault Crypto User, Key Vault Secrets User, Reader
+
+### Tier 2 (Premium) - High-Load Workloads
+
+**Key Vault Settings:**
+- SKU: `premium` (supports HSM-protected keys)
+- Soft Delete Retention: `90 days`
+- Purge Protection: `enabled`
+- Public Network Access: `disabled`
+- RBAC Authorization: `enabled`
+- Network ACLs Bypass: `AzureServices`
+- Private Endpoint: `enabled`
+- Default Alerts: `enabled` (Availability and Saturation)
+
+**RBAC Roles:**
+- **Tech Leads**: Key Vault Certificates Officer, Key Vault Crypto Officer, Key Vault Secrets Officer, Reader
+- **Developers**: Key Vault Certificate User, Key Vault Crypto User, Key Vault Secrets User, Reader
+
+## 4. Inputs
+
+| Name | Type | Default | Required | Description |
+|------|------|---------|:--------:|-------------|
+| `resource_group_name` | `string` | n/a | yes | Name of the existing Resource Group where the Key Vault will be deployed. |
+| `service_prefix` | `string` | n/a | yes | Prefix or name of the project. |
+| `location` | `string` | n/a | yes | Azure region for the deployment. |
+| `tenant_id` | `string` | n/a | yes | Azure tenant ID. |
+| `subnet_name` | `string` | n/a | yes | Subnet name for private endpoints. |
+| `vnet_name` | `string` | n/a | yes | Virtual network name containing the subnet. |
+| `vnet_resource_group_name` | `string` | n/a | yes | Resource group name that contains the VNet. |
+| `dns_resource_group_name` | `string` | n/a | yes | Resource group name that contains Private DNS zones and the VNet/subnet. |
+| `environment` | `string` | `"dev"` | no | Environment label (dev, qua, prd). |
+| `tier` | `string` | `"tier1"` | no | Key Vault tier to deploy. Options: `tier1` (standard) or `tier2` (premium). |
+| `ad_read_group_id` | `string` | `null` | no | Azure AD Group ID for developers (read access profile). Leave null to skip developer RBAC assignments. |
+| `ad_full_group_id` | `string` | `null` | no | Azure AD Group ID for tech leads (full access profile). Leave null to skip tech lead RBAC assignments. |
+| `action_group_enabled` | `bool` | `true` | no | Whether the action group is enabled. |
+| `action_group_email_receivers` | `map(object({ email_address = string }))` | `{}` | no | Map of email receivers for the action group, keyed by receiver name. |
+| `action_group_emails` | `list(string)` | `[]` | no | List of email addresses for the action group. Will be converted to email_receivers map internally. |
+| `action_group_id` | `string` | `null` | no | Optional existing action group ID to use for alerts instead of creating a new one. |
+| `tags` | `map(string)` | `{}` | no | Tags to apply to all resources created by this template. |
+
+## 5. Outputs
+
+| Name | Description |
+|------|-------------|
+| `location` | Azure region where resources are deployed. |
+| `tags` | Tags applied to all resources created by this template. |
+| `resource_group_id` | Resource Group ID. |
+| `resource_group_name` | Resource Group name. |
+| `private_endpoints_subnet_id` | Subnet ID used for Private Endpoints. |
+| `key_vault_id` | Key Vault ID. |
+| `key_vault_name` | Key Vault name. |
+| `key_vault_uri` | Key Vault URI. |
+| `key_vault_private_endpoint_id` | Key Vault Private Endpoint ID (if created). |
+| `key_vault_availability_alert_id` | Key Vault Availability alert ID (null if disabled). |
+| `key_vault_availability_alert_name` | Key Vault Availability alert name (null if disabled). |
+| `key_vault_saturation_alert_id` | Key Vault Saturation alert ID (null if disabled). |
+| `key_vault_saturation_alert_name` | Key Vault Saturation alert name (null if disabled). |
+| `role_assignments_key_vault` | Map of role assignment IDs created for Key Vault RBAC, keyed by assignment alias. |
+| `action_group_id` | Resource ID of the action group created by this template (if any). |
+| `action_group_name` | Name of the action group created by this template (if any). |
+| `selected_tier` | The tier that was deployed (tier1 or tier2). |
+
+## 6. User Profiles and RBAC Roles
+
+### Tech Leads Profile (ad_full_group_id)
+
+The following roles are assigned to the tech leads group:
+
+| Role | Scope | Description |
+|------|-------|-------------|
+| Key Vault Certificates Officer | Key Vault | Full certificate management (create, read, update, delete, list certificates) |
+| Key Vault Crypto Officer | Key Vault | Full key management (create, read, update, delete, list keys; import keys; perform crypto operations) |
+| Key Vault Secrets Officer | Key Vault | Full secret management (create, read, update, delete, list secrets) |
+| Reader | Key Vault | Read metadata about the Key Vault resource |
+
+### Developers Profile (ad_read_group_id)
+
+The following roles are assigned to the developers group:
+
+| Role | Scope | Description |
+|------|-------|-------------|
+| Key Vault Certificate User | Key Vault | Read and list certificates; use certificates for TLS/SSL operations |
+| Key Vault Crypto User | Key Vault | Use keys for cryptographic operations (encrypt, decrypt, sign, verify) |
+| Key Vault Secrets User | Key Vault | Read and list secrets (cannot modify or delete) |
+| Reader | Key Vault | Read metadata about the Key Vault resource |
+
+## 7. Requirements
+
+- Terraform: `>= 1.12.1, < 2.0.0`
+- Provider azurerm: `~> 4.38` (with alias `azurerm.dns` configured)
+
+### Used Modules
+
+- `modules/key-vault` - Key Vault deployment
+- `modules/region-abbreviations` - Region abbreviation mappings
+- `modules/rbac-map` - RBAC role assignments
+- `modules/action-group-map` - Action group for alerts (optional)
+

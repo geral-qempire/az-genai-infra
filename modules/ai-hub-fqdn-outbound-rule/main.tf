@@ -30,12 +30,12 @@ resource "azapi_resource" "this" {
 
   provisioner "local-exec" {
     when    = create
-    command = "sleep 20"
+    command = "sleep 8"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "sleep 20"
+    command = "sleep 8"
   }
 }
 

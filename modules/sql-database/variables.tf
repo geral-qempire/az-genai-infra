@@ -65,19 +65,19 @@ variable "backup_interval_in_hours" {
 variable "weekly_ltr_weeks" {
   type        = number
   default     = 0
-  description = "Weekly LTR retention in weeks. Set 0 to disable."
+  description = "Weekly LTR retention in days. Set 0 to disable."
 }
 
 variable "monthly_ltr_months" {
   type        = number
   default     = 0
-  description = "Monthly LTR retention in months. Set 0 to disable."
+  description = "Monthly LTR retention in days. Set 0 to disable."
 }
 
 variable "yearly_ltr_years" {
   type        = number
   default     = 0
-  description = "Yearly LTR retention in years. Set 0 to disable."
+  description = "Yearly LTR retention in days. Set 0 to disable."
 }
 
 

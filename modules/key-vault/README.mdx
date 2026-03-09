@@ -7,7 +7,13 @@ icon: 'circle-info'
 ## 1. Module
 Create an Azure Key Vault with secure defaults (RBAC auth, private network access by default), optional Private Endpoint, customizable retention and access policies, and integrated monitoring alerts.
 
+The module includes pre-configured tier templates (`key_vault_tiers`) for out-of-the-box deployments:
+- **Tier 1 (Standard)**: Normal workloads, suitable for most projects including production
+- **Tier 2 (Premium)**: High-load workloads with enhanced security features (HSM-protected keys)
+
 ## 2. Usage
+
+### Basic Usage
 ```hcl
 module "region_abbreviations" {
   source = "../region-abbreviations"
@@ -52,6 +58,87 @@ module "key_vault" {
     environment = "dev"
     project     = "acme"
   }
+}
+```
+
+### Using Tier Templates
+```hcl
+module "region_abbreviations" {
+  source = "../region-abbreviations"
+}
+
+# Reference the tier template (tier1 for normal workloads, tier2 for high-load workloads)
+# Note: You need to reference the module output after it's created, or copy the tier definition
+module "key_vault_tiers" {
+  source = "../key-vault"
+  # Only need to provide minimal inputs to access the tier definitions
+  # The actual key vault deployment can be done separately
+}
+
+locals {
+  selected_tier = module.key_vault_tiers.key_vault_tiers["tier1"]
+}
+
+module "key_vault" {
+  source = "../key-vault"
+
+  environment          = "dev"
+  service_prefix       = "acme"
+  resource_group_name  = "rg-security-dev"
+  location             = "westeurope"
+  region_abbreviations = module.region_abbreviations.regions
+  tenant_id            = "00000000-0000-0000-0000-000000000000"
+
+  # Use tier configuration
+  sku_name                      = local.selected_tier.sku_name
+  soft_delete_retention_days    = local.selected_tier.soft_delete_retention_days
+  purge_protection_enabled      = local.selected_tier.purge_protection_enabled
+  public_network_access_enabled = local.selected_tier.public_network_access_enabled
+  enable_rbac_authorization     = local.selected_tier.enable_rbac_authorization
+  network_acls_bypass           = local.selected_tier.network_acls_bypass
+  enable_private_endpoint        = local.selected_tier.enable_private_endpoint
+  enable_availability_alert     = local.selected_tier.enable_availability_alert
+  enable_saturation_alert       = local.selected_tier.enable_saturation_alert
+
+  # Still required: Private endpoint configuration
+  dns_resource_group_name   = "rg-network-dev"
+  subnet_id                 = "/subscriptions/xxx/resourceGroups/rg-network-dev/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/snet-privates"
+  private_endpoint_location = "westeurope"
+
+  # Optional alert overrides
+  availability_alert_action_group_ids = [module.action_group.action_group_id]
+  saturation_alert_action_group_ids   = [module.action_group.action_group_id]
+
+  tags = {
+    environment = "dev"
+    project     = "acme"
+  }
+}
+
+# RBAC assignments using tier roles
+module "rbac_key_vault" {
+  source = "../rbac-map"
+
+  rbac = merge(
+    # Tech leads (ad_full_group_id pattern)
+    var.ad_full_group_id != null && var.ad_full_group_id != "" ? {
+      for idx, role in local.selected_tier.tech_lead_roles : "tech_lead_kv_${replace(lower(role), " ", "_")}" => {
+        principal_id         = var.ad_full_group_id
+        scope_id             = module.key_vault.id
+        role_definition_name = role
+        principal_type       = "Group"
+      }
+    } : {},
+    # Developers (ad_read_group_id pattern)
+    var.ad_read_group_id != null && var.ad_read_group_id != "" ? {
+      for idx, role in local.selected_tier.developer_roles : "developer_kv_${replace(lower(role), " ", "_")}" => {
+        principal_id         = var.ad_read_group_id
+        scope_id             = module.key_vault.id
+        role_definition_name = role
+        principal_type       = "Group"
+      }
+    } : {}
+  )
 }
 ```
 

@@ -1,12 +1,12 @@
 # Subscription IDs
-infra_subscription_id = "2a4f4e29-3789-4e47-867d-62a6eb17950b"
-dns_subscription_id   = "0d2447a1-c993-432b-be88-01ba39e66f84"
-tenant_id             = "0e20503f-b4f9-44ce-9d36-e5be1a78af16"
+infra_subscription_id = "cb084404-ffbb-4bca-8a99-272625f6008a"
+dns_subscription_id   = "cb084404-ffbb-4bca-8a99-272625f6008a"
+tenant_id             = "76711bfe-abaa-4c8c-814a-aa3a2b68ad92"
 
 # Core
 service_prefix = "frame-core"
 location       = "swedencentral"
-environment    = "shared"
+environment    = "dev"
 
 # Tags
 tags = {
@@ -19,25 +19,25 @@ tags = {
 }
 
 # AD Groups
-# ad_read_group_id = "bcf79a5f-d4fd-4b6f-ba28-57e050690cc9"
-ad_full_group_id = "2a9ee019-37d4-474c-a138-565b2a7c2bb6"
+ad_read_group_id = "188bbe45-d58e-4f42-a97c-f46cec30ba6d"
+ad_full_group_id = "059bb0a1-d2f1-49e9-a5c8-d0cf66ec55ac"
 
 # Service Principals
-sp_app_id  = "84f7041e-f33e-4217-84ae-810dac40fa70"
-sp_cicd_id = "24e609e8-840e-475c-ac8b-c6e4c074d870"
+sp_app_id  = "1307ca49-6a7f-4d2a-8642-e4042ae46a65"
+sp_cicd_id = "3ff06dab-8286-4d33-80a4-4ad3495b7d726"
 
 # Network (for private endpoints)
 subnet_name              = "snet-dev"
-vnet_name                = "vnet-sdc-genai"
+vnet_name                = "vnet-sdc-genai-networking"
 vnet_resource_group_name = "rg-sdc-genai-networking"
-dns_resource_group_name  = "rg-swc-dns"
+dns_resource_group_name  = "rg-sdc-dns"
 
 # Observability
 log_analytics_workspace_name                = "log-sdc-genai-log-dev"
 log_analytics_workspace_resource_group_name = "rg-sdc-genai-log"
 
 # SQL Server
-serial_number                = "0001"
+serial_number                = "0002"
 administrator_login          = "sqldbadmin"
 administrator_login_password = "Password123!"
 entra_admin_object_id        = "035f0181-53de-4884-9e2e-e7ae13a4b4a1"
@@ -49,7 +49,7 @@ sql_database_sku_name                    = "GP_S_Gen5_2"
 sql_database_min_capacity                = 0.5
 sql_database_zone_redundant              = false
 sql_database_auto_pause_delay_in_minutes = 15
-sql_database_backup_interval_in_hours    = 12
+sql_database_backup_interval_in_hours    = 0
 sql_database_weekly_ltr_weeks            = 0
 sql_database_monthly_ltr_months          = 0
 sql_database_yearly_ltr_years            = 0
@@ -96,3 +96,14 @@ ai_services_alert_availability_rate_enabled  = true
 ai_services_alert_normalized_ttft_enabled    = true
 ai_services_alert_ttlt_enabled               = true
 ai_services_alert_processed_tokens_enabled   = true
+
+fqdn_rules = [
+  "*.vscode.dev",
+  "*.vscode-unpkg.net",
+  "*.vscode-cdn.net",
+  "*.vscodeexperiments.azureedge.net",
+  "default.exp-tas.com",
+  "code.visualstudio.com",
+  "update.code.visualstudio.com",
+  "*.vo.msecnd.net",
+]
