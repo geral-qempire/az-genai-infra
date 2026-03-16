@@ -15,9 +15,19 @@ variable "hub_resource_group_name" { type = string }
 variable "hub_name" { type = string }
 
 # AI Project
+variable "ai_project_location" {
+  type    = string
+  default = null
+}
 variable "friendly_name" {
   type    = string
   default = ""
+}
+
+# AI Services location override
+variable "ai_services_location" {
+  type    = string
+  default = null
 }
 
 # AD Groups

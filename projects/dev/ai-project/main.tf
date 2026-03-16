@@ -19,7 +19,11 @@ module "ai_project" {
   hub_name                = var.hub_name
 
   # AI Project
-  friendly_name = var.friendly_name
+  ai_project_location = var.ai_project_location
+  friendly_name       = var.friendly_name
+
+  # AI Services location override
+  ai_services_location = var.ai_services_location
 
   # AD Groups (optional)
   ad_read_group_id = var.ad_read_group_id
