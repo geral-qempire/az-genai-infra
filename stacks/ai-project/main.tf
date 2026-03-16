@@ -44,8 +44,11 @@ data "azurerm_subnet" "private_endpoints" {
 # Action Group (Optional)
 ########################################
 locals {
+  ai_project_location  = coalesce(var.ai_project_location, var.location)
+  ai_services_location = coalesce(var.ai_services_location, var.location)
+
   region_abbreviation = module.region_abbreviations.regions[var.location]
-  project_name        = lower("proj-${local.region_abbreviation}-${var.service_prefix}-${var.environment}")
+  project_name        = lower("proj-${module.region_abbreviations.regions[local.ai_project_location]}-${var.service_prefix}-${var.environment}")
 
   action_group_receivers = length(var.action_group_email_receivers) > 0 ? var.action_group_email_receivers : {
     for idx, addr in var.action_group_emails : format("email%02d", idx + 1) => { email_address = addr }
@@ -78,7 +81,7 @@ resource "azapi_resource" "ai_project" {
   type                      = "Microsoft.MachineLearningServices/workspaces@2024-10-01"
   name                      = local.project_name
   parent_id                 = azurerm_resource_group.this.id
-  location                  = var.location
+  location                  = local.ai_project_location
   schema_validation_enabled = false
 
   identity {
@@ -109,7 +112,7 @@ module "ai_services" {
   environment          = var.environment
   service_prefix       = var.service_prefix
   resource_group_name  = azurerm_resource_group.this.name
-  location             = var.location
+  location             = local.ai_services_location
   region_abbreviations = module.region_abbreviations.regions
 
   sku_name                     = var.ai_services_sku_name
@@ -125,7 +128,7 @@ module "ai_services" {
   enable_private_endpoint   = true
   dns_resource_group_name   = var.dns_resource_group_name
   subnet_id                 = data.azurerm_subnet.private_endpoints.id
-  private_endpoint_location = var.location
+  private_endpoint_location = local.ai_services_location
 
   # Alerts
   enable_availability_rate_alert = var.ai_services_alert_availability_rate_enabled

@@ -48,10 +48,23 @@ variable "hub_name" {
 }
 
 # AI Project
+variable "ai_project_location" {
+  type        = string
+  default     = null
+  description = "Override location for the AI Project. Defaults to var.location."
+}
+
 variable "friendly_name" {
   type        = string
   default     = ""
   description = "Optional friendly display name for the AI Project."
+}
+
+# AI Services location override
+variable "ai_services_location" {
+  type        = string
+  default     = null
+  description = "Override location for AI Services. Defaults to var.location."
 }
 
 # Optional tags
